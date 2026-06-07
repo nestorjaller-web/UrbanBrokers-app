@@ -70,7 +70,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .unlock-sub{font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:1rem;letter-spacing:-0.01em}
 .unlock-list{list-style:none;text-align:left;display:inline-block;margin-bottom:1.25rem}
 .unlock-list li{font-size:12px;color:rgba(255,255,255,0.7);padding:3px 0;letter-spacing:-0.01em}
-.unlock-list li::before{content:"→ ";color:rgba(255,255,255,0.3)}
+.unlock-list li::before{content:'\2192 \0020';color:rgba(255,255,255,0.3)}
 .unlock-price{font-size:11px;color:rgba(255,255,255,0.35);margin-top:8px;letter-spacing:-0.01em}
 .wa-box{background:var(--green-light);border-radius:16px;padding:1.25rem;margin-bottom:1rem;display:flex;gap:12px;align-items:flex-start}
 .wa-title{font-size:13px;font-weight:600;color:var(--green);margin-bottom:3px;letter-spacing:-0.01em}
@@ -448,21 +448,7 @@ function showStep4(){
   let cel=state.celular.replace(/\D/g,'');
   if(!cel.startsWith('57'))cel='57'+cel;
   document.getElementById('waNum').textContent=state.celular;
-  const msg=encodeURIComponent('Hola '+state.nombre+' 👋
-
-Tu informe UrbanBrokers está listo.
-
-📍 *'+state.proyecto+'*'+(state.direccion?' · '+state.direccion:'')+'
-🏙 Ciudad del Río · '+state.refLabel+'
-💰 Precio pedido: $'+state.precio.toLocaleString('es-CO')+' COP
-📊 Veredicto: '+lm[r.veredicto_tipo]+'
-🎯 Precio justo: '+fmtCOP(r.precio_justo)+' COP
-💡 Oferta de apertura: '+fmtCOP(r.oferta_apertura)+' COP
-🔝 Máximo a pagar: '+fmtCOP(r.precio_maximo)+' COP
-
-'+r.recomendacion+'
-
-_UrbanBrokers · Datos que negocian por ti_');
+  const msg=encodeURIComponent('Hola '+state.nombre+' \u{1F44B}\n\nTu informe UrbanBrokers esta listo.\n\n📍 '+state.proyecto+(state.direccion?' - '+state.direccion:'')+' - Ciudad del Rio - '+state.refLabel+'\n💰 Precio: $'+state.precio.toLocaleString('es-CO')+' COP\n📊 Veredicto: '+lm[r.veredicto_tipo]+'\n🎯 Precio justo: '+fmtCOP(r.precio_justo)+' COP\n💡 Oferta: '+fmtCOP(r.oferta_apertura)+' COP\n🔝 Maximo: '+fmtCOP(r.precio_maximo)+' COP\n\n'+r.recomendacion+'\n\nUrbanBrokers - Datos que negocian por ti');
   document.getElementById('waSendBtn').href='https://wa.me/'+WA_NUM+'?text='+msg;
   setStep('step4');
 }
