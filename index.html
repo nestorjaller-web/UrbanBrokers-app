@@ -272,11 +272,31 @@ var WA = '573108250451';
 var ST = {};
 var map, marker, radiusCircle, compMarkers = [];
 
-// Ciudad del Rio bounding box
-var CR_BOUNDS = {
-  latMin: 6.2350, latMax: 6.2480,
-  lngMin: -75.5770, lngMax: -75.5670
-};
+// Poligono real de Ciudad del Rio
+// Limites: Cl 24 (norte) / Cl 17 (sur) / Rio Medellin (oriente) / Cr 50 (occidente)
+var CR_POLYGON = [
+  [6.2460, -75.5760],
+  [6.2460, -75.5680],
+  [6.2450, -75.5672],
+  [6.2420, -75.5668],
+  [6.2390, -75.5670],
+  [6.2360, -75.5675],
+  [6.2355, -75.5720],
+  [6.2358, -75.5760]
+];
+
+// Point-in-polygon (ray casting algorithm)
+function isInCR(lat, lng) {
+  var inside = false;
+  var n = CR_POLYGON.length;
+  for (var i=0, j=n-1; i<n; j=i++) {
+    var xi=CR_POLYGON[i][0], yi=CR_POLYGON[i][1];
+    var xj=CR_POLYGON[j][0], yj=CR_POLYGON[j][1];
+    var intersect = ((yi>lng) !== (yj>lng)) && (lat < (xj-xi)*(lng-yi)/(yj-yi)+xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
 
 // Proyectos con coordenadas reales
 var PROYECTOS = [
@@ -311,11 +331,7 @@ function distKm(lat1, lng1, lat2, lng2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
-// Check if coordinates are inside Ciudad del Rio
-function isInCR(lat, lng) {
-  return lat >= CR_BOUNDS.latMin && lat <= CR_BOUNDS.latMax &&
-         lng >= CR_BOUNDS.lngMin && lng <= CR_BOUNDS.lngMax;
-}
+
 
 // Get comparables within 1km
 function getNearby(lat, lng) {
@@ -346,6 +362,15 @@ function initMap() {
     iconSize: [20,20],
     iconAnchor: [10,10]
   });
+
+  // Draw Ciudad del Rio polygon
+  L.polygon(CR_POLYGON, {
+    color: '#0071e3',
+    weight: 2,
+    fillColor: '#0071e3',
+    fillOpacity: 0.05,
+    dashArray: '6,4'
+  }).addTo(map).bindTooltip('Ciudad del Rio', {permanent:false, direction:'center'});
 
   marker = L.marker([centerLat, centerLng], {draggable:true, icon:blueIcon}).addTo(map);
   radiusCircle = L.circle([centerLat, centerLng], {
