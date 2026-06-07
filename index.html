@@ -275,14 +275,13 @@ var map, marker, radiusCircle, compMarkers = [];
 // Poligono real de Ciudad del Rio
 // Limites: Cl 24 (norte) / Cl 17 (sur) / Rio Medellin (oriente) / Cr 50 (occidente)
 var CR_POLYGON = [
-  [6.2460, -75.5760],
-  [6.2460, -75.5680],
-  [6.2450, -75.5672],
-  [6.2420, -75.5668],
-  [6.2390, -75.5670],
-  [6.2360, -75.5675],
-  [6.2355, -75.5720],
-  [6.2358, -75.5760]
+  [6.2165, -75.5790],
+  [6.2165, -75.5700],
+  [6.2150, -75.5685],
+  [6.2100, -75.5678],
+  [6.2060, -75.5682],
+  [6.2050, -75.5710],
+  [6.2050, -75.5790]
 ];
 
 // Point-in-polygon (ray casting algorithm)
@@ -302,21 +301,21 @@ function isInCR(lat, lng) {
 
 // Proyectos con coordenadas reales
 var PROYECTOS = [
-  {n:"Bosque del Rio", lat:6.2381, lng:-75.5742, m2:8067906, sz:"bavaria"},
-  {n:"Ferrara y Florencia del Rio", lat:6.2375, lng:-75.5748, m2:8300000, sz:"bavaria"},
-  {n:"Reserva del Rio", lat:6.2390, lng:-75.5738, m2:9200000, sz:"bavaria"},
-  {n:"Kiva del Rio", lat:6.2412, lng:-75.5721, m2:10800000, sz:"cercaViva"},
-  {n:"River Park", lat:6.2418, lng:-75.5715, m2:12594916, sz:"cercaViva"},
-  {n:"Linz y Graz del Rio", lat:6.2415, lng:-75.5718, m2:12200000, sz:"cercaViva"},
-  {n:"Palmanova", lat:6.2420, lng:-75.5710, m2:11800000, sz:"cercaViva"},
-  {n:"Icon River", lat:6.2425, lng:-75.5712, m2:14500000, sz:"cercaViva"},
-  {n:"Bahia Malaga", lat:6.2428, lng:-75.5709, m2:13800000, sz:"cercaViva"},
-  {n:"Ventto del Rio", lat:6.2445, lng:-75.5698, m2:13959167, sz:"jardines"},
-  {n:"Jardines del Rio", lat:6.2450, lng:-75.5695, m2:13500000, sz:"jardines"},
-  {n:"Arrayan del Rio", lat:6.2448, lng:-75.5700, m2:13200000, sz:"jardines"},
-  {n:"Saman del Rio", lat:6.2443, lng:-75.5702, m2:13800000, sz:"jardines"},
-  {n:"Guayacanes del Rio", lat:6.2440, lng:-75.5705, m2:13100000, sz:"jardines"},
-  {n:"Palma del Rio", lat:6.2438, lng:-75.5708, m2:12900000, sz:"jardines"}
+  {n:"Bosque del Rio", lat:6.2073, lng:-75.5748, m2:8067906, sz:"bavaria"},
+  {n:"Ferrara y Florencia Rio", lat:6.2068, lng:-75.5752, m2:8300000, sz:"bavaria"},
+  {n:"Reserva del Rio", lat:6.2080, lng:-75.5745, m2:9200000, sz:"bavaria"},
+  {n:"Kiva del Rio", lat:6.2095, lng:-75.5730, m2:10800000, sz:"cercaViva"},
+  {n:"River Park", lat:6.2105, lng:-75.5718, m2:12594916, sz:"cercaViva"},
+  {n:"Linz y Graz del Rio", lat:6.2100, lng:-75.5722, m2:12200000, sz:"cercaViva"},
+  {n:"Palmanova", lat:6.2108, lng:-75.5715, m2:11800000, sz:"cercaViva"},
+  {n:"Icon River", lat:6.2112, lng:-75.5710, m2:14500000, sz:"cercaViva"},
+  {n:"Bahia Malaga", lat:6.2115, lng:-75.5708, m2:13800000, sz:"cercaViva"},
+  {n:"Ventto del Rio", lat:6.2130, lng:-75.5700, m2:13959167, sz:"jardines"},
+  {n:"Jardines del Rio", lat:6.2140, lng:-75.5695, m2:13500000, sz:"jardines"},
+  {n:"Arrayan del Rio", lat:6.2135, lng:-75.5702, m2:13200000, sz:"jardines"},
+  {n:"Saman del Rio", lat:6.2128, lng:-75.5706, m2:13800000, sz:"jardines"},
+  {n:"Guayacanes del Rio", lat:6.2125, lng:-75.5710, m2:13100000, sz:"jardines"},
+  {n:"Palma del Rio", lat:6.2122, lng:-75.5712, m2:12900000, sz:"jardines"}
 ];
 
 var MKT = {med:10068576, prom:9323272};
@@ -350,7 +349,7 @@ function getNearby(lat, lng) {
 
 // Init map
 function initMap() {
-  var centerLat = 6.2415, centerLng = -75.5720;
+  var centerLat = 6.2100, centerLng = -75.5730;
   map = L.map('mapContainer').setView([centerLat, centerLng], 15);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap',
@@ -459,7 +458,7 @@ document.getElementById('btnBuscar').addEventListener('click', function() {
   function trySearch(idx) {
     if (idx >= searches.length) {
       // All failed — center on Ciudad del Rio
-      var crLat = 6.2410, crLng = -75.5718;
+      var crLat = 6.2100, crLng = -75.5730;
       map.setView([crLat, crLng], 16);
       updateMapPosition(crLat, crLng);
       hint.textContent = 'No encontramos la direccion exacta. Pin centrado en Ciudad del Rio — arrastralo a la ubicacion correcta.';
@@ -541,7 +540,7 @@ document.getElementById('btnS2').addEventListener('click', function() {
 
   // Validate location
   if (!ST.lat || !ST.lng) {
-    ST.lat = 6.2415; ST.lng = -75.5720; // Default Ciudad del Rio center
+    ST.lat = 6.2100; ST.lng = -75.5730; // Default Ciudad del Rio center
   }
   if (!isInCR(ST.lat, ST.lng)) {
     alert('La ubicacion del pin esta fuera de Ciudad del Rio. Ajusta el pin dentro del barrio para continuar.');
