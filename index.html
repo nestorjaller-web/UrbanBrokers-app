@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UrbanBrokers — Análisis de inmuebles</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#1d1d1f;--gray1:#f5f5f7;--gray2:#e8e8ed;--gray3:#6e6e73;--gray4:#424245;
+  --white:#fff;--blue:#0071e3;--green:#1d8348;--green-light:#d5f5e3;
+  --orange:#ff6200;--orange-light:#fff0e6;--red:#ff3b30;
+}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f5f7;color:var(--black);-webkit-font-smoothing:antialiased}
+.app{max-width:480px;margin:0 auto;padding:1.5rem 1rem 3rem}
+.brand{text-align:center;margin-bottom:2rem;padding-top:.5rem}
+.brand-name{font-size:1.6rem;font-weight:700;color:var(--black);letter-spacing:-0.04em}
+.brand-name span{color:var(--blue)}
+.brand-tag{font-size:11px;color:var(--gray3);margin-top:3px;letter-spacing:-0.01em}
+.free-pill{display:inline-block;background:var(--green);color:#fff;font-size:10px;font-weight:600;padding:3px 12px;border-radius:980px;margin-top:8px}
+.steps{display:flex;align-items:center;margin-bottom:2rem}
+.step{flex:1;text-align:center;position:relative}
+.step-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;margin:0 auto 4px;border:1.5px solid var(--gray2);background:var(--white);color:var(--gray3)}
+.step-dot.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.step-dot.done{background:var(--green);border-color:var(--green);color:#fff}
+.step-label{font-size:9px;color:var(--gray3)}
+.step-label.active{color:var(--blue);font-weight:600}
+.step-line{position:absolute;top:13px;left:50%;width:100%;height:1px;background:var(--gray2);z-index:0}
+.step:last-child .step-line{display:none}
+.card{background:var(--white);border-radius:20px;padding:1.5rem;margin-bottom:1rem;box-shadow:0 1px 8px rgba(0,0,0,0.06)}
+.card-title{font-size:15px;font-weight:600;color:var(--black);letter-spacing:-0.02em;margin-bottom:4px}
+.card-sub{font-size:12px;color:var(--gray3);margin-bottom:1rem;letter-spacing:-0.01em}
+.fg{margin-bottom:.85rem}
+.fg label{display:block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray3);margin-bottom:5px}
+.fg input,.fg select{width:100%;padding:10px 14px;border:1px solid var(--gray2);border-radius:12px;font-family:inherit;font-size:14px;color:var(--black);background:var(--gray1);transition:border-color .15s}
+.fg input:focus,.fg select:focus{outline:none;border-color:var(--blue);background:var(--white)}
+.fg-hint{font-size:10px;color:var(--gray3);margin-top:4px;letter-spacing:-0.01em;line-height:1.4}
+.fg-hint.good{color:var(--green)}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.checks{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
+.chk{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--black);cursor:pointer;padding:6px 12px;border:1px solid var(--gray2);border-radius:980px;background:var(--gray1);transition:all .15s;user-select:none}
+.chk input{display:none}
+.chk.sel{background:var(--blue);color:#fff;border-color:var(--blue)}
+.precision-box{background:var(--green-light);border-radius:12px;padding:10px 14px;margin-bottom:.85rem;display:flex;gap:8px;align-items:flex-start}
+.precision-box p{font-size:12px;color:var(--green);line-height:1.5;letter-spacing:-0.01em}
+.btn{width:100%;padding:14px;border:none;border-radius:980px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:-0.01em;transition:opacity .15s;margin-top:4px}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{opacity:.88}
+.hidden{display:none}
+.loader{text-align:center;padding:2.5rem 1rem}
+.ld{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);margin:0 3px;animation:ld 1.2s infinite}
+.ld:nth-child(2){animation-delay:.2s}
+.ld:nth-child(3){animation-delay:.4s}
+@keyframes ld{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}}
+.ld-text{font-size:13px;color:var(--gray3);margin-top:12px;letter-spacing:-0.01em}
+.teaser-box{background:var(--gray1);border-radius:16px;padding:1.25rem;margin-bottom:1rem}
+.teaser-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--gray2)}
+.teaser-row:last-child{border-bottom:none}
+.teaser-icon{font-size:1.1rem;flex-shrink:0}
+.teaser-text{font-size:13px;color:var(--black);font-weight:500;letter-spacing:-0.01em;flex:1}
+.teaser-lock{font-size:14px;color:var(--gray3);flex-shrink:0}
+.verdict-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:980px;font-size:13px;font-weight:600;margin-bottom:1rem}
+.vp-over{background:var(--orange-light);color:var(--orange)}
+.vp-good{background:var(--green-light);color:var(--green)}
+.vp-fair{background:var(--gray1);color:var(--gray4)}
+.unlock-card{background:var(--black);border-radius:20px;padding:1.5rem;text-align:center;margin-bottom:1rem}
+.unlock-title{font-size:1.1rem;font-weight:700;color:#fff;letter-spacing:-0.02em;margin-bottom:6px}
+.unlock-sub{font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:1rem;letter-spacing:-0.01em}
+.unlock-list{list-style:none;text-align:left;display:inline-block;margin-bottom:1.25rem}
+.unlock-list li{font-size:12px;color:rgba(255,255,255,0.7);padding:3px 0;letter-spacing:-0.01em}
+.unlock-list li::before{content:"→ ";color:rgba(255,255,255,0.3)}
+.unlock-price{font-size:11px;color:rgba(255,255,255,0.35);margin-top:8px;letter-spacing:-0.01em}
+.wa-box{background:var(--green-light);border-radius:16px;padding:1.25rem;margin-bottom:1rem;display:flex;gap:12px;align-items:flex-start}
+.wa-title{font-size:13px;font-weight:600;color:var(--green);margin-bottom:3px;letter-spacing:-0.01em}
+.wa-sub{font-size:12px;color:var(--gray4);letter-spacing:-0.01em;line-height:1.5}
+.rs-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray3);margin-bottom:.6rem}
+.risk-row{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:.5px solid var(--gray2)}
+.risk-row:last-child{border-bottom:none}
+.rchip{font-size:9px;font-weight:700;text-transform:uppercase;padding:2px 8px;border-radius:980px;white-space:nowrap;flex-shrink:0}
+.rc-a{background:#ffebea;color:var(--red)}
+.rc-m{background:var(--orange-light);color:var(--orange)}
+.rc-b{background:var(--green-light);color:var(--green)}
+.risk-text .rt{font-size:12px;font-weight:600;color:var(--black);margin-bottom:1px;letter-spacing:-0.01em}
+.risk-text .rd{font-size:11px;color:var(--gray3);line-height:1.5;letter-spacing:-0.01em}
+.comp-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:.5px solid var(--gray2);font-size:12px}
+.comp-row:last-child{border-bottom:none}
+.cn{font-weight:500;color:var(--black);letter-spacing:-0.01em}
+.cp{font-weight:700;color:var(--black);letter-spacing:-0.01em}
+.cd{font-size:10px;color:var(--gray3)}
+.price-box{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:1rem}
+.pb2{background:var(--gray1);border-radius:14px;padding:12px;text-align:center}
+.pb2 .pl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray3);margin-bottom:4px}
+.pb2 .pv{font-size:1rem;font-weight:700;letter-spacing:-0.02em}
+.wa-send-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:#25D366;color:#fff;border:none;border-radius:980px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:-0.01em;margin-top:.5rem;text-decoration:none}
+.reset-btn{width:100%;padding:10px;background:transparent;border:1px solid var(--gray2);border-radius:980px;font-family:inherit;font-size:13px;color:var(--gray3);cursor:pointer;margin-top:.5rem}
+.zona-card{background:var(--white);border-radius:20px;padding:2rem;text-align:center;box-shadow:0 1px 8px rgba(0,0,0,0.06)}
+.addr-badge{display:inline-flex;align-items:center;gap:5px;background:var(--green-light);color:var(--green);font-size:10px;font-weight:600;padding:3px 10px;border-radius:980px;margin-bottom:.5rem}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="brand">
+    <div class="brand-name">Urban<span>Brokers</span></div>
+    <div class="brand-tag">Análisis inteligente de inmuebles · Medellín</div>
+    <div class="free-pill">✦ Gratis durante junio 2026</div>
+  </div>
+
+  <div class="steps">
+    <div class="step"><div class="step-dot active" id="sd1">1</div><div class="step-line"></div><div class="step-label active" id="sl1">Tus datos</div></div>
+    <div class="step"><div class="step-dot" id="sd2">2</div><div class="step-line"></div><div class="step-label" id="sl2">Inmueble</div></div>
+    <div class="step"><div class="step-dot" id="sd3">3</div><div class="step-line"></div><div class="step-label" id="sl3">Vista previa</div></div>
+    <div class="step"><div class="step-dot" id="sd4">4</div><div class="step-line"></div><div class="step-label" id="sl4">Informe</div></div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div id="step1">
+    <div class="card">
+      <div class="card-title">¿Quién eres?</div>
+      <div class="card-sub">Necesitamos tus datos para enviarte el informe por WhatsApp</div>
+      <div class="fg"><label>Nombre completo</label><input type="text" id="nombre" placeholder="Juan Pérez"></div>
+      <div class="fg"><label>Correo electrónico</label><input type="email" id="email" placeholder="juan@email.com"></div>
+      <div class="fg">
+        <label>Celular WhatsApp</label>
+        <input type="tel" id="celular" placeholder="3108250451">
+        <div class="fg-hint">📲 El informe completo te llegará a este número por WhatsApp</div>
+      </div>
+      <div class="fg">
+        <label>Barrio del inmueble</label>
+        <select id="barrio" onchange="onBarrio()">
+          <option value="">Selecciona el barrio</option>
+          <option value="ciudad_del_rio">Ciudad del Río</option>
+          <option value="otro">Otro barrio de Medellín</option>
+        </select>
+      </div>
+      <button class="btn btn-blue" onclick="goStep2()">Continuar →</button>
+    </div>
+  </div>
+
+  <!-- ZONA NO CUBIERTA -->
+  <div id="zonaNoCubierta" class="hidden">
+    <div class="zona-card">
+      <div style="font-size:2.5rem;margin-bottom:1rem">📍</div>
+      <div style="font-size:1.1rem;font-weight:700;color:var(--black);letter-spacing:-0.02em;margin-bottom:8px">Aún no cubrimos ese barrio</div>
+      <div style="font-size:13px;color:var(--gray3);line-height:1.6;margin-bottom:1.25rem">UrbanBrokers está en piloto en <strong style="color:var(--black)">Ciudad del Río</strong> durante junio 2026. Próximamente: El Poblado, Laureles, Envigado y más.</div>
+      <div class="fg"><label>Tu correo para avisarte</label><input type="email" id="emailWait" placeholder="tu@email.com"></div>
+      <button class="btn btn-blue" onclick="saveWaitlist()">Avisarme cuando esté disponible</button>
+    </div>
+    <button class="reset-btn" onclick="resetAll()">← Volver</button>
+  </div>
+
+  <!-- STEP 2 -->
+  <div id="step2" class="hidden">
+    <div class="card">
+      <div class="card-title">Datos del inmueble</div>
+      <div class="card-sub">Entre más datos nos des, más preciso será el análisis</div>
+      <div class="precision-box">
+        <span>🎯</span>
+        <p><strong>Tip:</strong> Si tienes la dirección exacta, el análisis ubica el inmueble en la sub-zona correcta automáticamente.</p>
+      </div>
+      <div class="fg">
+        <label>Dirección exacta <span style="color:var(--gray3);font-weight:400;text-transform:none;letter-spacing:0">(opcional pero recomendada)</span></label>
+        <input type="text" id="direccion" placeholder="Ej: Calle 18 # 43G-90" oninput="onDireccion()">
+        <div class="fg-hint" id="dirHint">Si no la tienes, selecciona la sub-zona manualmente abajo</div>
+      </div>
+      <div class="fg">
+        <label>Sub-zona <span id="subzonaAuto" style="color:var(--green);font-weight:600;text-transform:none;letter-spacing:0;display:none">· detectada automáticamente</span></label>
+        <select id="subzona">
+          <option value="general">No sé exactamente</option>
+          <option value="jardines">Jardines del Río</option>
+          <option value="cercaViva">Cerca Viva / MUBA</option>
+          <option value="bavaria">Bavaria / Bosque del Río</option>
+        </select>
+      </div>
+      <div class="fg"><label>Nombre del proyecto o edificio</label><input type="text" id="proyecto" placeholder="Ej: Bosque del Río, River Park..." oninput="onProyecto()"></div>
+      <div class="fg">
+        <label>¿Proyecto nuevo o apartamento usado?</label>
+        <select id="tipoInm"><option value="nuevo">Proyecto nuevo</option><option value="usado">Apartamento usado</option></select>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>Precio pedido (COP)</label><input type="text" id="precio" placeholder="600.000.000"></div>
+        <div class="fg"><label>Área (m²)</label><input type="number" id="area" placeholder="55"></div>
+      </div>
+      <div class="fg-row-3">
+        <div class="fg"><label>Hab.</label><select id="hab"><option>1</option><option>2</option><option>3</option><option>4+</option></select></div>
+        <div class="fg"><label>Baños</label><select id="ban"><option>1</option><option>2</option><option>3</option><option>4+</option></select></div>
+        <div class="fg"><label>Piso</label><input type="number" id="piso" placeholder="20"></div>
+      </div>
+      <div class="fg">
+        <label>Amenidades incluidas</label>
+        <div class="checks" id="amenidades">
+          <label class="chk" onclick="toggleChk(this)"><input type="checkbox" value="Parqueadero">🚗 Parqueadero</label>
+          <label class="chk" onclick="toggleChk(this)"><input type="checkbox" value="Balcón">🌿 Balcón</label>
+          <label class="chk" onclick="toggleChk(this)"><input type="checkbox" value="Gimnasio">💪 Gimnasio</label>
+          <label class="chk" onclick="toggleChk(this)"><input type="checkbox" value="Piscina">🏊 Piscina</label>
+          <label class="chk" onclick="toggleChk(this)"><input type="checkbox" value="Vigilancia">🔒 Vigilancia</label>
+          <label class="chk" onclick="toggleChk(this)"><input type="checkbox" value="Vista ciudad">🌆 Vista ciudad</label>
+        </div>
+      </div>
+      <button class="btn btn-blue" onclick="analyze()">Analizar →</button>
+    </div>
+    <button class="reset-btn" onclick="goBackStep1()">← Volver</button>
+  </div>
+
+  <!-- LOADER -->
+  <div id="loader" class="hidden">
+    <div class="loader">
+      <div><span class="ld"></span><span class="ld"></span><span class="ld"></span></div>
+      <div class="ld-text" id="ldText">Consultando datos del mercado...</div>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div id="step3" class="hidden">
+    <div class="card">
+      <div class="card-title" id="s3title">Análisis preliminar</div>
+      <div id="addrBadge"></div>
+      <div id="verdictPill"></div>
+      <div class="teaser-box">
+        <div class="teaser-row"><div class="teaser-icon">📊</div><div class="teaser-text" id="t1">El precio pedido está por encima del mercado</div><div class="teaser-lock">🔒</div></div>
+        <div class="teaser-row"><div class="teaser-icon">⚠️</div><div class="teaser-text" id="t2">Identificamos 2 riesgos importantes</div><div class="teaser-lock">🔒</div></div>
+        <div class="teaser-row"><div class="teaser-icon">🏘️</div><div class="teaser-text" id="t3">Encontramos 3 comparables en el sector</div><div class="teaser-lock">🔒</div></div>
+        <div class="teaser-row"><div class="teaser-icon">💰</div><div class="teaser-text" id="t4">Hay margen de negociación disponible</div><div class="teaser-lock">🔒</div></div>
+      </div>
+    </div>
+    <div class="unlock-card">
+      <div class="unlock-title">Informe completo</div>
+      <div class="unlock-sub">Desbloquea todos los datos y la estrategia de negociación</div>
+      <ul class="unlock-list">
+        <li>Diferencia exacta vs el mercado en %</li>
+        <li>3 comparables con precios reales</li>
+        <li>Análisis detallado de cada riesgo</li>
+        <li>Precio justo estimado en COP</li>
+        <li>Estrategia y precio exacto para negociar</li>
+        <li>Resumen enviado por WhatsApp</li>
+      </ul>
+      <button class="btn btn-blue" onclick="unlockReport()" style="border-radius:980px">Ver informe completo — Gratis ✦</button>
+      <div class="unlock-price">Gratis durante junio 2026 · Desde julio $10 USD</div>
+    </div>
+    <button class="reset-btn" onclick="goBackStep2()">← Editar datos</button>
+  </div>
+
+  <!-- STEP 4 -->
+  <div id="step4" class="hidden">
+    <div class="wa-box">
+      <div style="font-size:1.5rem;flex-shrink:0">📲</div>
+      <div><div class="wa-title">Informe listo</div><div class="wa-sub">Resumen enviado a WhatsApp: <strong id="waNum"></strong></div></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Veredicto</div>
+      <div id="fullVerdictPill" style="margin-bottom:.75rem"></div>
+      <div id="addrBadgeFull" style="margin-bottom:.5rem"></div>
+      <div id="fullJustificacion" style="font-size:13px;color:var(--gray4);line-height:1.65;letter-spacing:-0.01em"></div>
+      <div class="price-box" id="priceBoxes"></div>
+    </div>
+    <div class="card"><div class="rs-title">Comparables del sector</div><div id="comparablesList"></div></div>
+    <div class="card"><div class="rs-title">Riesgos identificados</div><div id="risksList"></div></div>
+    <div class="card" style="background:var(--green-light)">
+      <div class="rs-title">Recomendación de negociación</div>
+      <div id="recomendacion" style="font-size:13px;color:var(--black);line-height:1.65;letter-spacing:-0.01em"></div>
+    </div>
+    <a id="waSendBtn" class="wa-send-btn" href="#" target="_blank">📲 Recibir resumen por WhatsApp</a>
+    <button class="reset-btn" onclick="resetAll()">← Analizar otro inmueble</button>
+  </div>
+
+</div>
+
+<script>
+const MERCADO={promedio:9323272,mediana:10068576,jardines:13959167,cercaViva:12594916,bavaria:8067906};
+const WA_NUM='573108250451';
+const SUBZONA_RULES=[
+  {keys:['cl 18','calle 18','cl. 18'],zona:'bavaria',label:'Bavaria'},
+  {keys:['cl 19','calle 19','cl. 19'],zona:'bavaria',label:'Bavaria'},
+  {keys:['cl 20','calle 20','cl. 20'],zona:'bavaria',label:'Bavaria'},
+  {keys:['cl 23','calle 23','jardines'],zona:'jardines',label:'Jardines del Río'},
+  {keys:['cl 25','calle 25'],zona:'jardines',label:'Jardines del Río'},
+  {keys:['cr 48','carrera 48','cr. 48'],zona:'cercaViva',label:'Cerca Viva / MUBA'},
+  {keys:['cr 46','carrera 46'],zona:'cercaViva',label:'Cerca Viva / MUBA'},
+  {keys:['muba','museo','cr 43'],zona:'cercaViva',label:'Cerca Viva / MUBA'},
+  {keys:['bosque','ferrara','florencia'],zona:'bavaria',label:'Bavaria'},
+  {keys:['river park','kiva','linz','graz','palmanova'],zona:'cercaViva',label:'Cerca Viva / MUBA'},
+  {keys:['arrayan','saman','guayacanes','palma','ventto'],zona:'jardines',label:'Jardines del Río'},
+];
+let state={},detectedZona=null;
+function detectSubzona(t){
+  const tx=t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  for(const r of SUBZONA_RULES)for(const k of r.keys)if(tx.includes(k))return r;
+  return null;
+}
+function onDireccion(){
+  const val=document.getElementById('direccion').value;
+  const hint=document.getElementById('dirHint');
+  const auto=document.getElementById('subzonaAuto');
+  const sel=document.getElementById('subzona');
+  detectedZona=detectSubzona(val);
+  if(detectedZona&&val.length>4){
+    hint.textContent='✅ Sub-zona detectada: '+detectedZona.label;
+    hint.className='fg-hint good';
+    auto.style.display='inline';
+    sel.value=detectedZona.zona;
+    sel.disabled=true;sel.style.opacity='0.5';
+  }else{
+    hint.textContent='Si no la tienes, selecciona la sub-zona manualmente abajo';
+    hint.className='fg-hint';
+    auto.style.display='none';
+    sel.disabled=false;sel.style.opacity='1';
+    detectedZona=null;
+  }
+}
+function onProyecto(){
+  if(!detectedZona){
+    const det=detectSubzona(document.getElementById('proyecto').value);
+    if(det){
+      detectedZona=det;
+      document.getElementById('subzona').value=det.zona;
+      document.getElementById('subzonaAuto').style.display='inline';
+      document.getElementById('subzona').disabled=true;
+      document.getElementById('subzona').style.opacity='0.5';
+    }
+  }
+}
+function setStep(n){
+  ['step1','step2','step3','step4','loader','zonaNoCubierta'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  if(n)document.getElementById(n).classList.remove('hidden');
+  const m={step1:1,step2:2,step3:3,step4:4};
+  const cur=m[n]||0;
+  for(let i=1;i<=4;i++){
+    const dot=document.getElementById('sd'+i);
+    const lbl=document.getElementById('sl'+i);
+    dot.classList.remove('active','done');lbl.classList.remove('active');
+    if(i<cur){dot.classList.add('done');dot.innerHTML='✓';}
+    else if(i===cur){dot.classList.add('active');dot.innerHTML=i;lbl.classList.add('active');}
+    else{dot.innerHTML=i;}
+  }
+}
+function onBarrio(){
+  if(document.getElementById('barrio').value==='otro'){
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('zonaNoCubierta').classList.remove('hidden');
+  }
+}
+function toggleChk(el){el.classList.toggle('sel');el.querySelector('input').checked=el.classList.contains('sel');}
+function goStep2(){
+  const n=document.getElementById('nombre').value.trim();
+  const e=document.getElementById('email').value.trim();
+  const c=document.getElementById('celular').value.trim();
+  const b=document.getElementById('barrio').value;
+  if(!n||!e||!c||!b){alert('Por favor completa todos los campos.');return;}
+  state.nombre=n;state.email=e;state.celular=c;state.barrio=b;
+  setStep('step2');
+}
+function goBackStep1(){setStep('step1');}
+function goBackStep2(){setStep('step2');}
+function getMercadoRef(){
+  const sz=document.getElementById('subzona').value;
+  if(sz==='jardines')return{ref:MERCADO.jardines,label:'Jardines del Río'};
+  if(sz==='cercaViva')return{ref:MERCADO.cercaViva,label:'Cerca Viva / MUBA'};
+  if(sz==='bavaria')return{ref:MERCADO.bavaria,label:'Bavaria'};
+  return{ref:MERCADO.mediana,label:'Ciudad del Río'};
+}
+async function analyze(){
+  const precio=parseInt(document.getElementById('precio').value.replace(/\D/g,''));
+  const area=parseFloat(document.getElementById('area').value);
+  if(!precio||!area){alert('Por favor ingresa precio y área.');return;}
+  state.precio=precio;state.area=area;
+  state.proyecto=document.getElementById('proyecto').value.trim()||'No especificado';
+  state.hab=document.getElementById('hab').value;
+  state.ban=document.getElementById('ban').value;
+  state.piso=document.getElementById('piso').value;
+  state.tipo=document.getElementById('tipoInm').value;
+  state.direccion=document.getElementById('direccion').value.trim();
+  state.amenidades=[...document.querySelectorAll('#amenidades input:checked')].map(x=>x.value);
+  state.m2=Math.round(precio/area);
+  const mercado=getMercadoRef();
+  state.ref=mercado.ref;state.refLabel=mercado.label;
+  state.diff=parseFloat(((state.m2-mercado.ref)/mercado.ref*100).toFixed(1));
+  state.hasAddress=!!state.direccion;
+  setStep('loader');
+  const msgs=['Consultando datos del mercado...','Analizando ubicación...','Calculando valor por m²...','Preparando el informe...'];
+  let mi=0;
+  const iv=setInterval(()=>{document.getElementById('ldText').textContent=msgs[++mi%msgs.length];},900);
+  await new Promise(r=>setTimeout(r,2800));
+  clearInterval(iv);
+  showStep3();
+}
+function fmtCOP(n){return'$'+(n/1000000).toFixed(1)+'M';}
+function showStep3(){
+  const d=state;
+  document.getElementById('s3title').textContent='Análisis preliminar — '+d.proyecto;
+  document.getElementById('addrBadge').innerHTML=d.hasAddress?'<div class="addr-badge">🎯 '+d.direccion+' · '+d.refLabel+'</div>':'';
+  let pc,pt;
+  if(d.diff>15){pc='vp-over';pt='🔴 Sobrevalorado';}
+  else if(d.diff>5){pc='vp-over';pt='🟡 Levemente sobre el mercado';}
+  else if(d.diff<-5){pc='vp-good';pt='🟢 Por debajo del mercado';}
+  else{pc='vp-fair';pt='⚖️ En rango de mercado';}
+  document.getElementById('verdictPill').innerHTML='<div class="verdict-pill '+pc+'">'+pt+'</div>';
+  document.getElementById('t1').textContent=d.diff>5?'El precio pedido está por encima del mercado en '+d.refLabel:d.diff<-5?'El precio está por debajo del mercado — puede ser una oportunidad':'El precio está dentro del rango normal en '+d.refLabel;
+  document.getElementById('t2').textContent='Identificamos '+(d.diff>10?3:2)+' riesgos importantes a considerar';
+  document.getElementById('t3').textContent='Encontramos 3 proyectos comparables en el sector';
+  document.getElementById('t4').textContent=d.diff>5?'Hay margen de negociación disponible':'El precio es competitivo — analizamos la estrategia óptima';
+  setStep('step3');
+}
+async function unlockReport(){
+  setStep('loader');
+  document.getElementById('ldText').textContent='Generando tu informe completo con IA...';
+  const d=state;
+  const prompt=`Eres experto en finca raíz en Medellín. Analiza este apartamento.
+
+DATOS:
+- Proyecto: ${d.proyecto}
+- ${d.direccion?'Dirección: '+d.direccion:'Sin dirección exacta'}
+- Tipo: ${d.tipo==='nuevo'?'Proyecto nuevo':'Apartamento usado'}
+- Barrio: Ciudad del Río · Sub-zona: ${d.refLabel}
+- Área: ${d.area} m² | Hab: ${d.hab} | Baños: ${d.ban} | Piso: ${d.piso||'N/D'}
+- Amenidades: ${d.amenidades.length?d.amenidades.join(', '):'Básico'}
+- Precio pedido: $${d.precio.toLocaleString('es-CO')} COP ($${d.m2.toLocaleString('es-CO')}/m²)
+
+MERCADO (Ciudad del Río - Mayo 2026):
+- Referencia ${d.refLabel}: $${d.ref.toLocaleString('es-CO')}/m²
+- Mediana zona: $${MERCADO.mediana.toLocaleString('es-CO')}/m²
+- Oferta: 780 uds | Ventas mes: 19
+
+Responde SOLO JSON sin markdown:
+{"veredicto_tipo":"buena_oferta|precio_justo|sobrevalorado","justificacion":"2 oraciones","precio_justo":número,"margen_negociacion":número,"oferta_apertura":número,"precio_maximo":número,"comparables":[{"nombre":"texto","precio_m2":número,"diferencia":"texto"},{"nombre":"texto","precio_m2":número,"diferencia":"texto"},{"nombre":"texto","precio_m2":número,"diferencia":"texto"}],"riesgos":[{"nivel":"alto|medio|bajo","titulo":"max 30 chars","descripcion":"max 80 chars"},{"nivel":"alto|medio|bajo","titulo":"max 30 chars","descripcion":"max 80 chars"},{"nivel":"alto|medio|bajo","titulo":"max 30 chars","descripcion":"max 80 chars"},{"nivel":"alto|medio|bajo","titulo":"max 30 chars","descripcion":"max 80 chars"}],"recomendacion":"2-3 oraciones concretas"}`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const raw=data.content.map(i=>i.text||'').join('').trim().replace(/```json|```/g,'').trim();
+    state.report=JSON.parse(raw);
+  }catch(e){
+    state.report={veredicto_tipo:state.diff>5?'sobrevalorado':state.diff<-5?'buena_oferta':'precio_justo',justificacion:`El precio de ${fmtCOP(state.m2)}/m² está ${Math.abs(state.diff)}% ${state.diff>0?'sobre':'bajo'} la referencia de ${state.refLabel}. ${state.diff>5?'Existe margen real para negociar.':'El precio es competitivo para el sector.'}`,precio_justo:Math.round(state.ref*state.area),margen_negociacion:Math.max(5,Math.round(state.diff*0.6)),oferta_apertura:Math.round(state.ref*state.area*0.92),precio_maximo:Math.round(state.ref*state.area*1.02),comparables:[{nombre:'Ferrara y Florencia del Río',precio_m2:8300000,diferencia:'Bavaria · referencia baja'},{nombre:'Kiva del Río',precio_m2:10800000,diferencia:'Cerca Viva · similar'},{nombre:'Ventto del Río',precio_m2:12500000,diferencia:'Jardines · más caro'}],riesgos:[{nivel:'alto',titulo:'Precio sobre la sub-zona',descripcion:'El precio/m² supera el promedio de referencia de la zona.'},{nivel:'alto',titulo:'Liquidez baja',descripcion:'19 ventas/mes sobre 780 unidades disponibles.'},{nivel:'medio',titulo:'1 habitación',descripcion:'Limita mercado secundario de reventa y arrendamiento.'},{nivel:'bajo',titulo:'Piso alto — positivo',descripcion:'El piso 20 agrega valor por vista y prima de altura.'}],recomendacion:`Inicia con ${fmtCOP(Math.round(state.ref*state.area*0.92))} usando los comparables como argumento. No pagues más de ${fmtCOP(Math.round(state.ref*state.area*1.02))}.`};
+  }
+  showStep4();
+}
+function showStep4(){
+  const r=state.report;
+  const cm={buena_oferta:'var(--green)',precio_justo:'var(--gray4)',sobrevalorado:'var(--orange)'};
+  const lm={buena_oferta:'✅ Buena oferta',precio_justo:'⚖️ Precio justo',sobrevalorado:'⚠️ Sobrevalorado'};
+  document.getElementById('fullVerdictPill').innerHTML='<div class="verdict-pill" style="background:var(--gray1);color:'+cm[r.veredicto_tipo]+';font-size:14px;font-weight:700">'+lm[r.veredicto_tipo]+'</div>';
+  document.getElementById('addrBadgeFull').innerHTML=state.hasAddress?'<div class="addr-badge">🎯 '+state.direccion+' · '+state.refLabel+'</div>':'';
+  document.getElementById('fullJustificacion').textContent=r.justificacion;
+  document.getElementById('priceBoxes').innerHTML='<div class="pb2"><div class="pl">Precio justo est.</div><div class="pv" style="color:var(--green)">'+fmtCOP(r.precio_justo)+'</div></div><div class="pb2"><div class="pl">Negociar hasta</div><div class="pv" style="color:var(--orange)">'+r.margen_negociacion+'% menos</div></div><div class="pb2"><div class="pl">Oferta de apertura</div><div class="pv" style="color:var(--blue)">'+fmtCOP(r.oferta_apertura)+'</div></div><div class="pb2"><div class="pl">Precio máximo</div><div class="pv" style="color:var(--red)">'+fmtCOP(r.precio_maximo)+'</div></div>';
+  document.getElementById('comparablesList').innerHTML=r.comparables.map(c=>'<div class="comp-row"><div><div class="cn">'+c.nombre+'</div><div class="cd">'+c.diferencia+'</div></div><div class="cp">'+fmtCOP(c.precio_m2)+'/m²</div></div>').join('');
+  document.getElementById('risksList').innerHTML=r.riesgos.map(ri=>'<div class="risk-row"><span class="rchip rc-'+ri.nivel.charAt(0)+'">'+ri.nivel+'</span><div class="risk-text"><div class="rt">'+ri.titulo+'</div><div class="rd">'+ri.descripcion+'</div></div></div>').join('');
+  document.getElementById('recomendacion').textContent=r.recomendacion;
+  let cel=state.celular.replace(/\D/g,'');
+  if(!cel.startsWith('57'))cel='57'+cel;
+  document.getElementById('waNum').textContent=state.celular;
+  const msg=encodeURIComponent('Hola '+state.nombre+' 👋
+
+Tu informe UrbanBrokers está listo.
+
+📍 *'+state.proyecto+'*'+(state.direccion?' · '+state.direccion:'')+'
+🏙 Ciudad del Río · '+state.refLabel+'
+💰 Precio pedido: $'+state.precio.toLocaleString('es-CO')+' COP
+📊 Veredicto: '+lm[r.veredicto_tipo]+'
+🎯 Precio justo: '+fmtCOP(r.precio_justo)+' COP
+💡 Oferta de apertura: '+fmtCOP(r.oferta_apertura)+' COP
+🔝 Máximo a pagar: '+fmtCOP(r.precio_maximo)+' COP
+
+'+r.recomendacion+'
+
+_UrbanBrokers · Datos que negocian por ti_');
+  document.getElementById('waSendBtn').href='https://wa.me/'+WA_NUM+'?text='+msg;
+  setStep('step4');
+}
+function saveWaitlist(){alert('¡Listo! Te avisamos cuando tu barrio esté disponible.');resetAll();}
+function resetAll(){
+  state={};detectedZona=null;
+  ['nombre','email','celular','proyecto','precio','area','piso','direccion','emailWait'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('barrio').value='';
+  document.getElementById('subzona').value='general';
+  document.getElementById('subzona').disabled=false;
+  document.getElementById('subzona').style.opacity='1';
+  document.getElementById('subzonaAuto').style.display='none';
+  document.getElementById('dirHint').textContent='Si no la tienes, selecciona la sub-zona manualmente abajo';
+  document.getElementById('dirHint').className='fg-hint';
+  document.querySelectorAll('.chk').forEach(el=>{el.classList.remove('sel');el.querySelector('input').checked=false;});
+  setStep('step1');
+}
+setStep('step1');
+</script>
+</body>
+</html>
