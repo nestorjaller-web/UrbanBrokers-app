@@ -286,13 +286,15 @@ var CR_POLYGON = [
 ];
 
 // Point-in-polygon (ray casting algorithm)
+// CR_POLYGON points are [lat, lng]
 function isInCR(lat, lng) {
   var inside = false;
   var n = CR_POLYGON.length;
   for (var i=0, j=n-1; i<n; j=i++) {
-    var xi=CR_POLYGON[i][0], yi=CR_POLYGON[i][1];
-    var xj=CR_POLYGON[j][0], yj=CR_POLYGON[j][1];
-    var intersect = ((yi>lng) !== (yj>lng)) && (lat < (xj-xi)*(lng-yi)/(yj-yi)+xi);
+    var lati = CR_POLYGON[i][0], lngi = CR_POLYGON[i][1];
+    var latj = CR_POLYGON[j][0], lngj = CR_POLYGON[j][1];
+    var intersect = ((lngi > lng) !== (lngj > lng)) &&
+                    (lat < (latj - lati) * (lng - lngi) / (lngj - lngi) + lati);
     if (intersect) inside = !inside;
   }
   return inside;
@@ -437,40 +439,54 @@ document.getElementById('btnBuscar').addEventListener('click', function() {
   hint.textContent = 'Buscando...';
   hint.className = 'fh';
 
-  // Add Medellin context to search
-  var query = addr + ', Ciudad del Rio, Medellin, Colombia';
-  var url = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(query) + '&limit=1';
+  // Normalize Colombian address format
+  // Convert "Calle 18 # 43G-90" to searchable format
+  var normalized = addr
+    .replace(/\bCl\.?\s*/gi, 'Calle ')
+    .replace(/\bCr\.?\s*/gi, 'Carrera ')
+    .replace(/\bAv\.?\s*/gi, 'Avenida ')
+    .replace(/#\s*/g, '')
+    .trim();
 
-  fetch(url, {headers: {'Accept-Language': 'es'}})
-  .then(function(r){ return r.json(); })
-  .then(function(data) {
-    if (data && data.length > 0) {
-      var lat = parseFloat(data[0].lat);
-      var lng = parseFloat(data[0].lon);
-      map.setView([lat, lng], 17);
-      updateMapPosition(lat, lng);
-    } else {
-      // Try broader search
-      var url2 = 'https://nominatim.openstreetmap.org/search?format=json&q=' + encodeURIComponent(addr + ', Medellin, Colombia') + '&limit=1';
-      fetch(url2, {headers: {'Accept-Language': 'es'}})
-      .then(function(r2){ return r2.json(); })
-      .then(function(data2) {
-        if (data2 && data2.length > 0) {
-          var lat2 = parseFloat(data2[0].lat);
-          var lng2 = parseFloat(data2[0].lon);
-          map.setView([lat2, lng2], 17);
-          updateMapPosition(lat2, lng2);
-        } else {
-          hint.textContent = 'No encontramos la direccion. Mueve el pin manualmente.';
-          hint.className = 'fh err';
-        }
-      });
+  // Try multiple search strategies
+  var searches = [
+    normalized + ', Barrio Colombia, Medellin, Antioquia, Colombia',
+    normalized + ', Medellin, Antioquia, Colombia',
+    addr + ', Medellin, Colombia',
+    'Ciudad del Rio, Medellin, Colombia'
+  ];
+
+  function trySearch(idx) {
+    if (idx >= searches.length) {
+      // All failed — center on Ciudad del Rio
+      var crLat = 6.2410, crLng = -75.5718;
+      map.setView([crLat, crLng], 16);
+      updateMapPosition(crLat, crLng);
+      hint.textContent = 'No encontramos la direccion exacta. Pin centrado en Ciudad del Rio — arrastralo a la ubicacion correcta.';
+      hint.className = 'fh';
+      return;
     }
-  })
-  .catch(function() {
-    hint.textContent = 'Error al buscar. Mueve el pin manualmente en el mapa.';
-    hint.className = 'fh err';
-  });
+
+    var url = 'https://nominatim.openstreetmap.org/search?format=json&q=' +
+              encodeURIComponent(searches[idx]) +
+              '&limit=1&countrycodes=co&viewbox=-75.58,6.22,-75.56,6.26&bounded=1';
+
+    fetch(url, {headers: {'Accept-Language': 'es', 'User-Agent': 'UrbanBrokers/1.0'}})
+    .then(function(r){ return r.json(); })
+    .then(function(data) {
+      if (data && data.length > 0) {
+        var lat = parseFloat(data[0].lat);
+        var lng = parseFloat(data[0].lon);
+        map.setView([lat, lng], 17);
+        updateMapPosition(lat, lng);
+      } else {
+        trySearch(idx + 1);
+      }
+    })
+    .catch(function() { trySearch(idx + 1); });
+  }
+
+  trySearch(0);
 });
 
 function setStep(n) {
