@@ -464,9 +464,14 @@ async function buscarDireccion(addr){
     }catch(e){}
   }
   // Nothing found - let user proceed with manual coordinates
-  box.innerHTML='<div class="dir-suggestion" onclick="selectDireccion(6.2100,-75.5730,document.getElementById('direccion').value)">Usar: '+addr+' (Ciudad del Río)</div>';
+  var manualEl=document.createElement('div');
+  manualEl.className='dir-suggestion';
+  manualEl.textContent='Usar: '+addr.substring(0,50)+' (Ciudad del Rio)';
+  manualEl.addEventListener('click',function(){selectDireccion(6.2100,-75.5730,addr);});
+  box.innerHTML='';
+  box.appendChild(manualEl);
   box.style.display='block';
-  hint.textContent='No encontramos esa dirección. Selecciona la opción manual.';hint.className='fg-hint';
+  hint.textContent='No encontramos esa direccion. Selecciona la opcion manual.';hint.className='fg-hint';
 }
 
 function selectDireccion(lat,lng,label){
