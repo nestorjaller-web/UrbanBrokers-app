@@ -455,7 +455,8 @@ async function buscarDireccion(addr){
       const res=await fetch(url,{headers:{'Accept-Language':'es','User-Agent':'UrbanBrokers/1.0'}});
       const data=await res.json();
       if(data&&data.length>0){
-        box.innerHTML=data.map((r,i)=>'<div class="dir-suggestion" onclick="selectDireccion('+r.lat+','+r.lon+',''+r.display_name.replace(/'/g,"\'").substring(0,60)+'')" >'+r.display_name.substring(0,60)+'</div>').join('');
+        box.innerHTML=data.map(r=>{const lb=r.display_name.substring(0,60).replace(/"/g,'&quot;');return '<div class="dir-suggestion" data-lat="'+r.lat+'" data-lng="'+r.lon+'" data-lbl="'+lb+'">'+lb+'</div>';}).join('');
+        box.querySelectorAll('.dir-suggestion').forEach(el=>el.addEventListener('click',function(){selectDireccion(this.dataset.lat,this.dataset.lng,this.dataset.lbl);}));
         box.style.display='block';
         hint.textContent='Selecciona la dirección de la lista';hint.className='fg-hint';
         return;
