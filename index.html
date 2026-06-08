@@ -103,6 +103,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .pac-item{padding:8px 14px;font-size:13px;cursor:pointer}
 .pac-item:hover{background:var(--gray1)}
 .map-hint{font-size:11px;color:var(--blue);margin-top:4px;letter-spacing:-0.01em}
+.dir-suggestion{padding:10px 14px;font-size:13px;cursor:pointer;border-bottom:0.5px solid var(--gray2);color:var(--black);line-height:1.4}
+.dir-suggestion:last-child{border-bottom:none}
+.dir-suggestion:hover{background:var(--gray1)}
 .no-comp-box{background:#ffebea;border-radius:12px;padding:12px 14px;margin-top:.5rem;display:flex;gap:8px;align-items:flex-start}
 .no-comp-box p{font-size:12px;color:#C62828;line-height:1.5}
 </style>
@@ -182,7 +185,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="fg">
         <label>Dirección exacta del inmueble</label>
         <input type="text" id="direccion" placeholder="Ej: Calle 18 # 43G-90, Medellín" autocomplete="off">
-        <div class="fg-hint" id="dirHint">Escribe la dirección y selecciona de las sugerencias</div>
+        <div id="dirSuggestions" style="display:none;background:#fff;border:1px solid var(--gray2);border-radius:12px;margin-top:4px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1)"></div>
+        <div class="fg-hint" id="dirHint">Escribe la dirección — aparecerán sugerencias automáticamente</div>
         <div class="map-hint" id="coordsInfo"></div>
       </div>
 
@@ -307,7 +311,7 @@ const PROYECTOS=[
   {n:"Palma del Rio",lat:6.2222,lng:-75.5712,m2:12900000,sz:"jardines",habs:[1,2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia"]}
 ];
 
-let state={},autocomplete=null;
+let state={};
 
 // Haversine distance km
 function distKm(lat1,lng1,lat2,lng2){
@@ -417,33 +421,61 @@ document.getElementById('btnStep1').addEventListener('click',function(){
 function goBackStep1(){setStep('step1');}
 function goBackStep2(){setStep('step2');}
 
-// Init Google Maps autocomplete
+// Nominatim geocoding - busca direccion en Medellin
+let searchTimeout=null;
 function initGoogleMaps(){
-  if(autocomplete)return;
+  // Nominatim - no requiere inicializacion
   const input=document.getElementById('direccion');
-  autocomplete=new google.maps.places.Autocomplete(input,{
-    componentRestrictions:{country:'co'},
-    bounds:new google.maps.LatLngBounds(
-      new google.maps.LatLng(6.205,-75.580),
-      new google.maps.LatLng(6.230,-75.565)
-    ),
-    strictBounds:false,
-    fields:['geometry','formatted_address','name'],
-    types:['address','establishment']
-  });
-  autocomplete.addListener('place_changed',function(){
-    const place=autocomplete.getPlace();
-    if(place.geometry&&place.geometry.location){
-      const lat=place.geometry.location.lat();
-      const lng=place.geometry.location.lng();
-      state.lat=lat;state.lng=lng;
-      document.getElementById('coordsInfo').textContent='📍 Ubicado: '+lat.toFixed(6)+', '+lng.toFixed(6);
-      document.getElementById('dirHint').textContent='✅ Dirección geoposicionada correctamente';
-      document.getElementById('dirHint').className='fg-hint good';
-      // Check comparables availability
-      checkComparables();
+  input.addEventListener('input',function(){
+    clearTimeout(searchTimeout);
+    const val=this.value.trim();
+    if(val.length<5){
+      document.getElementById('dirSuggestions').innerHTML='';
+      document.getElementById('dirSuggestions').style.display='none';
+      return;
     }
+    searchTimeout=setTimeout(()=>buscarDireccion(val),600);
   });
+}
+
+async function buscarDireccion(addr){
+  const hint=document.getElementById('dirHint');
+  hint.textContent='Buscando...';hint.className='fg-hint';
+  // Normalize Colombian address
+  const norm=addr.replace(/Cl\.?\s*/gi,'Calle ').replace(/Cr\.?\s*/gi,'Carrera ').replace(/#\s*/g,'').trim();
+  const queries=[
+    norm+', Ciudad del Rio, Medellin, Antioquia, Colombia',
+    norm+', El Poblado, Medellin, Antioquia, Colombia',
+    norm+', Medellin, Antioquia, Colombia'
+  ];
+  const box=document.getElementById('dirSuggestions');
+  for(const q of queries){
+    try{
+      const url='https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(q)+'&limit=4&countrycodes=co&viewbox=-75.58,6.20,-75.56,6.24&bounded=0';
+      const res=await fetch(url,{headers:{'Accept-Language':'es','User-Agent':'UrbanBrokers/1.0'}});
+      const data=await res.json();
+      if(data&&data.length>0){
+        box.innerHTML=data.map((r,i)=>'<div class="dir-suggestion" onclick="selectDireccion('+r.lat+','+r.lon+',''+r.display_name.replace(/'/g,"\'").substring(0,60)+'')" >'+r.display_name.substring(0,60)+'</div>').join('');
+        box.style.display='block';
+        hint.textContent='Selecciona la dirección de la lista';hint.className='fg-hint';
+        return;
+      }
+    }catch(e){}
+  }
+  // Nothing found - let user proceed with manual coordinates
+  box.innerHTML='<div class="dir-suggestion" onclick="selectDireccion(6.2100,-75.5730,document.getElementById('direccion').value)">Usar: '+addr+' (Ciudad del Río)</div>';
+  box.style.display='block';
+  hint.textContent='No encontramos esa dirección. Selecciona la opción manual.';hint.className='fg-hint';
+}
+
+function selectDireccion(lat,lng,label){
+  state.lat=parseFloat(lat);state.lng=parseFloat(lng);
+  if(label&&label.length>5)document.getElementById('direccion').value=label;
+  document.getElementById('dirSuggestions').style.display='none';
+  document.getElementById('coordsInfo').textContent='📍 '+lat.toFixed(5)+', '+lng.toFixed(5);
+  document.getElementById('dirHint').textContent='✅ Dirección ubicada correctamente';
+  document.getElementById('dirHint').className='fg-hint good';
+  checkComparables();
 }
 
 function checkComparables(){
@@ -619,12 +651,11 @@ function resetAll(){
   document.getElementById('dirHint').className='fg-hint';
   document.getElementById('noCompBox').classList.add('hidden');
   document.querySelectorAll('#amenidades .chk').forEach(el=>{el.classList.remove('sel');el.querySelector('input').checked=false;});
-  autocomplete=null;
   setStep('step1');
 }
 setStep('step1');
 </script>
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjFN3PRTRyPj5rr2MyLrnQFQy1kOYG5YY&libraries=places&language=es&region=CO"></script>
+
 </body>
 </html>
