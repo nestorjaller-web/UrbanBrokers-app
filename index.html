@@ -3,680 +3,832 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UrbanBrokers</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>UrbanBrokers — Análisis de inmuebles</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--black:#1d1d1f;--gray1:#f5f5f7;--gray2:#e8e8ed;--gray3:#6e6e73;--white:#fff;--blue:#0071e3;--green:#1d8348;--gl:#d5f5e3;--orange:#ff6200;--ol:#fff0e6;--red:#ff3b30;--navy:#1A3D5C}
-body{font-family:'Inter',sans-serif;background:#f5f5f7;color:var(--black);-webkit-font-smoothing:antialiased}
+:root{
+  --black:#1d1d1f;--gray1:#f5f5f7;--gray2:#e8e8ed;--gray3:#6e6e73;--gray4:#424245;
+  --white:#fff;--blue:#0071e3;--green:#1d8348;--green-light:#d5f5e3;
+  --orange:#ff6200;--orange-light:#fff0e6;--red:#ff3b30;
+}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f5f7;color:var(--black);-webkit-font-smoothing:antialiased}
 .app{max-width:480px;margin:0 auto;padding:1.5rem 1rem 3rem}
-.brand{text-align:center;margin-bottom:2rem}
-.bn{font-size:1.6rem;font-weight:700;letter-spacing:-0.04em}
-.bn span{color:var(--blue)}
-.bt{font-size:11px;color:var(--gray3);margin-top:3px}
-.fp{display:inline-block;background:var(--green);color:#fff;font-size:10px;font-weight:600;padding:3px 12px;border-radius:980px;margin-top:8px}
-.steps{display:flex;margin-bottom:2rem}
+.brand{text-align:center;margin-bottom:2rem;padding-top:.5rem}
+.brand-name{font-size:1.6rem;font-weight:700;color:var(--black);letter-spacing:-0.04em}
+.brand-name span{color:var(--blue)}
+.brand-tag{font-size:11px;color:var(--gray3);margin-top:3px;letter-spacing:-0.01em}
+.free-pill{display:inline-block;background:var(--green);color:#fff;font-size:10px;font-weight:600;padding:3px 12px;border-radius:980px;margin-top:8px}
+.steps{display:flex;align-items:center;margin-bottom:2rem}
 .step{flex:1;text-align:center;position:relative}
-.sd{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;margin:0 auto 4px;border:1.5px solid var(--gray2);background:var(--white);color:var(--gray3)}
-.sd.active{background:var(--blue);border-color:var(--blue);color:#fff}
-.sd.done{background:var(--green);border-color:var(--green);color:#fff}
-.sl{font-size:9px;color:var(--gray3)}
-.sl.active{color:var(--blue);font-weight:600}
-.sline{position:absolute;top:13px;left:50%;width:100%;height:1px;background:var(--gray2)}
-.step:last-child .sline{display:none}
+.step-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;margin:0 auto 4px;border:1.5px solid var(--gray2);background:var(--white);color:var(--gray3)}
+.step-dot.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.step-dot.done{background:var(--green);border-color:var(--green);color:#fff}
+.step-label{font-size:9px;color:var(--gray3)}
+.step-label.active{color:var(--blue);font-weight:600}
+.step-line{position:absolute;top:13px;left:50%;width:100%;height:1px;background:var(--gray2);z-index:0}
+.step:last-child .step-line{display:none}
 .card{background:var(--white);border-radius:20px;padding:1.5rem;margin-bottom:1rem;box-shadow:0 1px 8px rgba(0,0,0,0.06)}
-.ct{font-size:15px;font-weight:600;letter-spacing:-0.02em;margin-bottom:4px}
-.cs{font-size:12px;color:var(--gray3);margin-bottom:1rem}
+.card-title{font-size:15px;font-weight:600;color:var(--black);letter-spacing:-0.02em;margin-bottom:4px}
+.card-sub{font-size:12px;color:var(--gray3);margin-bottom:1rem;letter-spacing:-0.01em}
 .fg{margin-bottom:.85rem}
 .fg label{display:block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray3);margin-bottom:5px}
-.fg input,.fg select{width:100%;padding:10px 14px;border:1px solid var(--gray2);border-radius:12px;font-family:inherit;font-size:14px;color:var(--black);background:var(--gray1)}
+.fg input,.fg select{width:100%;padding:10px 14px;border:1px solid var(--gray2);border-radius:12px;font-family:inherit;font-size:14px;color:var(--black);background:var(--gray1);transition:border-color .15s}
 .fg input:focus,.fg select:focus{outline:none;border-color:var(--blue);background:var(--white)}
-.fh{font-size:10px;color:var(--gray3);margin-top:4px;line-height:1.4}
-.fh.good{color:var(--green)}
-.fh.err{color:var(--red)}
-.fr{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.fg-hint{font-size:10px;color:var(--gray3);margin-top:4px;letter-spacing:-0.01em;line-height:1.4}
+.fg-hint.good{color:var(--green)}
+.fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fg-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
 .checks{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px}
-.chk{display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer;padding:6px 12px;border:1px solid var(--gray2);border-radius:980px;background:var(--gray1);user-select:none}
+.chk{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--black);cursor:pointer;padding:6px 12px;border:1px solid var(--gray2);border-radius:980px;background:var(--gray1);transition:all .15s;user-select:none}
 .chk input{display:none}
 .chk.sel{background:var(--blue);color:#fff;border-color:var(--blue)}
-.pbox{background:var(--gl);border-radius:12px;padding:10px 14px;margin-bottom:.85rem;display:flex;gap:8px}
-.pbox p{font-size:12px;color:var(--green);line-height:1.5}
-.btn{width:100%;padding:14px;border:none;border-radius:980px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;margin-top:4px}
-.bblu{background:var(--blue);color:#fff}
-.bgrn{background:#25D366;color:#fff}
+.precision-box{background:var(--green-light);border-radius:12px;padding:10px 14px;margin-bottom:.85rem;display:flex;gap:8px;align-items:flex-start}
+.precision-box p{font-size:12px;color:var(--green);line-height:1.5;letter-spacing:-0.01em}
+.btn{width:100%;padding:14px;border:none;border-radius:980px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:-0.01em;transition:opacity .15s;margin-top:4px}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{opacity:.88}
 .hidden{display:none}
 .loader{text-align:center;padding:2.5rem 1rem}
 .ld{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--blue);margin:0 3px;animation:ld 1.2s infinite}
 .ld:nth-child(2){animation-delay:.2s}
 .ld:nth-child(3){animation-delay:.4s}
 @keyframes ld{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}}
-.ldt{font-size:13px;color:var(--gray3);margin-top:12px}
-.tbox{background:var(--gray1);border-radius:16px;padding:1.25rem;margin-bottom:1rem}
-.tr{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--gray2)}
-.tr:last-child{border-bottom:none}
-.ti{font-size:1.1rem;flex-shrink:0}
-.tt{font-size:13px;font-weight:500;flex:1}
-.tlock{font-size:14px;color:var(--gray3);flex-shrink:0}
-.vp{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:980px;font-size:13px;font-weight:600;margin-bottom:1rem}
-.vover{background:var(--ol);color:var(--orange)}
-.vgood{background:var(--gl);color:var(--green)}
-.vfair{background:var(--gray1);color:var(--gray3)}
-.ucard{background:var(--black);border-radius:20px;padding:1.5rem;text-align:center;margin-bottom:1rem}
-.ut{font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:6px}
-.us{font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:1rem}
-.ul{list-style:none;text-align:left;display:inline-block;margin-bottom:1.25rem}
-.ul li{font-size:12px;color:rgba(255,255,255,0.7);padding:3px 0}
-.ul li:before{content:"-> ";color:rgba(255,255,255,0.3)}
-.up{font-size:11px;color:rgba(255,255,255,0.35);margin-top:8px}
-.rst{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray3);margin-bottom:.6rem}
-.rrow{display:flex;gap:8px;padding:8px 0;border-bottom:.5px solid var(--gray2)}
-.rrow:last-child{border-bottom:none}
-.rch{font-size:9px;font-weight:700;text-transform:uppercase;padding:2px 8px;border-radius:980px;white-space:nowrap;flex-shrink:0}
-.rca{background:#ffebea;color:var(--red)}
-.rcm{background:var(--ol);color:var(--orange)}
-.rcb{background:var(--gl);color:var(--green)}
-.rtt{font-size:12px;font-weight:600;margin-bottom:1px}
-.rdd{font-size:11px;color:var(--gray3);line-height:1.5}
-.crow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:.5px solid var(--gray2);font-size:12px}
-.crow:last-child{border-bottom:none}
-.cn{font-weight:500}
-.cp{font-weight:700}
+.ld-text{font-size:13px;color:var(--gray3);margin-top:12px;letter-spacing:-0.01em}
+.teaser-box{background:var(--gray1);border-radius:16px;padding:1.25rem;margin-bottom:1rem}
+.teaser-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--gray2)}
+.teaser-row:last-child{border-bottom:none}
+.teaser-icon{font-size:1.1rem;flex-shrink:0}
+.teaser-text{font-size:13px;color:var(--black);font-weight:500;letter-spacing:-0.01em;flex:1}
+.teaser-lock{font-size:14px;color:var(--gray3);flex-shrink:0}
+.verdict-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:980px;font-size:13px;font-weight:600;margin-bottom:1rem}
+.vp-over{background:var(--orange-light);color:var(--orange)}
+.vp-good{background:var(--green-light);color:var(--green)}
+.vp-fair{background:var(--gray1);color:var(--gray4)}
+.unlock-card{background:var(--black);border-radius:20px;padding:1.5rem;text-align:center;margin-bottom:1rem}
+.unlock-title{font-size:1.1rem;font-weight:700;color:#fff;letter-spacing:-0.02em;margin-bottom:6px}
+.unlock-sub{font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:1rem;letter-spacing:-0.01em}
+.unlock-list{list-style:none;text-align:left;display:inline-block;margin-bottom:1.25rem}
+.unlock-list li{font-size:12px;color:rgba(255,255,255,0.7);padding:3px 0;letter-spacing:-0.01em}
+.unlock-list li::before{content:'\2192 \0020';color:rgba(255,255,255,0.3)}
+.unlock-price{font-size:11px;color:rgba(255,255,255,0.35);margin-top:8px;letter-spacing:-0.01em}
+.wa-box{background:var(--green-light);border-radius:16px;padding:1.25rem;margin-bottom:1rem;display:flex;gap:12px;align-items:flex-start}
+.wa-title{font-size:13px;font-weight:600;color:var(--green);margin-bottom:3px;letter-spacing:-0.01em}
+.wa-sub{font-size:12px;color:var(--gray4);letter-spacing:-0.01em;line-height:1.5}
+.rs-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray3);margin-bottom:.6rem}
+.risk-row{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:.5px solid var(--gray2)}
+.risk-row:last-child{border-bottom:none}
+.rchip{font-size:9px;font-weight:700;text-transform:uppercase;padding:2px 8px;border-radius:980px;white-space:nowrap;flex-shrink:0}
+.rc-a{background:#ffebea;color:var(--red)}
+.rc-m{background:var(--orange-light);color:var(--orange)}
+.rc-b{background:var(--green-light);color:var(--green)}
+.risk-text .rt{font-size:12px;font-weight:600;color:var(--black);margin-bottom:1px;letter-spacing:-0.01em}
+.risk-text .rd{font-size:11px;color:var(--gray3);line-height:1.5;letter-spacing:-0.01em}
+.comp-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:.5px solid var(--gray2);font-size:12px}
+.comp-row:last-child{border-bottom:none}
+.cn{font-weight:500;color:var(--black);letter-spacing:-0.01em}
+.cp{font-weight:700;color:var(--black);letter-spacing:-0.01em}
 .cd{font-size:10px;color:var(--gray3)}
-.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:1rem}
+.price-box{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:1rem}
 .pb2{background:var(--gray1);border-radius:14px;padding:12px;text-align:center}
 .pb2 .pl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray3);margin-bottom:4px}
-.pb2 .pv{font-size:1rem;font-weight:700}
-.wabtn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:#25D366;color:#fff;border:none;border-radius:980px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;margin-top:.5rem;text-decoration:none}
-.rbtn{width:100%;padding:10px;background:transparent;border:1px solid var(--gray2);border-radius:980px;font-family:inherit;font-size:13px;color:var(--gray3);cursor:pointer;margin-top:.5rem}
-.abadge{display:inline-flex;align-items:center;gap:5px;background:var(--gl);color:var(--green);font-size:10px;font-weight:600;padding:3px 10px;border-radius:980px;margin-bottom:.5rem}
-.zcard{background:var(--white);border-radius:20px;padding:2rem;text-align:center;box-shadow:0 1px 8px rgba(0,0,0,0.06)}
-/* MAP */
-#mapContainer{height:260px;border-radius:14px;overflow:hidden;margin-bottom:.85rem;border:1px solid var(--gray2)}
-.map-tip{background:var(--navy);color:#fff;font-size:11px;font-weight:500;padding:6px 12px;border-radius:8px;margin-bottom:.5rem;display:flex;gap:6px;align-items:center}
-.comp-map-dot{width:12px;height:12px;border-radius:50%;display:inline-block;flex-shrink:0}
-.map-legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:.85rem}
-.map-legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--gray3)}
-/* Comparable card in map section */
-.comp-nearby{background:var(--gray1);border-radius:10px;padding:8px 10px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
-.comp-nearby:last-child{margin-bottom:0}
-.comp-nearby .cn{font-size:12px;font-weight:500}
-.comp-nearby .cd{font-size:10px;color:var(--gray3)}
-.comp-nearby .cp{font-size:12px;font-weight:700;text-align:right}
-.comp-nearby .cdist{font-size:10px;color:var(--blue);text-align:right}
+.pb2 .pv{font-size:1rem;font-weight:700;letter-spacing:-0.02em}
+.wa-send-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:#25D366;color:#fff;border:none;border-radius:980px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:-0.01em;margin-top:.5rem;text-decoration:none}
+.map-wrap{margin-bottom:.85rem}
+#mapDiv{height:240px;border-radius:14px;overflow:hidden;border:1px solid var(--gray2)}
+.map-tip{background:var(--black);color:#fff;font-size:11px;font-weight:500;padding:6px 12px;border-radius:8px;margin-bottom:6px;display:flex;gap:6px;align-items:center}
+.map-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+.ml-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--gray3)}
+.ml-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.map-search-row{display:flex;gap:8px;margin-bottom:6px}
+.map-search-row input{flex:1;padding:10px 14px;border:1px solid var(--gray2);border-radius:12px;font-family:inherit;font-size:14px;color:var(--black);background:var(--gray1)}
+.map-search-row button{padding:10px 16px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.pdf-btn{width:100%;padding:14px;background:var(--black);color:#fff;border:none;border-radius:980px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px}
+@media print{
+  .app{display:none!important}
+  #pdfSection{display:block!important}
+}
+#pdfSection{display:none;max-width:720px;margin:0 auto;padding:1rem;background:#f5f5f7}
+.rpage{background:#fff;border-radius:12px;margin-bottom:1.5rem;overflow:hidden;box-shadow:0 2px 14px rgba(0,0,0,0.1)}
+.rph{background:#1A3D5C;padding:14px 2rem;display:flex;align-items:center;justify-content:space-between}
+.rph-name{font-size:1rem;font-weight:700;color:#fff;letter-spacing:-0.02em}
+.rph-slogan{font-size:10px;color:rgba(255,255,255,0.55);margin-top:2px}
+.rph-right{font-size:10px;color:rgba(255,255,255,0.5);text-align:right}
+.rpf{background:#1A3D5C;padding:9px 2rem;display:flex;justify-content:space-between}
+.rpf-t{font-size:10px;color:rgba(255,255,255,0.45)}
+.rpb{padding:1.5rem 2rem}
+.rstitle{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#6e6e73;margin-bottom:.85rem;display:flex;align-items:center;gap:8px}
+.rstitle:after{content:'';flex:1;height:0.5px;background:#e8e8ed}
+.rwcard{background:#f5f5f7;border-radius:14px;padding:1.1rem 1.25rem;margin-bottom:.85rem}
+.rwtitle{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#6e6e73;margin-bottom:.75rem}
+.rm3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:.75rem}
+.rm2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.75rem}
+.rmbox{background:#fff;border-radius:10px;padding:10px;text-align:center;border:0.5px solid #e8e8ed}
+.rmbox .rml{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#6e6e73;margin-bottom:4px}
+.rmbox .rmv{font-size:.95rem;font-weight:700;color:#1d1d1f}
+.rmbox.dk{background:#1A3D5C} .rmbox.dk .rml,.rmbox.dk .rmv{color:#fff}
+.rmbox.gk{background:#1d8348} .rmbox.gk .rml,.rmbox.gk .rmv{color:#fff}
+.rtable{width:100%;border-collapse:collapse;font-size:12px}
+.rtable th{background:#1A3D5C;color:#fff;font-size:10px;font-weight:600;text-transform:uppercase;padding:8px 10px;text-align:left}
+.rtable td{padding:8px 10px;border-bottom:0.5px solid #e8e8ed}
+.rtable tr:last-child td{border-bottom:none}
+.td-over{color:#ff6200;font-weight:700}
+.td-base{color:#1d8348;font-weight:700}
+.rngrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:.75rem}
+.rncard{border-radius:10px;padding:12px;text-align:center;border:0.5px solid #e8e8ed}
+.rncard .rnl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:#6e6e73;margin-bottom:4px}
+.rncard .rnv{font-size:.95rem;font-weight:700}
+.nc-nav{background:#1A3D5C} .nc-nav .rnl{color:rgba(255,255,255,0.5)} .nc-nav .rnv{color:#fff}
+.nc-grn{background:#d5f5e3} .nc-grn .rnv{color:#1d8348}
+.nc-org{background:#fff0e6} .nc-org .rnv{color:#ff6200}
+.nc-red{background:#ffebea} .nc-red .rnv{color:#ff3b30}
+.rntip{background:#1A3D5C;border-radius:10px;padding:.9rem 1.1rem}
+.rntip-text{font-size:11.5px;color:rgba(255,255,255,0.8);line-height:1.6}
+.rrisk{display:flex;gap:10px;padding:10px 0;border-bottom:0.5px solid #e8e8ed}
+.rrisk:last-child{border-bottom:none}
+.rrch{font-size:9px;font-weight:700;text-transform:uppercase;padding:3px 10px;border-radius:980px;white-space:nowrap;flex-shrink:0}
+.rrca{background:#ffebea;color:#C62828}
+.rrcm{background:#fff0e6;color:#E65100}
+.rrcb{background:#d5f5e3;color:#2E7D32}
+.pdf-actions{display:flex;gap:10px;margin-bottom:1.5rem;max-width:720px;margin-left:auto;margin-right:auto}
+.pdf-actions .btn-pdf{flex:1;padding:12px;border:none;border-radius:980px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer}
+
+.zona-card{background:var(--white);border-radius:20px;padding:2rem;text-align:center;box-shadow:0 1px 8px rgba(0,0,0,0.06)}
+.addr-badge{display:inline-flex;align-items:center;gap:5px;background:var(--green-light);color:var(--green);font-size:10px;font-weight:600;padding:3px 10px;border-radius:980px;margin-bottom:.5rem}
 </style>
 </head>
 <body>
-<div class="app" id="appView">
+<div class="app">
+
   <div class="brand">
-    <div class="bn">Urban<span>Brokers</span></div>
-    <div class="bt">Analisis inteligente de inmuebles · Medellin</div>
-    <div class="fp">Gratis durante junio 2026</div>
+    <div class="brand-name">Urban<span>Brokers</span></div>
+    <div class="brand-tag">Análisis inteligente de inmuebles · Medellín</div>
+    <div class="free-pill">✦ Gratis durante junio 2026</div>
   </div>
+
   <div class="steps">
-    <div class="step"><div class="sd active" id="sd1">1</div><div class="sline"></div><div class="sl active" id="sl1">Tus datos</div></div>
-    <div class="step"><div class="sd" id="sd2">2</div><div class="sline"></div><div class="sl" id="sl2">Inmueble</div></div>
-    <div class="step"><div class="sd" id="sd3">3</div><div class="sline"></div><div class="sl" id="sl3">Vista previa</div></div>
-    <div class="step"><div class="sd" id="sd4">4</div><div class="sline"></div><div class="sl" id="sl4">Informe</div></div>
+    <div class="step"><div class="step-dot active" id="sd1">1</div><div class="step-line"></div><div class="step-label active" id="sl1">Tus datos</div></div>
+    <div class="step"><div class="step-dot" id="sd2">2</div><div class="step-line"></div><div class="step-label" id="sl2">Inmueble</div></div>
+    <div class="step"><div class="step-dot" id="sd3">3</div><div class="step-line"></div><div class="step-label" id="sl3">Vista previa</div></div>
+    <div class="step"><div class="step-dot" id="sd4">4</div><div class="step-line"></div><div class="step-label" id="sl4">Informe</div></div>
   </div>
 
   <!-- STEP 1 -->
-  <div id="s1">
+  <div id="step1">
     <div class="card">
-      <div class="ct">Quien eres</div>
-      <div class="cs">Tus datos para enviarte el informe</div>
-      <div class="fg"><label>Nombre completo</label><input type="text" id="nom" placeholder="Juan Perez"></div>
-      <div class="fg"><label>Correo electronico</label><input type="email" id="eml" placeholder="juan@email.com"></div>
-      <div class="fg"><label>Celular WhatsApp</label><input type="tel" id="cel" placeholder="3108250451"><div class="fh">El resumen te llegara a este numero por WhatsApp</div></div>
-      <div class="fg"><label>Barrio del inmueble</label>
-        <select id="bar">
+      <div class="card-title">¿Quién eres?</div>
+      <div class="card-sub">Necesitamos tus datos para enviarte el informe por WhatsApp</div>
+      <div class="fg"><label>Nombre completo</label><input type="text" id="nombre" placeholder="Juan Pérez"></div>
+      <div class="fg"><label>Correo electrónico</label><input type="email" id="email" placeholder="juan@email.com"></div>
+      <div class="fg">
+        <label>Celular WhatsApp</label>
+        <input type="tel" id="celular" placeholder="3108250451">
+        <div class="fg-hint">📲 El informe completo te llegará a este número por WhatsApp</div>
+      </div>
+      <div class="fg">
+        <label>Barrio del inmueble</label>
+        <select id="barrio" onchange="onBarrio()">
           <option value="">Selecciona el barrio</option>
-          <option value="cr">Ciudad del Rio</option>
-          <option value="otro">Otro barrio</option>
+          <option value="ciudad_del_rio">Ciudad del Río</option>
+          <option value="otro">Otro barrio de Medellín</option>
         </select>
       </div>
-      <button class="btn bblu" id="btnS1">Continuar</button>
+      <button class="btn btn-blue" onclick="goStep2()">Continuar →</button>
     </div>
   </div>
 
   <!-- ZONA NO CUBIERTA -->
-  <div id="sZona" class="hidden">
-    <div class="zcard">
+  <div id="zonaNoCubierta" class="hidden">
+    <div class="zona-card">
       <div style="font-size:2.5rem;margin-bottom:1rem">📍</div>
-      <div style="font-size:1.1rem;font-weight:700;margin-bottom:8px">Aun no cubrimos ese barrio</div>
-      <div style="font-size:13px;color:var(--gray3);line-height:1.6;margin-bottom:1.25rem">Piloto activo en <strong>Ciudad del Rio</strong>. Proximamente mas barrios.</div>
-      <div class="fg"><label>Tu correo para avisarte</label><input type="email" id="emlW" placeholder="tu@email.com"></div>
-      <button class="btn bblu" id="btnWait">Avisarme</button>
+      <div style="font-size:1.1rem;font-weight:700;color:var(--black);letter-spacing:-0.02em;margin-bottom:8px">Aún no cubrimos ese barrio</div>
+      <div style="font-size:13px;color:var(--gray3);line-height:1.6;margin-bottom:1.25rem">UrbanBrokers está en piloto en <strong style="color:var(--black)">Ciudad del Río</strong> durante junio 2026. Próximamente: El Poblado, Laureles, Envigado y más.</div>
+      <div class="fg"><label>Tu correo para avisarte</label><input type="email" id="emailWait" placeholder="tu@email.com"></div>
+      <button class="btn btn-blue" onclick="saveWaitlist()">Avisarme cuando esté disponible</button>
     </div>
-    <button class="rbtn" id="btnBackZona">← Volver</button>
+    <button class="reset-btn" onclick="resetAll()">← Volver</button>
   </div>
 
   <!-- STEP 2 -->
-  <div id="s2" class="hidden">
+  <div id="step2" class="hidden">
     <div class="card">
-      <div class="ct">Ubicacion del inmueble</div>
-      <div class="cs">Busca la direccion y ajusta el pin en el mapa</div>
-
-      <div class="fg">
-        <label>Direccion exacta</label>
-        <div style="display:flex;gap:8px">
-          <input type="text" id="dir" placeholder="Ej: Calle 18 # 43G-90, Ciudad del Rio" style="flex:1">
-          <button id="btnBuscar" style="padding:10px 14px;background:var(--blue);color:#fff;border:none;border-radius:12px;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap">Buscar</button>
+      <div class="card-title">Datos del inmueble</div>
+      <div class="card-sub">Entre más datos nos des, más preciso será el análisis</div>
+      <div class="precision-box">
+        <span>🎯</span>
+        <p><strong>Tip:</strong> Busca la dirección en el mapa y ajusta el pin. Solo se analizan inmuebles dentro de Ciudad del Río.</p>
+      </div>
+      <div class="map-wrap">
+        <div class="map-search-row">
+          <input type="text" id="mapSearch" placeholder="Ej: Calle 20 Carrera 44, Medellin">
+          <button id="btnMapSearch">Buscar</button>
         </div>
-        <div class="fh" id="dirH">Escribe la direccion y presiona Buscar</div>
+        <div class="map-tip">📌 Arrastra el pin azul para ajustar la ubicación exacta</div>
+        <div id="mapDiv"></div>
+        <div class="map-legend">
+          <div class="ml-item"><span class="ml-dot" style="background:#0071e3"></span>Tu inmueble</div>
+          <div class="ml-item"><span class="ml-dot" style="background:#ff6200"></span>Comparables</div>
+          <div class="ml-item"><span style="display:inline-block;width:18px;height:1px;border-top:2px dashed #0071e3;vertical-align:middle"></span>Ciudad del Río</div>
+        </div>
+        <div class="fg-hint" id="mapHint">Busca la dirección o arrastra el pin</div>
       </div>
-
-      <div class="map-tip">📌 Arrastra el pin azul para ajustar la ubicacion exacta</div>
-      <div id="mapContainer"></div>
-
-      <div class="map-legend">
-        <div class="map-legend-item"><span class="comp-map-dot" style="background:#0071e3"></span>Tu inmueble</div>
-        <div class="map-legend-item"><span class="comp-map-dot" style="background:#ff6200"></span>Proyectos comparables</div>
-        <div class="map-legend-item"><span style="display:inline-block;width:20px;height:1px;border-top:2px dashed #6e6e73;vertical-align:middle"></span>Radio 1km</div>
+      <div class="fg">
+        <label>Dirección exacta <span style="color:var(--gray3);font-weight:400;text-transform:none;letter-spacing:0">(opcional pero recomendada)</span></label>
+        <input type="text" id="direccion" placeholder="Ej: Calle 18 # 43G-90" oninput="onDireccion()">
+        <div class="fg-hint" id="dirHint">Si no la tienes, selecciona la sub-zona manualmente abajo</div>
       </div>
-
-      <div class="fg"><label>Nombre del proyecto o edificio</label><input type="text" id="proy" placeholder="Ej: Bosque del Rio, River Park..."></div>
-      <div class="fg"><label>Tipo</label><select id="tip"><option value="nuevo">Proyecto nuevo</option><option value="usado">Apartamento usado</option></select></div>
-      <div class="fr">
-        <div class="fg"><label>Precio (COP)</label><input type="text" id="pre" placeholder="600.000.000"></div>
-        <div class="fg"><label>Area (m2)</label><input type="number" id="are" placeholder="55"></div>
+      <div class="fg">
+        <label>Sub-zona <span id="subzonaAuto" style="color:var(--green);font-weight:600;text-transform:none;letter-spacing:0;display:none">· detectada automáticamente</span></label>
+        <select id="subzona">
+          <option value="general">No sé exactamente</option>
+          <option value="jardines">Jardines del Río</option>
+          <option value="cercaViva">Cerca Viva / MUBA</option>
+          <option value="bavaria">Bavaria / Bosque del Río</option>
+        </select>
       </div>
-      <div class="fr3">
+      <div class="fg"><label>Nombre del proyecto o edificio</label><input type="text" id="proyecto" placeholder="Ej: Bosque del Río, River Park..." oninput="onProyecto()"></div>
+      <div class="fg">
+        <label>¿Proyecto nuevo o apartamento usado?</label>
+        <select id="tipoInm"><option value="nuevo">Proyecto nuevo</option><option value="usado">Apartamento usado</option></select>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>Precio pedido (COP)</label><input type="text" id="precio" placeholder="600.000.000"></div>
+        <div class="fg"><label>Área (m²)</label><input type="number" id="area" placeholder="55"></div>
+      </div>
+      <div class="fg-row-3">
         <div class="fg"><label>Hab.</label><select id="hab"><option>1</option><option>2</option><option>3</option><option>4+</option></select></div>
-        <div class="fg"><label>Banos</label><select id="ban"><option>1</option><option>2</option><option>3</option><option>4+</option></select></div>
-        <div class="fg"><label>Piso</label><input type="number" id="pis" placeholder="20"></div>
+        <div class="fg"><label>Baños</label><select id="ban"><option>1</option><option>2</option><option>3</option><option>4+</option></select></div>
+        <div class="fg"><label>Piso</label><input type="number" id="piso" placeholder="20"></div>
       </div>
       <div class="fg">
-        <label>Amenidades</label>
-        <div class="checks" id="amen">
-          <label class="chk"><input type="checkbox" value="Parqueadero">🚗 Parqueadero</label>
-          <label class="chk"><input type="checkbox" value="Balcon">🌿 Balcon</label>
-          <label class="chk"><input type="checkbox" value="Gimnasio">💪 Gimnasio</label>
-          <label class="chk"><input type="checkbox" value="Piscina">🏊 Piscina</label>
-          <label class="chk"><input type="checkbox" value="Vigilancia">🔒 Vigilancia</label>
-          <label class="chk"><input type="checkbox" value="Vista">🌆 Vista ciudad</label>
+        <label>Amenidades incluidas</label>
+        <div class="checks" id="amenidades">
+          <label class="chk" onclick="toggleChk(this)"><input type="checkbox" value="Parqueadero">🚗 Parqueadero</label>
+          <label class="chk" onclick="toggleChk(this)"><input type="checkbox" value="Balcón">🌿 Balcón</label>
+          <label class="chk" onclick="toggleChk(this)"><input type="checkbox" value="Gimnasio">💪 Gimnasio</label>
+          <label class="chk" onclick="toggleChk(this)"><input type="checkbox" value="Piscina">🏊 Piscina</label>
+          <label class="chk" onclick="toggleChk(this)"><input type="checkbox" value="Vigilancia">🔒 Vigilancia</label>
+          <label class="chk" onclick="toggleChk(this)"><input type="checkbox" value="Vista ciudad">🌆 Vista ciudad</label>
         </div>
       </div>
-      <button class="btn bblu" id="btnS2">Analizar</button>
+      <button class="btn btn-blue" onclick="analyze()">Analizar →</button>
     </div>
-    <button class="rbtn" id="btnBack1">← Volver</button>
+    <button class="reset-btn" onclick="goBackStep1()">← Volver</button>
   </div>
 
   <!-- LOADER -->
-  <div id="sLoad" class="hidden">
-    <div class="loader"><div><span class="ld"></span><span class="ld"></span><span class="ld"></span></div><div class="ldt" id="ldt">Consultando datos del mercado...</div></div>
+  <div id="loader" class="hidden">
+    <div class="loader">
+      <div><span class="ld"></span><span class="ld"></span><span class="ld"></span></div>
+      <div class="ld-text" id="ldText">Consultando datos del mercado...</div>
+    </div>
   </div>
 
   <!-- STEP 3 -->
-  <div id="s3" class="hidden">
+  <div id="step3" class="hidden">
     <div class="card">
-      <div class="ct" id="s3t">Analisis preliminar</div>
-      <div id="adbg"></div>
-      <div id="vp"></div>
-      <div class="tbox">
-        <div class="tr"><div class="ti">📊</div><div class="tt" id="t1">El precio esta sobre el mercado</div><div class="tlock">🔒</div></div>
-        <div class="tr"><div class="ti">⚠️</div><div class="tt" id="t2">Identificamos riesgos importantes</div><div class="tlock">🔒</div></div>
-        <div class="tr"><div class="ti">🏘️</div><div class="tt" id="t3">Comparables en radio de 1km</div><div class="tlock">🔒</div></div>
-        <div class="tr"><div class="ti">💰</div><div class="tt" id="t4">Hay margen de negociacion</div><div class="tlock">🔒</div></div>
+      <div class="card-title" id="s3title">Análisis preliminar</div>
+      <div id="addrBadge"></div>
+      <div id="verdictPill"></div>
+      <div class="teaser-box">
+        <div class="teaser-row"><div class="teaser-icon">📊</div><div class="teaser-text" id="t1">El precio pedido está por encima del mercado</div><div class="teaser-lock">🔒</div></div>
+        <div class="teaser-row"><div class="teaser-icon">⚠️</div><div class="teaser-text" id="t2">Identificamos 2 riesgos importantes</div><div class="teaser-lock">🔒</div></div>
+        <div class="teaser-row"><div class="teaser-icon">🏘️</div><div class="teaser-text" id="t3">Encontramos 3 comparables en el sector</div><div class="teaser-lock">🔒</div></div>
+        <div class="teaser-row"><div class="teaser-icon">💰</div><div class="teaser-text" id="t4">Hay margen de negociación disponible</div><div class="teaser-lock">🔒</div></div>
       </div>
     </div>
-    <div class="ucard">
-      <div class="ut">Informe completo</div>
-      <div class="us">Desbloquea todos los datos y la estrategia</div>
-      <ul class="ul">
-        <li>Diferencia exacta vs mercado en %</li>
-        <li>Comparables reales en radio de 1km</li>
-        <li>Analisis de cada riesgo</li>
+    <div class="unlock-card">
+      <div class="unlock-title">Informe completo</div>
+      <div class="unlock-sub">Desbloquea todos los datos y la estrategia de negociación</div>
+      <ul class="unlock-list">
+        <li>Diferencia exacta vs el mercado en %</li>
+        <li>3 comparables con precios reales</li>
+        <li>Análisis detallado de cada riesgo</li>
         <li>Precio justo estimado en COP</li>
-        <li>Estrategia exacta de negociacion</li>
-        <li>PDF descargable</li>
+        <li>Estrategia y precio exacto para negociar</li>
+        <li>Resumen enviado por WhatsApp</li>
       </ul>
-      <button class="btn bblu" id="btnUnlock" style="border-radius:980px">Ver informe completo - Gratis</button>
-      <div class="up">Gratis junio 2026 · Desde julio $10 USD</div>
+      <button class="btn btn-blue" onclick="unlockReport()" style="border-radius:980px">Ver informe completo — Gratis ✦</button>
+      <div class="unlock-price">Gratis durante junio 2026 · Desde julio $10 USD</div>
     </div>
-    <button class="rbtn" id="btnBack2">← Editar datos</button>
+    <button class="reset-btn" onclick="goBackStep2()">← Editar datos</button>
   </div>
 
   <!-- STEP 4 -->
-  <div id="s4" class="hidden">
-    <div style="background:var(--gl);border-radius:16px;padding:1.25rem;margin-bottom:1rem;display:flex;gap:12px">
+  <div id="step4" class="hidden">
+    <div class="wa-box">
       <div style="font-size:1.5rem;flex-shrink:0">📲</div>
-      <div><div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:3px">Informe listo</div><div style="font-size:12px;color:#424245;line-height:1.5">Resumen enviado a WhatsApp: <strong id="waN"></strong></div></div>
+      <div><div class="wa-title">Informe listo</div><div class="wa-sub">Resumen enviado a WhatsApp: <strong id="waNum"></strong></div></div>
     </div>
     <div class="card">
-      <div class="ct">Veredicto</div>
-      <div id="fvp" style="margin-bottom:.75rem"></div>
-      <div id="fadbg" style="margin-bottom:.5rem"></div>
-      <div id="fjus" style="font-size:13px;color:#424245;line-height:1.65"></div>
-      <div class="pgrid" id="pgrid"></div>
+      <div class="card-title">Veredicto</div>
+      <div id="fullVerdictPill" style="margin-bottom:.75rem"></div>
+      <div id="addrBadgeFull" style="margin-bottom:.5rem"></div>
+      <div id="fullJustificacion" style="font-size:13px;color:var(--gray4);line-height:1.65;letter-spacing:-0.01em"></div>
+      <div class="price-box" id="priceBoxes"></div>
     </div>
-    <div class="card">
-      <div class="rst">Comparables en radio de 1km</div>
-      <div id="clist"></div>
+    <div class="card"><div class="rs-title">Comparables del sector</div><div id="comparablesList"></div></div>
+    <div class="card"><div class="rs-title">Riesgos identificados</div><div id="risksList"></div></div>
+    <div class="card" style="background:var(--green-light)">
+      <div class="rs-title">Recomendación de negociación</div>
+      <div id="recomendacion" style="font-size:13px;color:var(--black);line-height:1.65;letter-spacing:-0.01em"></div>
     </div>
-    <div class="card"><div class="rst">Riesgos</div><div id="rlist"></div></div>
-    <div class="card" style="background:var(--gl)">
-      <div class="rst">Recomendacion</div>
-      <div id="rec" style="font-size:13px;line-height:1.65"></div>
+    <a id="waSendBtn" class="wa-send-btn" href="#" target="_blank">📲 Recibir resumen por WhatsApp</a>
+    <button class="pdf-btn" onclick="showPDF()">⬇ Descargar informe PDF</button>
+    <button class="reset-btn" onclick="resetAll()">← Analizar otro inmueble</button>
+  </div>
+
+</div>
+
+<!-- PDF SECTION -->
+<div id="pdfSection">
+  <div class="pdf-actions">
+    <button class="btn-pdf" style="background:#1A3D5C;color:#fff" onclick="window.print()">⬇ Imprimir / Guardar PDF</button>
+    <button class="btn-pdf" style="background:#f5f5f7;color:#1d1d1f;border:1px solid #e8e8ed" onclick="hidePDF()">← Volver al informe</button>
+  </div>
+  <!-- Page 1: Cover -->
+  <div class="rpage">
+    <div class="rph"><div><div class="rph-name">UrbanBrokers</div><div class="rph-slogan">Datos que negocian por ti</div></div><div class="rph-right">Informe de Mercado<br><span id="rRef">#UB-2026</span></div></div>
+    <div style="padding:2rem;text-align:center;background:#fff">
+      <div style="font-size:2rem;font-weight:700;color:#1A3D5C;letter-spacing:-0.04em;margin-bottom:4px">UrbanBrokers</div>
+      <div style="font-size:13px;color:#6e6e73;margin-bottom:1.5rem">Datos que negocian por ti</div>
+      <div style="width:40px;height:2px;background:#1A3D5C;margin:0 auto 1.5rem;border-radius:2px"></div>
+      <div style="font-size:1.4rem;font-weight:700;color:#1A3D5C;margin-bottom:6px">Informe de Mercado — Ciudad del Río</div>
+      <div style="font-size:13px;color:#6e6e73;margin-bottom:1.5rem">Análisis de precio inmobiliario</div>
+      <div style="background:#f5f5f7;border-radius:14px;padding:1rem 1.25rem;margin:0 auto;text-align:left;max-width:480px">
+        <div style="font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:#6e6e73;margin-bottom:8px">Inmueble analizado</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+          <div><div style="font-size:9px;color:#6e6e73;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:1px">Proyecto</div><div style="font-size:12px;font-weight:600" id="rProy">-</div></div>
+          <div><div style="font-size:9px;color:#6e6e73;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:1px">Dirección</div><div style="font-size:12px;font-weight:600" id="rDir">-</div></div>
+          <div><div style="font-size:9px;color:#6e6e73;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:1px">Características</div><div style="font-size:12px;font-weight:600" id="rCaract">-</div></div>
+          <div><div style="font-size:9px;color:#6e6e73;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:1px">Amenidades</div><div style="font-size:12px;font-weight:600" id="rAmen">-</div></div>
+          <div><div style="font-size:9px;color:#6e6e73;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:1px">Precio pedido</div><div style="font-size:12px;font-weight:600;color:#ff6200" id="rPre">-</div></div>
+          <div><div style="font-size:9px;color:#6e6e73;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:1px">Precio / m²</div><div style="font-size:12px;font-weight:600;color:#ff6200" id="rM2">-</div></div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#6e6e73;margin-top:1rem" id="rDate">Medellín · Junio 2026</div>
     </div>
-    <a id="waBtn" class="wabtn" href="#" target="_blank">📲 Recibir resumen por WhatsApp</a>
-    <button class="btn bblu" onclick="window.print()" style="margin-top:8px">⬇ Descargar PDF</button>
-    <button class="rbtn" id="btnReset">← Analizar otro inmueble</button>
+    <div class="rpf"><div class="rpf-t">UrbanBrokers – Datos que negocian por ti</div><div class="rpf-t">1 / 4</div></div>
+  </div>
+  <!-- Page 2: Analysis -->
+  <div class="rpage">
+    <div class="rph"><div><div class="rph-name">UrbanBrokers</div><div class="rph-slogan">Datos que negocian por ti</div></div><div class="rph-right">Secciones 1–2</div></div>
+    <div class="rpb">
+      <div class="rstitle">Sección 1 — Veredicto de precio</div>
+      <div class="rwcard">
+        <div class="rwtitle">Veredicto general</div>
+        <div id="rVBanner" style="border-radius:10px;padding:.9rem 1.1rem;display:flex;gap:12px;margin-bottom:.75rem;background:#fff0e6;border:0.5px solid rgba(255,98,0,0.2)">
+          <div style="font-size:1.2rem;flex-shrink:0" id="rVIcon">⚠️</div>
+          <div><div style="font-size:13px;font-weight:700;margin-bottom:3px" id="rVMain">-</div><div style="font-size:11px;color:#424245;line-height:1.5" id="rVDetail">-</div></div>
+        </div>
+        <div class="rm3" id="rM3"></div>
+      </div>
+      <div class="rstitle">Sección 2 — Comparación de precio/m²</div>
+      <div class="rwcard">
+        <div class="rwtitle">Tabla comparativa · Ciudad del Río</div>
+        <table class="rtable"><thead><tr><th>Referencia</th><th>Precio / m² (COP)</th><th>Diferencia</th></tr></thead><tbody id="rTableBody"></tbody></table>
+      </div>
+    </div>
+    <div class="rpf"><div class="rpf-t">UrbanBrokers – Datos que negocian por ti</div><div class="rpf-t">2 / 4</div></div>
+  </div>
+  <!-- Page 3: Risks -->
+  <div class="rpage">
+    <div class="rph"><div><div class="rph-name">UrbanBrokers</div><div class="rph-slogan">Datos que negocian por ti</div></div><div class="rph-right">Secciones 3–4</div></div>
+    <div class="rpb">
+      <div class="rstitle">Sección 3 — Riesgos identificados</div>
+      <div class="rwcard"><div class="rwtitle">Análisis de riesgos</div><div id="rRisks"></div></div>
+      <div class="rstitle">Sección 4 — Comparables cercanos</div>
+      <div class="rwcard"><div class="rwtitle">Proyectos en el sector</div><div id="rComps"></div></div>
+    </div>
+    <div class="rpf"><div class="rpf-t">UrbanBrokers – Datos que negocian por ti</div><div class="rpf-t">3 / 4</div></div>
+  </div>
+  <!-- Page 4: Negotiation -->
+  <div class="rpage">
+    <div class="rph"><div><div class="rph-name">UrbanBrokers</div><div class="rph-slogan">Datos que negocian por ti</div></div><div class="rph-right">Sección 5</div></div>
+    <div class="rpb">
+      <div class="rstitle">Sección 5 — Estrategia de negociación</div>
+      <div class="rwcard">
+        <div class="rwtitle">Precios de referencia</div>
+        <div class="rngrid" id="rNGrid"></div>
+        <div class="rntip"><div class="rntip-text" id="rRec">-</div></div>
+      </div>
+      <div class="rwcard">
+        <div class="rwtitle">Resumen ejecutivo</div>
+        <div class="rm2" id="rSummary"></div>
+        <div style="background:#f5f5f7;border-radius:10px;padding:10px 12px;font-size:11px;color:#6e6e73;line-height:1.65;margin-top:8px"><strong style="color:#1d1d1f">Nota legal:</strong> Este informe es orientativo y generado con datos de mercado. No reemplaza un avalúo comercial certificado. UrbanBrokers no tiene relación con el vendedor ni inmobiliarias vinculadas.</div>
+      </div>
+    </div>
+    <div class="rpf"><div class="rpf-t">UrbanBrokers – Datos que negocian por ti</div><div class="rpf-t">4 / 4</div></div>
   </div>
 </div>
 
 <script>
-var WA = '573108250451';
-var ST = {};
-var map, marker, radiusCircle, compMarkers = [];
+const MERCADO={promedio:9323272,mediana:10068576,jardines:13959167,cercaViva:12594916,bavaria:8067906};
+const WA_NUM='573108250451';
 
-// Poligono real de Ciudad del Rio
-// Limites: Cl 24 (norte) / Cl 17 (sur) / Rio Medellin (oriente) / Cr 50 (occidente)
-var CR_POLYGON = [
-  [6.2165, -75.5790],
-  [6.2165, -75.5700],
-  [6.2150, -75.5685],
-  [6.2100, -75.5678],
-  [6.2060, -75.5682],
-  [6.2050, -75.5710],
-  [6.2050, -75.5790]
+// Ciudad del Rio polygon - coordenadas reales de Google Maps
+const CR_POLYGON=[
+  [6.2258266493644,-75.5752467309118],
+  [6.225356920504714,-75.57142750019953],
+  [6.216803984337552,-75.57142750019953],
+  [6.214884147235758,-75.57482707059948],
+  [6.215012136593836,-75.576221819326],
+  [6.2258266493644,-75.576221819326]
 ];
 
-// Point-in-polygon (ray casting algorithm)
-// CR_POLYGON points are [lat, lng]
-function isInCR(lat, lng) {
-  var inside = false;
-  var n = CR_POLYGON.length;
-  for (var i=0, j=n-1; i<n; j=i++) {
-    var lati = CR_POLYGON[i][0], lngi = CR_POLYGON[i][1];
-    var latj = CR_POLYGON[j][0], lngj = CR_POLYGON[j][1];
-    var intersect = ((lngi > lng) !== (lngj > lng)) &&
-                    (lat < (latj - lati) * (lng - lngi) / (lngj - lngi) + lati);
-    if (intersect) inside = !inside;
+// Proyectos anclados al centro real 6.2210, -75.5743
+const PROYECTOS=[
+  {n:"Bosque del Rio",lat:6.2173,lng:-75.5748,m2:8067906,sz:"bavaria"},
+  {n:"Ferrara y Florencia Rio",lat:6.2168,lng:-75.5752,m2:8300000,sz:"bavaria"},
+  {n:"Reserva del Rio",lat:6.2180,lng:-75.5745,m2:9200000,sz:"bavaria"},
+  {n:"Kiva del Rio",lat:6.2195,lng:-75.5730,m2:10800000,sz:"cercaViva"},
+  {n:"River Park",lat:6.2205,lng:-75.5718,m2:12594916,sz:"cercaViva"},
+  {n:"Linz y Graz del Rio",lat:6.2200,lng:-75.5722,m2:12200000,sz:"cercaViva"},
+  {n:"Palmanova",lat:6.2208,lng:-75.5715,m2:11800000,sz:"cercaViva"},
+  {n:"Icon River",lat:6.2212,lng:-75.5710,m2:14500000,sz:"cercaViva"},
+  {n:"Bahia Malaga",lat:6.2215,lng:-75.5708,m2:13800000,sz:"cercaViva"},
+  {n:"Ventto del Rio",lat:6.2230,lng:-75.5700,m2:13959167,sz:"jardines"},
+  {n:"Jardines del Rio",lat:6.2240,lng:-75.5695,m2:13500000,sz:"jardines"},
+  {n:"Arrayan del Rio",lat:6.2235,lng:-75.5702,m2:13200000,sz:"jardines"},
+  {n:"Saman del Rio",lat:6.2228,lng:-75.5706,m2:13800000,sz:"jardines"},
+  {n:"Guayacanes del Rio",lat:6.2225,lng:-75.5710,m2:13100000,sz:"jardines"},
+  {n:"Palma del Rio",lat:6.2222,lng:-75.5712,m2:12900000,sz:"jardines"}
+];
+
+// Point-in-polygon ray casting
+function isInCR(lat,lng){
+  let inside=false;
+  const n=CR_POLYGON.length;
+  for(let i=0,j=n-1;i<n;j=i++){
+    const lati=CR_POLYGON[i][0],lngi=CR_POLYGON[i][1];
+    const latj=CR_POLYGON[j][0],lngj=CR_POLYGON[j][1];
+    const intersect=((lngi>lng)!==(lngj>lng))&&(lat<(latj-lati)*(lng-lngi)/(lngj-lngi)+lati);
+    if(intersect)inside=!inside;
   }
   return inside;
 }
 
-// Proyectos con coordenadas reales
-var PROYECTOS = [
-  {n:"Bosque del Rio", lat:6.2073, lng:-75.5748, m2:8067906, sz:"bavaria"},
-  {n:"Ferrara y Florencia Rio", lat:6.2068, lng:-75.5752, m2:8300000, sz:"bavaria"},
-  {n:"Reserva del Rio", lat:6.2080, lng:-75.5745, m2:9200000, sz:"bavaria"},
-  {n:"Kiva del Rio", lat:6.2095, lng:-75.5730, m2:10800000, sz:"cercaViva"},
-  {n:"River Park", lat:6.2105, lng:-75.5718, m2:12594916, sz:"cercaViva"},
-  {n:"Linz y Graz del Rio", lat:6.2100, lng:-75.5722, m2:12200000, sz:"cercaViva"},
-  {n:"Palmanova", lat:6.2108, lng:-75.5715, m2:11800000, sz:"cercaViva"},
-  {n:"Icon River", lat:6.2112, lng:-75.5710, m2:14500000, sz:"cercaViva"},
-  {n:"Bahia Malaga", lat:6.2115, lng:-75.5708, m2:13800000, sz:"cercaViva"},
-  {n:"Ventto del Rio", lat:6.2130, lng:-75.5700, m2:13959167, sz:"jardines"},
-  {n:"Jardines del Rio", lat:6.2140, lng:-75.5695, m2:13500000, sz:"jardines"},
-  {n:"Arrayan del Rio", lat:6.2135, lng:-75.5702, m2:13200000, sz:"jardines"},
-  {n:"Saman del Rio", lat:6.2128, lng:-75.5706, m2:13800000, sz:"jardines"},
-  {n:"Guayacanes del Rio", lat:6.2125, lng:-75.5710, m2:13100000, sz:"jardines"},
-  {n:"Palma del Rio", lat:6.2122, lng:-75.5712, m2:12900000, sz:"jardines"}
-];
-
-var MKT = {med:10068576, prom:9323272};
-
-function fmt(n) { return '$' + (n/1000000).toFixed(1) + 'M'; }
-function fmtFull(n) { return '$' + Math.round(n).toLocaleString('es-CO'); }
-
-// Haversine distance in km
-function distKm(lat1, lng1, lat2, lng2) {
-  var R = 6371;
-  var dLat = (lat2-lat1) * Math.PI/180;
-  var dLng = (lng2-lng1) * Math.PI/180;
-  var a = Math.sin(dLat/2)*Math.sin(dLat/2) + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)*Math.sin(dLng/2);
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+// Haversine distance km
+function distKm(lat1,lng1,lat2,lng2){
+  const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
 
+let map,marker,radiusCircle,compMarkers=[];
 
+function initMap(){
+  if(map)return;
+  const clat=6.2210,clng=-75.5743;
+  map=L.map('mapDiv').setView([clat,clng],15);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap',maxZoom:19}).addTo(map);
+  L.polygon(CR_POLYGON,{color:'#0071e3',weight:2,fillColor:'#0071e3',fillOpacity:0.05,dashArray:'6,4'}).addTo(map);
+  const blueIcon=L.divIcon({className:'',html:'<div style="width:18px;height:18px;background:#0071e3;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,113,227,0.5)"></div>',iconSize:[18,18],iconAnchor:[9,9]});
+  marker=L.marker([clat,clng],{draggable:true,icon:blueIcon}).addTo(map);
+  radiusCircle=L.circle([clat,clng],{radius:1000,color:'#6e6e73',weight:1.5,dashArray:'5,5',fillOpacity:0.03}).addTo(map);
+  marker.on('dragend',function(){const p=marker.getLatLng();updateMapPos(p.lat,p.lng);});
+  updateCompMarkers(clat,clng);
+  updateMapPos(clat,clng);
+}
 
-// Get comparables within 1km
-function getNearby(lat, lng) {
-  var nearby = [];
-  for (var i=0; i<PROYECTOS.length; i++) {
-    var d = distKm(lat, lng, PROYECTOS[i].lat, PROYECTOS[i].lng);
-    if (d <= 1.0) {
-      nearby.push({p: PROYECTOS[i], dist: d});
-    }
+function updateMapPos(lat,lng){
+  marker.setLatLng([lat,lng]);
+  radiusCircle.setLatLng([lat,lng]);
+  state.mapLat=lat;state.mapLng=lng;
+  const hint=document.getElementById('mapHint');
+  if(!isInCR(lat,lng)){
+    hint.textContent='⚠️ Ubicación fuera de Ciudad del Río — ajusta el pin dentro del contorno azul';
+    hint.style.color='var(--red)';
+  }else{
+    const nearby=getNearby(lat,lng);
+    hint.textContent='✅ Dentro de Ciudad del Río · '+nearby.length+' comparables en 1km';
+    hint.style.color='var(--green)';
   }
-  nearby.sort(function(a,b){ return a.dist - b.dist; });
-  return nearby;
+  updateCompMarkers(lat,lng);
 }
 
-// Init map
-function initMap() {
-  var centerLat = 6.2100, centerLng = -75.5730;
-  map = L.map('mapContainer').setView([centerLat, centerLng], 15);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap',
-    maxZoom: 19
-  }).addTo(map);
-
-  // Custom blue icon for main pin
-  var blueIcon = L.divIcon({
-    className: '',
-    html: '<div style="width:20px;height:20px;background:#0071e3;border-radius:50%;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,113,227,0.5)"></div>',
-    iconSize: [20,20],
-    iconAnchor: [10,10]
-  });
-
-  // Draw Ciudad del Rio polygon
-  L.polygon(CR_POLYGON, {
-    color: '#0071e3',
-    weight: 2,
-    fillColor: '#0071e3',
-    fillOpacity: 0.05,
-    dashArray: '6,4'
-  }).addTo(map).bindTooltip('Ciudad del Rio', {permanent:false, direction:'center'});
-
-  marker = L.marker([centerLat, centerLng], {draggable:true, icon:blueIcon}).addTo(map);
-  radiusCircle = L.circle([centerLat, centerLng], {
-    radius: 1000,
-    color: '#6e6e73',
-    weight: 1.5,
-    dashArray: '5,5',
-    fillOpacity: 0.05
-  }).addTo(map);
-
-  marker.on('dragend', function() {
-    var pos = marker.getLatLng();
-    updateMapPosition(pos.lat, pos.lng);
-  });
-
-  updateComparableMarkers(centerLat, centerLng);
-}
-
-function updateMapPosition(lat, lng) {
-  marker.setLatLng([lat, lng]);
-  radiusCircle.setLatLng([lat, lng]);
-  ST.lat = lat;
-  ST.lng = lng;
-
-  // Check if inside Ciudad del Rio
-  if (!isInCR(lat, lng)) {
-    document.getElementById('dirH').textContent = 'Esta ubicacion esta fuera de Ciudad del Rio. Ajusta el pin.';
-    document.getElementById('dirH').className = 'fh err';
-  } else {
-    var nearby = getNearby(lat, lng);
-    document.getElementById('dirH').textContent = 'Ubicacion en Ciudad del Rio · ' + nearby.length + ' comparables en 1km';
-    document.getElementById('dirH').className = 'fh good';
-  }
-  updateComparableMarkers(lat, lng);
-}
-
-function updateComparableMarkers(lat, lng) {
-  // Remove old markers
-  compMarkers.forEach(function(m){ map.removeLayer(m); });
-  compMarkers = [];
-
-  var orangeIcon = L.divIcon({
-    className: '',
-    html: '<div style="width:10px;height:10px;background:#ff6200;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.3)"></div>',
-    iconSize: [10,10],
-    iconAnchor: [5,5]
-  });
-
-  PROYECTOS.forEach(function(p) {
-    var d = distKm(lat, lng, p.lat, p.lng);
-    var m = L.marker([p.lat, p.lng], {icon: orangeIcon}).addTo(map);
-    m.bindPopup('<strong>' + p.n + '</strong><br>' + fmt(p.m2) + '/m2<br>' + d.toFixed(2) + 'km');
-    if (d <= 1.0) m.openPopup();
+function updateCompMarkers(lat,lng){
+  compMarkers.forEach(m=>map.removeLayer(m));
+  compMarkers=[];
+  const oIcon=L.divIcon({className:'',html:'<div style="width:10px;height:10px;background:#ff6200;border-radius:50%;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.3)"></div>',iconSize:[10,10],iconAnchor:[5,5]});
+  PROYECTOS.forEach(p=>{
+    const d=distKm(lat,lng,p.lat,p.lng);
+    const m=L.marker([p.lat,p.lng],{icon:oIcon}).addTo(map);
+    m.bindPopup('<strong>'+p.n+'</strong><br>$'+(p.m2/1000000).toFixed(1)+'M/m²<br>'+d.toFixed(2)+'km');
     compMarkers.push(m);
   });
 }
 
-// Search address using Nominatim
-document.getElementById('btnBuscar').addEventListener('click', function() {
-  var addr = document.getElementById('dir').value.trim();
-  if (!addr) { alert('Escribe una direccion primero.'); return; }
-
-  var hint = document.getElementById('dirH');
-  hint.textContent = 'Buscando...';
-  hint.className = 'fh';
-
-  // Normalize Colombian address format
-  // Convert "Calle 18 # 43G-90" to searchable format
-  var normalized = addr
-    .replace(/\bCl\.?\s*/gi, 'Calle ')
-    .replace(/\bCr\.?\s*/gi, 'Carrera ')
-    .replace(/\bAv\.?\s*/gi, 'Avenida ')
-    .replace(/#\s*/g, '')
-    .trim();
-
-  // Try multiple search strategies
-  var searches = [
-    normalized + ', Barrio Colombia, Medellin, Antioquia, Colombia',
-    normalized + ', Medellin, Antioquia, Colombia',
-    addr + ', Medellin, Colombia',
-    'Ciudad del Rio, Medellin, Colombia'
-  ];
-
-  function trySearch(idx) {
-    if (idx >= searches.length) {
-      // All failed — center on Ciudad del Rio
-      var crLat = 6.2100, crLng = -75.5730;
-      map.setView([crLat, crLng], 16);
-      updateMapPosition(crLat, crLng);
-      hint.textContent = 'No encontramos la direccion exacta. Pin centrado en Ciudad del Rio — arrastralo a la ubicacion correcta.';
-      hint.className = 'fh';
-      return;
-    }
-
-    var url = 'https://nominatim.openstreetmap.org/search?format=json&q=' +
-              encodeURIComponent(searches[idx]) +
-              '&limit=1&countrycodes=co&viewbox=-75.58,6.22,-75.56,6.26&bounded=1';
-
-    fetch(url, {headers: {'Accept-Language': 'es', 'User-Agent': 'UrbanBrokers/1.0'}})
-    .then(function(r){ return r.json(); })
-    .then(function(data) {
-      if (data && data.length > 0) {
-        var lat = parseFloat(data[0].lat);
-        var lng = parseFloat(data[0].lon);
-        map.setView([lat, lng], 17);
-        updateMapPosition(lat, lng);
-      } else {
-        trySearch(idx + 1);
-      }
-    })
-    .catch(function() { trySearch(idx + 1); });
-  }
-
-  trySearch(0);
-});
-
-function setStep(n) {
-  ['s1','s2','s3','s4','sLoad','sZona'].forEach(function(id){ document.getElementById(id).classList.add('hidden'); });
-  if (n) document.getElementById(n).classList.remove('hidden');
-  if (n === 's2' && !map) { setTimeout(initMap, 100); }
-  var m = {s1:1,s2:2,s3:3,s4:4};
-  var cur = m[n]||0;
-  for (var i=1; i<=4; i++) {
-    var dot = document.getElementById('sd'+i);
-    var lbl = document.getElementById('sl'+i);
-    dot.classList.remove('active','done'); lbl.classList.remove('active');
-    if (i < cur) { dot.classList.add('done'); dot.innerHTML='V'; }
-    else if (i === cur) { dot.classList.add('active'); dot.innerHTML=i; lbl.classList.add('active'); }
-    else { dot.innerHTML=i; }
-  }
+function getNearby(lat,lng){
+  return PROYECTOS.map(p=>({p,dist:distKm(lat,lng,p.lat,p.lng)})).filter(x=>x.dist<=1.0).sort((a,b)=>a.dist-b.dist);
 }
 
-document.getElementById('bar').addEventListener('change', function() {
-  if (this.value === 'otro') {
-    document.getElementById('s1').classList.add('hidden');
-    document.getElementById('sZona').classList.remove('hidden');
+document.getElementById('btnMapSearch').addEventListener('click',function(){
+  const addr=document.getElementById('mapSearch').value.trim();
+  if(!addr){alert('Escribe una dirección primero.');return;}
+  const hint=document.getElementById('mapHint');
+  hint.textContent='Buscando...';hint.style.color='var(--gray3)';
+  const queries=[
+    addr+', Medellin, Antioquia, Colombia',
+    addr+', Medellin, Colombia'
+  ];
+  function tryQ(i){
+    if(i>=queries.length){
+      map.setView([6.2210,-75.5743],15);
+      updateMapPos(6.2210,-75.5743);
+      hint.textContent='No encontramos la dirección. Arrastra el pin manualmente.';
+      hint.style.color='var(--gray3)';
+      return;
+    }
+    fetch('https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(queries[i])+'&limit=1&countrycodes=co',{headers:{'Accept-Language':'es'}})
+    .then(r=>r.json()).then(data=>{
+      if(data&&data.length>0){
+        const lat=parseFloat(data[0].lat),lng=parseFloat(data[0].lon);
+        map.setView([lat,lng],17);
+        updateMapPos(lat,lng);
+      }else{tryQ(i+1);}
+    }).catch(()=>tryQ(i+1));
   }
+  tryQ(0);
 });
-
-document.querySelectorAll('.chk').forEach(function(el) {
-  el.addEventListener('click', function() {
-    this.classList.toggle('sel');
-    this.querySelector('input').checked = this.classList.contains('sel');
-  });
-});
-
-document.getElementById('btnS1').addEventListener('click', function() {
-  var n=document.getElementById('nom').value.trim();
-  var e=document.getElementById('eml').value.trim();
-  var c=document.getElementById('cel').value.trim();
-  var b=document.getElementById('bar').value;
-  if (!n||!e||!c||!b) { alert('Por favor completa todos los campos.'); return; }
-  ST.nom=n; ST.eml=e; ST.cel=c; ST.bar=b;
-  setStep('s2');
-});
-
-document.getElementById('btnBack1').addEventListener('click', function(){ setStep('s1'); });
-document.getElementById('btnBack2').addEventListener('click', function(){ setStep('s2'); });
-document.getElementById('btnBackZona').addEventListener('click', function(){ resetAll(); });
-document.getElementById('btnWait').addEventListener('click', function(){ alert('Te avisamos cuando este disponible.'); resetAll(); });
-
-document.getElementById('btnS2').addEventListener('click', function() {
-  var pre = parseInt(document.getElementById('pre').value.replace(/[^0-9]/g,''));
-  var are = parseFloat(document.getElementById('are').value);
-  if (!pre||!are) { alert('Por favor ingresa precio y area.'); return; }
+const SUBZONA_RULES=[
+  {keys:['cl 18','calle 18','cl. 18'],zona:'bavaria',label:'Bavaria'},
+  {keys:['cl 19','calle 19','cl. 19'],zona:'bavaria',label:'Bavaria'},
+  {keys:['cl 20','calle 20','cl. 20'],zona:'bavaria',label:'Bavaria'},
+  {keys:['cl 23','calle 23','jardines'],zona:'jardines',label:'Jardines del Río'},
+  {keys:['cl 25','calle 25'],zona:'jardines',label:'Jardines del Río'},
+  {keys:['cr 48','carrera 48','cr. 48'],zona:'cercaViva',label:'Cerca Viva / MUBA'},
+  {keys:['cr 46','carrera 46'],zona:'cercaViva',label:'Cerca Viva / MUBA'},
+  {keys:['muba','museo','cr 43'],zona:'cercaViva',label:'Cerca Viva / MUBA'},
+  {keys:['bosque','ferrara','florencia'],zona:'bavaria',label:'Bavaria'},
+  {keys:['river park','kiva','linz','graz','palmanova'],zona:'cercaViva',label:'Cerca Viva / MUBA'},
+  {keys:['arrayan','saman','guayacanes','palma','ventto'],zona:'jardines',label:'Jardines del Río'},
+];
+let state={},detectedZona=null;
+function detectSubzona(t){
+  const tx=t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+  for(const r of SUBZONA_RULES)for(const k of r.keys)if(tx.includes(k))return r;
+  return null;
+}
+function onDireccion(){
+  const val=document.getElementById('direccion').value;
+  const hint=document.getElementById('dirHint');
+  const auto=document.getElementById('subzonaAuto');
+  const sel=document.getElementById('subzona');
+  detectedZona=detectSubzona(val);
+  if(detectedZona&&val.length>4){
+    hint.textContent='✅ Sub-zona detectada: '+detectedZona.label;
+    hint.className='fg-hint good';
+    auto.style.display='inline';
+    sel.value=detectedZona.zona;
+    sel.disabled=true;sel.style.opacity='0.5';
+  }else{
+    hint.textContent='Si no la tienes, selecciona la sub-zona manualmente abajo';
+    hint.className='fg-hint';
+    auto.style.display='none';
+    sel.disabled=false;sel.style.opacity='1';
+    detectedZona=null;
+  }
+}
+function onProyecto(){
+  if(!detectedZona){
+    const det=detectSubzona(document.getElementById('proyecto').value);
+    if(det){
+      detectedZona=det;
+      document.getElementById('subzona').value=det.zona;
+      document.getElementById('subzonaAuto').style.display='inline';
+      document.getElementById('subzona').disabled=true;
+      document.getElementById('subzona').style.opacity='0.5';
+    }
+  }
+}
+function setStep(n){
+  ['step1','step2','step3','step4','loader','zonaNoCubierta'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  if(n)document.getElementById(n).classList.remove('hidden');
+  if(n==='step2')setTimeout(initMap,100);
+  const m={step1:1,step2:2,step3:3,step4:4};
+  const cur=m[n]||0;
+  for(let i=1;i<=4;i++){
+    const dot=document.getElementById('sd'+i);
+    const lbl=document.getElementById('sl'+i);
+    dot.classList.remove('active','done');lbl.classList.remove('active');
+    if(i<cur){dot.classList.add('done');dot.innerHTML='✓';}
+    else if(i===cur){dot.classList.add('active');dot.innerHTML=i;lbl.classList.add('active');}
+    else{dot.innerHTML=i;}
+  }
+}
+function onBarrio(){
+  if(document.getElementById('barrio').value==='otro'){
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('zonaNoCubierta').classList.remove('hidden');
+  }
+}
+function toggleChk(el){el.classList.toggle('sel');el.querySelector('input').checked=el.classList.contains('sel');}
+function goStep2(){
+  const n=document.getElementById('nombre').value.trim();
+  const e=document.getElementById('email').value.trim();
+  const c=document.getElementById('celular').value.trim();
+  const b=document.getElementById('barrio').value;
+  if(!n||!e||!c||!b){alert('Por favor completa todos los campos.');return;}
+  state.nombre=n;state.email=e;state.celular=c;state.barrio=b;
+  setStep('step2');
+}
+function goBackStep1(){setStep('step1');}
+function goBackStep2(){setStep('step2');}
+function getMercadoRef(){
+  const sz=document.getElementById('subzona').value;
+  if(sz==='jardines')return{ref:MERCADO.jardines,label:'Jardines del Río'};
+  if(sz==='cercaViva')return{ref:MERCADO.cercaViva,label:'Cerca Viva / MUBA'};
+  if(sz==='bavaria')return{ref:MERCADO.bavaria,label:'Bavaria'};
+  return{ref:MERCADO.mediana,label:'Ciudad del Río'};
+}
+async function analyze(){
+  const precio=parseInt(document.getElementById('precio').value.replace(/\D/g,''));
+  const area=parseFloat(document.getElementById('area').value);
+  if(!precio||!area){alert('Por favor ingresa precio y área.');return;}
 
   // Validate location
-  if (!ST.lat || !ST.lng) {
-    ST.lat = 6.2100; ST.lng = -75.5730; // Default Ciudad del Rio center
-  }
-  if (!isInCR(ST.lat, ST.lng)) {
-    alert('La ubicacion del pin esta fuera de Ciudad del Rio. Ajusta el pin dentro del barrio para continuar.');
+  const lat=state.mapLat||6.2210;
+  const lng=state.mapLng||-75.5743;
+  if(!isInCR(lat,lng)){
+    alert('La ubicación del pin está fuera de Ciudad del Río. Ajusta el pin dentro del contorno azul en el mapa.');
     return;
   }
 
-  ST.pre=pre; ST.are=are;
-  ST.proy=document.getElementById('proy').value.trim()||'No especificado';
-  ST.hab=document.getElementById('hab').value;
-  ST.ban=document.getElementById('ban').value;
-  ST.pis=document.getElementById('pis').value;
-  ST.tip=document.getElementById('tip').value;
-  ST.dir=document.getElementById('dir').value.trim();
-  ST.amen=[];
-  document.querySelectorAll('#amen input:checked').forEach(function(x){ ST.amen.push(x.value); });
-  ST.m2=Math.round(pre/are);
-
-  // Get nearby comparables (max 1km)
-  ST.nearby = getNearby(ST.lat, ST.lng);
-
-  // Calculate market reference from nearby projects
-  if (ST.nearby.length > 0) {
-    var sum = 0;
-    ST.nearby.forEach(function(c){ sum += c.p.m2; });
-    ST.ref = Math.round(sum / ST.nearby.length);
-    ST.refl = 'proyectos a menos de 1km';
-  } else {
-    ST.ref = MKT.med;
-    ST.refl = 'Ciudad del Rio (general)';
+  // Get nearby comparables
+  state.nearby=getNearby(lat,lng);
+  // Use nearby average as reference if available
+  if(state.nearby.length>0){
+    const sum=state.nearby.reduce((a,c)=>a+c.p.m2,0);
+    state.nearbyRef=Math.round(sum/state.nearby.length);
+    state.nearbyLabel='promedio '+state.nearby.length+' comparables en 1km';
+  }else{
+    state.nearbyRef=null;
+    state.nearbyLabel='Ciudad del Río general';
   }
-  ST.diff = parseFloat(((ST.m2-ST.ref)/ST.ref*100).toFixed(1));
+  state.precio=precio;state.area=area;
+  state.proyecto=document.getElementById('proyecto').value.trim()||'No especificado';
+  state.hab=document.getElementById('hab').value;
+  state.ban=document.getElementById('ban').value;
+  state.piso=document.getElementById('piso').value;
+  state.tipo=document.getElementById('tipoInm').value;
+  state.direccion=document.getElementById('direccion').value.trim();
+  state.amenidades=[...document.querySelectorAll('#amenidades input:checked')].map(x=>x.value);
+  state.m2=Math.round(precio/area);
+  const mercado=getMercadoRef();
+  state.ref=mercado.ref;state.refLabel=mercado.label;
+  state.diff=parseFloat(((state.m2-mercado.ref)/mercado.ref*100).toFixed(1));
+  state.hasAddress=!!state.direccion;
+  setStep('loader');
+  const msgs=['Consultando datos del mercado...','Analizando ubicación...','Calculando valor por m²...','Preparando el informe...'];
+  let mi=0;
+  const iv=setInterval(()=>{document.getElementById('ldText').textContent=msgs[++mi%msgs.length];},900);
+  await new Promise(r=>setTimeout(r,2800));
+  clearInterval(iv);
+  showStep3();
+}
+function fmtCOP(n){return'$'+(n/1000000).toFixed(1)+'M';}
+function showStep3(){
+  const d=state;
+  document.getElementById('s3title').textContent='Análisis preliminar — '+d.proyecto;
+  document.getElementById('addrBadge').innerHTML=d.hasAddress?'<div class="addr-badge">🎯 '+d.direccion+' · '+d.refLabel+'</div>':'';
+  let pc,pt;
+  if(d.diff>15){pc='vp-over';pt='🔴 Sobrevalorado';}
+  else if(d.diff>5){pc='vp-over';pt='🟡 Levemente sobre el mercado';}
+  else if(d.diff<-5){pc='vp-good';pt='🟢 Por debajo del mercado';}
+  else{pc='vp-fair';pt='⚖️ En rango de mercado';}
+  document.getElementById('verdictPill').innerHTML='<div class="verdict-pill '+pc+'">'+pt+'</div>';
+  document.getElementById('t1').textContent=d.diff>5?'El precio pedido está por encima del mercado en '+d.refLabel:d.diff<-5?'El precio está por debajo del mercado — puede ser una oportunidad':'El precio está dentro del rango normal en '+d.refLabel;
+  document.getElementById('t2').textContent='Identificamos '+(d.diff>10?3:2)+' riesgos importantes a considerar';
+  document.getElementById('t3').textContent='Encontramos 3 proyectos comparables en el sector';
+  document.getElementById('t4').textContent=d.diff>5?'Hay margen de negociación disponible':'El precio es competitivo — analizamos la estrategia óptima';
+  setStep('step3');
+}
+async function unlockReport(){
+  setStep('loader');
+  document.getElementById('ldText').textContent='Generando tu informe completo con IA...';
+  const d=state;
+  const prompt=`Eres experto en finca raíz en Medellín. Analiza este apartamento.
 
-  setStep('sLoad');
-  var msgs=['Analizando ubicacion...','Calculando comparables en 1km...','Calculando valor por m2...','Preparando informe...'];
-  var mi=0;
-  var iv=setInterval(function(){ document.getElementById('ldt').textContent=msgs[++mi%msgs.length]; },900);
-  setTimeout(function(){ clearInterval(iv); showS3(); },2800);
-});
+DATOS:
+- Proyecto: ${d.proyecto}
+- ${d.direccion?'Dirección: '+d.direccion:'Sin dirección exacta'}
+- Tipo: ${d.tipo==='nuevo'?'Proyecto nuevo':'Apartamento usado'}
+- Barrio: Ciudad del Río · Sub-zona: ${d.refLabel}
+- Área: ${d.area} m² | Hab: ${d.hab} | Baños: ${d.ban} | Piso: ${d.piso||'N/D'}
+- Amenidades: ${d.amenidades.length?d.amenidades.join(', '):'Básico'}
+- Precio pedido: $${d.precio.toLocaleString('es-CO')} COP ($${d.m2.toLocaleString('es-CO')}/m²)
 
-function showS3() {
-  document.getElementById('s3t').textContent = 'Analisis - ' + ST.proy;
-  document.getElementById('adbg').innerHTML = ST.dir ? '<div class="abadge">📍 '+ST.dir+'</div>' : '';
-  var pc,pt;
-  if(ST.diff>15){pc='vover';pt='Sobrevalorado';}
-  else if(ST.diff>5){pc='vover';pt='Levemente sobre el mercado';}
-  else if(ST.diff<-5){pc='vgood';pt='Por debajo del mercado';}
-  else{pc='vfair';pt='En rango de mercado';}
-  document.getElementById('vp').innerHTML='<div class="vp '+pc+'">'+pt+'</div>';
-  document.getElementById('t1').textContent = ST.diff>5 ? 'El precio pedido esta sobre los comparables cercanos' : ST.diff<-5 ? 'El precio esta bajo el mercado cercano' : 'El precio esta en rango de los comparables cercanos';
-  document.getElementById('t2').textContent = 'Identificamos '+(ST.diff>10?3:2)+' riesgos importantes';
-  document.getElementById('t3').textContent = ST.nearby.length + ' comparables encontrados en radio de 1km';
-  document.getElementById('t4').textContent = ST.diff>5 ? 'Hay margen de negociacion disponible' : 'El precio es competitivo en la zona';
-  setStep('s3');
+MERCADO (Ciudad del Río - Mayo 2026):
+- Referencia ${d.refLabel}: $${d.ref.toLocaleString('es-CO')}/m²
+- Mediana zona: $${MERCADO.mediana.toLocaleString('es-CO')}/m²
+- Oferta: 780 uds | Ventas mes: 19
+
+Responde SOLO JSON sin markdown:
+{"veredicto_tipo":"buena_oferta|precio_justo|sobrevalorado","justificacion":"2 oraciones","precio_justo":número,"margen_negociacion":número,"oferta_apertura":número,"precio_maximo":número,"comparables":[{"nombre":"texto","precio_m2":número,"diferencia":"texto"},{"nombre":"texto","precio_m2":número,"diferencia":"texto"},{"nombre":"texto","precio_m2":número,"diferencia":"texto"}],"riesgos":[{"nivel":"alto|medio|bajo","titulo":"max 30 chars","descripcion":"max 80 chars"},{"nivel":"alto|medio|bajo","titulo":"max 30 chars","descripcion":"max 80 chars"},{"nivel":"alto|medio|bajo","titulo":"max 30 chars","descripcion":"max 80 chars"},{"nivel":"alto|medio|bajo","titulo":"max 30 chars","descripcion":"max 80 chars"}],"recomendacion":"2-3 oraciones concretas"}`;
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const raw=data.content.map(i=>i.text||'').join('').trim().replace(/```json|```/g,'').trim();
+    state.report=JSON.parse(raw);
+  }catch(e){
+    state.report={veredicto_tipo:state.diff>5?'sobrevalorado':state.diff<-5?'buena_oferta':'precio_justo',justificacion:`El precio de ${fmtCOP(state.m2)}/m² está ${Math.abs(state.diff)}% ${state.diff>0?'sobre':'bajo'} la referencia de ${state.refLabel}. ${state.diff>5?'Existe margen real para negociar.':'El precio es competitivo para el sector.'}`,precio_justo:Math.round(state.ref*state.area),margen_negociacion:Math.max(5,Math.round(state.diff*0.6)),oferta_apertura:Math.round(state.ref*state.area*0.92),precio_maximo:Math.round(state.ref*state.area*1.02),comparables:[{nombre:'Ferrara y Florencia del Río',precio_m2:8300000,diferencia:'Bavaria · referencia baja'},{nombre:'Kiva del Río',precio_m2:10800000,diferencia:'Cerca Viva · similar'},{nombre:'Ventto del Río',precio_m2:12500000,diferencia:'Jardines · más caro'}],riesgos:[{nivel:'alto',titulo:'Precio sobre la sub-zona',descripcion:'El precio/m² supera el promedio de referencia de la zona.'},{nivel:'alto',titulo:'Liquidez baja',descripcion:'19 ventas/mes sobre 780 unidades disponibles.'},{nivel:'medio',titulo:'1 habitación',descripcion:'Limita mercado secundario de reventa y arrendamiento.'},{nivel:'bajo',titulo:'Piso alto — positivo',descripcion:'El piso 20 agrega valor por vista y prima de altura.'}],recomendacion:`Inicia con ${fmtCOP(Math.round(state.ref*state.area*0.92))} usando los comparables como argumento. No pagues más de ${fmtCOP(Math.round(state.ref*state.area*1.02))}.`};
+  }
+  showStep4();
+}
+function showStep4(){
+  const r=state.report;
+  const cm={buena_oferta:'var(--green)',precio_justo:'var(--gray4)',sobrevalorado:'var(--orange)'};
+  const lm={buena_oferta:'✅ Buena oferta',precio_justo:'⚖️ Precio justo',sobrevalorado:'⚠️ Sobrevalorado'};
+  document.getElementById('fullVerdictPill').innerHTML='<div class="verdict-pill" style="background:var(--gray1);color:'+cm[r.veredicto_tipo]+';font-size:14px;font-weight:700">'+lm[r.veredicto_tipo]+'</div>';
+  document.getElementById('addrBadgeFull').innerHTML=state.hasAddress?'<div class="addr-badge">🎯 '+state.direccion+' · '+state.refLabel+'</div>':'';
+  document.getElementById('fullJustificacion').textContent=r.justificacion;
+  document.getElementById('priceBoxes').innerHTML='<div class="pb2"><div class="pl">Precio justo est.</div><div class="pv" style="color:var(--green)">'+fmtCOP(r.precio_justo)+'</div></div><div class="pb2"><div class="pl">Negociar hasta</div><div class="pv" style="color:var(--orange)">'+r.margen_negociacion+'% menos</div></div><div class="pb2"><div class="pl">Oferta de apertura</div><div class="pv" style="color:var(--blue)">'+fmtCOP(r.oferta_apertura)+'</div></div><div class="pb2"><div class="pl">Precio máximo</div><div class="pv" style="color:var(--red)">'+fmtCOP(r.precio_maximo)+'</div></div>';
+  document.getElementById('comparablesList').innerHTML=r.comparables.map(c=>'<div class="comp-row"><div><div class="cn">'+c.nombre+'</div><div class="cd">'+c.diferencia+'</div></div><div class="cp">'+fmtCOP(c.precio_m2)+'/m²</div></div>').join('');
+  document.getElementById('risksList').innerHTML=r.riesgos.map(ri=>'<div class="risk-row"><span class="rchip rc-'+ri.nivel.charAt(0)+'">'+ri.nivel+'</span><div class="risk-text"><div class="rt">'+ri.titulo+'</div><div class="rd">'+ri.descripcion+'</div></div></div>').join('');
+  document.getElementById('recomendacion').textContent=r.recomendacion;
+  let cel=state.celular.replace(/\D/g,'');
+  if(!cel.startsWith('57'))cel='57'+cel;
+  document.getElementById('waNum').textContent=state.celular;
+  const msg=encodeURIComponent('Hola '+state.nombre+' \u{1F44B}\n\nTu informe UrbanBrokers esta listo.\n\n📍 '+state.proyecto+(state.direccion?' - '+state.direccion:'')+' - Ciudad del Rio - '+state.refLabel+'\n💰 Precio: $'+state.precio.toLocaleString('es-CO')+' COP\n📊 Veredicto: '+lm[r.veredicto_tipo]+'\n🎯 Precio justo: '+fmtCOP(r.precio_justo)+' COP\n💡 Oferta: '+fmtCOP(r.oferta_apertura)+' COP\n🔝 Maximo: '+fmtCOP(r.precio_maximo)+' COP\n\n'+r.recomendacion+'\n\nUrbanBrokers - Datos que negocian por ti');
+  document.getElementById('waSendBtn').href='https://wa.me/'+WA_NUM+'?text='+msg;
+  setStep('step4');
+}
+function saveWaitlist(){alert('¡Listo! Te avisamos cuando tu barrio esté disponible.');resetAll();}
+function resetAll(){
+  state={};detectedZona=null;
+  ['nombre','email','celular','proyecto','precio','area','piso','direccion','emailWait','mapSearch'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('barrio').value='';
+  document.getElementById('subzona').value='general';
+  document.getElementById('subzona').disabled=false;
+  document.getElementById('subzona').style.opacity='1';
+  document.getElementById('subzonaAuto').style.display='none';
+  document.getElementById('dirHint').textContent='Si no la tienes, selecciona la sub-zona manualmente abajo';
+  document.getElementById('dirHint').className='fg-hint';
+  document.querySelectorAll('.chk').forEach(el=>{el.classList.remove('sel');el.querySelector('input').checked=false;});
+  if(map){map.remove();map=null;marker=null;radiusCircle=null;compMarkers=[];}
+  hidePDF();
+  setStep('step1');
 }
 
-document.getElementById('btnUnlock').addEventListener('click', function() {
-  setStep('sLoad');
-  document.getElementById('ldt').textContent='Generando informe con IA...';
-
-  var nearbyNames = ST.nearby.slice(0,3).map(function(c){ return c.p.n+' ('+c.dist.toFixed(2)+'km, '+fmt(c.p.m2)+'/m2)'; }).join(', ');
-  var prompt = 'Eres experto en finca raiz en Medellin Colombia. Analiza este apartamento en Ciudad del Rio.\n\nPROYECTO: '+ST.proy+'\nDIRECCION: '+(ST.dir||'no indicada')+'\nTIPO: '+ST.tip+'\nAREA: '+ST.are+' m2 | HAB: '+ST.hab+' | BANOS: '+ST.ban+' | PISO: '+(ST.pis||'ND')+'\nAMENIDADES: '+(ST.amen.length?ST.amen.join(', '):'basico')+'\nPRECIO PEDIDO: '+fmtFull(ST.pre)+' COP ('+fmt(ST.m2)+'/m2)\nCOMPARABLES EN 1KM: '+nearbyNames+'\nREFERENCIA MERCADO CERCANO: '+fmt(ST.ref)+'/m2\nDIFERENCIA: '+ST.diff+'%\nOFERTA ZONA: 780 uds | VENTAS: 19/mes\n\nResponde SOLO JSON sin markdown:\n{"veredicto_tipo":"buena_oferta|precio_justo|sobrevalorado","justificacion":"2 oraciones concretas usando los comparables cercanos","precio_justo":numero,"margen_negociacion":numero,"oferta_apertura":numero,"precio_maximo":numero,"riesgos":[{"nivel":"alto|medio|bajo","titulo":"texto","descripcion":"texto"},{"nivel":"alto|medio|bajo","titulo":"texto","descripcion":"texto"},{"nivel":"alto|medio|bajo","titulo":"texto","descripcion":"texto"},{"nivel":"alto|medio|bajo","titulo":"texto","descripcion":"texto"}],"recomendacion":"2-3 oraciones concretas con precio exacto a ofrecer"}';
-
-  fetch('https://api.anthropic.com/v1/messages',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,messages:[{role:'user',content:prompt}]})
-  }).then(function(r){return r.json();}).then(function(d){
-    var raw=d.content.map(function(i){return i.text||'';}).join('').trim().replace(/```json|```/g,'').trim();
-    ST.rep=JSON.parse(raw); showS4();
-  }).catch(function(){
-    ST.rep={
-      veredicto_tipo:ST.diff>5?'sobrevalorado':ST.diff<-5?'buena_oferta':'precio_justo',
-      justificacion:'El precio de '+fmt(ST.m2)+'/m2 esta '+Math.abs(ST.diff)+'% '+(ST.diff>0?'sobre':'bajo')+' el promedio de los proyectos cercanos ('+fmt(ST.ref)+'/m2). '+(ST.diff>5?'Hay margen real para negociar.':'El precio es competitivo en la zona.'),
-      precio_justo:Math.round(ST.ref*ST.are),
-      margen_negociacion:Math.max(5,Math.round(ST.diff*0.6)),
-      oferta_apertura:Math.round(ST.ref*ST.are*0.92),
-      precio_maximo:Math.round(ST.ref*ST.are*1.02),
-      riesgos:[
-        {nivel:'alto',titulo:'Precio sobre comparables',descripcion:'El precio supera el promedio de proyectos en 1km.'},
-        {nivel:'alto',titulo:'Liquidez baja',descripcion:'19 ventas/mes sobre 780 unidades disponibles.'},
-        {nivel:'medio',titulo:'1 habitacion',descripcion:'Limita mercado secundario de reventa.'},
-        {nivel:'bajo',titulo:'Piso alto positivo',descripcion:'Agrega valor por vista y altura.'}
-      ],
-      recomendacion:'Inicia con '+fmt(Math.round(ST.ref*ST.are*0.92))+' usando los comparables cercanos como argumento tecnico. No pagues mas de '+fmt(Math.round(ST.ref*ST.are*1.02))+'.'
-    };
-    showS4();
-  });
-});
-
-function showS4() {
-  var r=ST.rep;
-  var lm={buena_oferta:'Buena oferta',precio_justo:'Precio justo',sobrevalorado:'Sobrevalorado'};
-  var cm={buena_oferta:'var(--green)',precio_justo:'var(--gray3)',sobrevalorado:'var(--orange)'};
-  document.getElementById('fvp').innerHTML='<div class="vp" style="background:var(--gray1);color:'+cm[r.veredicto_tipo]+';font-size:14px;font-weight:700">'+lm[r.veredicto_tipo]+'</div>';
-  document.getElementById('fadbg').innerHTML=ST.dir?'<div class="abadge">📍 '+ST.dir+'</div>':'';
-  document.getElementById('fjus').textContent=r.justificacion;
-  document.getElementById('pgrid').innerHTML='<div class="pb2"><div class="pl">Precio justo</div><div class="pv" style="color:var(--green)">'+fmt(r.precio_justo)+'</div></div><div class="pb2"><div class="pl">Negociar hasta</div><div class="pv" style="color:var(--orange)">'+r.margen_negociacion+'% menos</div></div><div class="pb2"><div class="pl">Oferta apertura</div><div class="pv" style="color:var(--blue)">'+fmt(r.oferta_apertura)+'</div></div><div class="pb2"><div class="pl">Precio maximo</div><div class="pv" style="color:var(--red)">'+fmt(r.precio_maximo)+'</div></div>';
-
-  // Show nearby comparables
-  var chtml='';
-  if(ST.nearby.length>0){
-    ST.nearby.slice(0,5).forEach(function(c){
-      var diff=((ST.m2-c.p.m2)/c.p.m2*100).toFixed(1);
-      var diffColor=diff>0?'var(--orange)':'var(--green)';
-      chtml+='<div class="comp-nearby"><div><div class="cn">'+c.p.n+'</div><div class="cd">'+c.dist.toFixed(2)+'km de distancia</div></div><div><div class="cp">'+fmt(c.p.m2)+'/m2</div><div class="cdist" style="color:'+diffColor+'">'+(diff>0?'+':'')+diff+'% vs pedido</div></div></div>';
-    });
-  } else {
-    chtml='<div style="font-size:13px;color:var(--gray3);padding:8px 0">No hay comparables registrados en 1km. Usando promedio de Ciudad del Rio.</div>';
-  }
-  document.getElementById('clist').innerHTML=chtml;
-
-  document.getElementById('rlist').innerHTML=r.riesgos.map(function(ri){
-    var cls=ri.nivel==='alto'?'rca':ri.nivel==='medio'?'rcm':'rcb';
-    return '<div class="rrow"><span class="rch '+cls+'">'+ri.nivel+'</span><div><div class="rtt">'+ri.titulo+'</div><div class="rdd">'+ri.descripcion+'</div></div></div>';
+function showPDF(){
+  const r=state.report;
+  if(!r){alert('Primero genera el informe completo.');return;}
+  const lm={buena_oferta:'Buena oferta',precio_justo:'Precio justo',sobrevalorado:'Sobrevalorado'};
+  const cm={buena_oferta:'#1d8348',precio_justo:'#6e6e73',sobrevalorado:'#ff6200'};
+  const fmtF=n=>'$'+Math.round(n).toLocaleString('es-CO');
+  document.getElementById('rProy').textContent=state.proyecto||'-';
+  document.getElementById('rDir').textContent=document.getElementById('direccion').value||'No indicada';
+  document.getElementById('rCaract').textContent=(state.area||'-')+'m² · '+(state.hab||'-')+' hab · '+(state.ban||'-')+' baño · Piso '+(state.piso||'ND');
+  document.getElementById('rAmen').textContent=state.amenidades&&state.amenidades.length?state.amenidades.join(', '):'Básico';
+  document.getElementById('rPre').textContent=fmtF(state.precio)+' COP';
+  document.getElementById('rM2').textContent=fmtF(state.m2)+' COP/m²';
+  document.getElementById('rDate').textContent='Medellín · Junio 2026 · '+state.refLabel;
+  const vb=document.getElementById('rVBanner');
+  vb.style.background=r.veredicto_tipo==='buena_oferta'?'#d5f5e3':'#fff0e6';
+  document.getElementById('rVIcon').textContent=r.veredicto_tipo==='buena_oferta'?'✅':'⚠️';
+  document.getElementById('rVMain').textContent=lm[r.veredicto_tipo]||'-';
+  document.getElementById('rVMain').style.color=cm[r.veredicto_tipo];
+  document.getElementById('rVDetail').textContent=r.justificacion||'-';
+  document.getElementById('rM3').innerHTML=
+    '<div class="rmbox"><div class="rml">Pedido /m²</div><div class="rmv" style="color:#ff6200">'+fmtCOP(state.m2)+'</div></div>'+
+    '<div class="rmbox"><div class="rml">Referencia zona</div><div class="rmv">'+fmtCOP(state.ref)+'</div></div>'+
+    '<div class="rmbox"><div class="rml">Diferencia</div><div class="rmv" style="color:'+(state.diff>0?'#ff6200':'#1d8348')+'">'+(state.diff>0?'+':'')+state.diff+'%</div></div>';
+  document.getElementById('rTableBody').innerHTML=
+    '<tr><td style="font-weight:500">Precio pedido</td><td style="font-weight:700">'+fmtF(state.m2)+' COP</td><td class="td-base">Base</td></tr>'+
+    '<tr><td>Mediana Ciudad del Río</td><td style="font-weight:700">'+fmtF(MERCADO.mediana)+' COP</td><td class="td-over">'+((state.m2-MERCADO.mediana)/MERCADO.mediana*100).toFixed(1)+'%</td></tr>'+
+    '<tr><td>Referencia '+state.refLabel+'</td><td style="font-weight:700">'+fmtF(state.ref)+' COP</td><td class="td-over">'+state.diff+'%</td></tr>';
+  document.getElementById('rRisks').innerHTML=(r.riesgos||[]).map(ri=>{
+    const cls=ri.nivel==='alto'?'rrca':ri.nivel==='medio'?'rrcm':'rrcb';
+    return '<div class="rrisk"><span class="rrch '+cls+'">'+ri.nivel+'</span><div><div style="font-size:12px;font-weight:600;margin-bottom:2px">'+ri.titulo+'</div><div style="font-size:11px;color:#6e6e73;line-height:1.5">'+ri.descripcion+'</div></div></div>';
   }).join('');
-  document.getElementById('rec').textContent=r.recomendacion;
-
-  var cel=ST.cel.replace(/[^0-9]/g,'');
-  if(cel.indexOf('57')!==0)cel='57'+cel;
-  document.getElementById('waN').textContent=ST.cel;
-  var msg='Hola '+ST.nom+' - Tu informe UrbanBrokers esta listo. Proyecto: '+ST.proy+(ST.dir?' - '+ST.dir:'')+'. Veredicto: '+lm[r.veredicto_tipo]+'. Comparables en 1km: '+ST.nearby.length+' proyectos. Precio justo: '+fmt(r.precio_justo)+'. Oferta: '+fmt(r.oferta_apertura)+'. Maximo: '+fmt(r.precio_maximo)+'. '+r.recomendacion+' - UrbanBrokers';
-  document.getElementById('waBtn').href='https://wa.me/'+WA+'?text='+encodeURIComponent(msg);
-  setStep('s4');
+  const nearby=state.nearby||[];
+  document.getElementById('rComps').innerHTML=nearby.length>0?nearby.slice(0,5).map(c=>{
+    const d=((state.m2-c.p.m2)/c.p.m2*100).toFixed(1);
+    return '<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid #e8e8ed;font-size:12px"><div><div style="font-weight:500">'+c.p.n+'</div><div style="font-size:10px;color:#6e6e73">'+c.dist.toFixed(2)+'km de distancia</div></div><div style="text-align:right"><div style="font-weight:700">'+fmtCOP(c.p.m2)+'/m²</div><div style="font-size:10px;color:'+(d>0?'#ff6200':'#1d8348')+'">'+(d>0?'+':'')+d+'% vs pedido</div></div></div>';
+  }).join(''):'<div style="font-size:13px;color:#6e6e73;padding:8px 0">Sin comparables en 1km. Usando promedio de Ciudad del Río.</div>';
+  document.getElementById('rNGrid').innerHTML=
+    '<div class="rncard nc-nav"><div class="rnl">Precio pedido</div><div class="rnv">'+fmtF(state.precio)+'</div></div>'+
+    '<div class="rncard nc-grn"><div class="rnl">Precio justo</div><div class="rnv">'+fmtF(r.precio_justo)+'</div></div>'+
+    '<div class="rncard nc-org"><div class="rnl">Oferta apertura</div><div class="rnv">'+fmtF(r.oferta_apertura)+'</div></div>'+
+    '<div class="rncard nc-red"><div class="rnl">Precio máximo</div><div class="rnv">'+fmtF(r.precio_maximo)+'</div></div>';
+  document.getElementById('rRec').textContent=r.recomendacion||'-';
+  document.getElementById('rSummary').innerHTML=
+    '<div class="rmbox dk"><div class="rml">Veredicto</div><div class="rmv">'+(lm[r.veredicto_tipo]||'-')+'</div></div>'+
+    '<div class="rmbox gk"><div class="rml">Ahorro potencial</div><div class="rmv">'+fmtCOP(state.precio-(r.precio_justo||0))+'</div></div>';
+  document.querySelector('.app').style.display='none';
+  document.getElementById('pdfSection').style.display='block';
+  window.scrollTo(0,0);
 }
 
-function resetAll() {
-  ST={};
-  ['nom','eml','cel','proy','pre','are','pis','dir','emlW'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('bar').value='';
-  document.querySelectorAll('.chk').forEach(function(el){el.classList.remove('sel');el.querySelector('input').checked=false;});
-  if(map){ map.remove(); map=null; marker=null; radiusCircle=null; compMarkers=[]; }
-  setStep('s1');
+function hidePDF(){
+  document.getElementById('pdfSection').style.display='none';
+  document.querySelector('.app').style.display='block';
 }
 
-document.getElementById('btnReset').addEventListener('click', resetAll);
-setStep('s1');
+setStep('step1');
 </script>
 </body>
 </html>
