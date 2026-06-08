@@ -96,6 +96,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .pb2 .pv{font-size:1rem;font-weight:700;letter-spacing:-0.02em}
 .wa-send-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:#25D366;color:#fff;border:none;border-radius:980px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;margin-top:.5rem;text-decoration:none}
 .reset-btn{width:100%;padding:10px;background:transparent;border:1px solid var(--gray2);border-radius:980px;font-family:inherit;font-size:13px;color:var(--gray3);cursor:pointer;margin-top:.5rem}
+@media print{
+  .brand,.steps,#step1,#step2,#step3,#loader,#zonaNoCubierta,.wa-send-btn,.reset-btn,button{display:none!important}
+  .app{padding:0;max-width:100%}
+  .card{box-shadow:none;border:1px solid #e8e8ed;break-inside:avoid}
+}
 .addr-badge{display:inline-flex;align-items:center;gap:5px;background:var(--green-light);color:var(--green);font-size:10px;font-weight:600;padding:3px 10px;border-radius:980px;margin-bottom:.5rem}
 .zona-card{background:var(--white);border-radius:20px;padding:2rem;text-align:center;box-shadow:0 1px 8px rgba(0,0,0,0.06)}
 /* Google Maps autocomplete */
@@ -281,6 +286,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div id="recomendacion" style="font-size:13px;color:var(--black);line-height:1.65;letter-spacing:-0.01em"></div>
     </div>
     <a id="waSendBtn" class="wa-send-btn" href="#" target="_blank">📲 Recibir resumen por WhatsApp</a>
+    <button class="btn btn-blue" onclick="window.print()" style="margin-top:8px">⬇ Descargar informe PDF</button>
     <button class="reset-btn" onclick="resetAll()">← Analizar otro inmueble</button>
   </div>
 
