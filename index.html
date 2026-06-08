@@ -185,8 +185,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="fg">
         <label>Dirección exacta del inmueble</label>
         <input type="text" id="direccion" placeholder="Ej: Calle 18 # 43G-90, Medellín" autocomplete="off">
-        <div id="dirSuggestions" style="display:none;background:#fff;border:1px solid var(--gray2);border-radius:12px;margin-top:4px;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1)"></div>
-        <div class="fg-hint" id="dirHint">Escribe la dirección — aparecerán sugerencias automáticamente</div>
+        <div class="fg-hint" id="dirHint">Escribe la dirección y selecciona de las sugerencias de Google Maps</div>
         <div class="map-hint" id="coordsInfo"></div>
       </div>
 
@@ -290,7 +289,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <script>
 const MERCADO={promedio:9323272,mediana:10068576,jardines:13959167,cercaViva:12594916,bavaria:8067906};
 const WA_NUM='573108250451';
-const GMAPS_KEY='AIzaSyBjFN3PRTRyPj5rr2MyLrnQFQy1kOYG5YY';
+const GMAPS_KEY='AIzaSyAheBS8Ha9yB4LVA9PSd7i0sa_WvA-fHfI';
 
 // Proyectos con coordenadas reales y atributos completos
 const PROYECTOS=[
@@ -421,64 +420,38 @@ document.getElementById('btnStep1').addEventListener('click',function(){
 function goBackStep1(){setStep('step1');}
 function goBackStep2(){setStep('step2');}
 
-// Nominatim geocoding - busca direccion en Medellin
-let searchTimeout=null;
+// Google Places Autocomplete
+let autocompleteWidget=null;
 function initGoogleMaps(){
-  // Nominatim - no requiere inicializacion
+  if(autocompleteWidget)return;
   const input=document.getElementById('direccion');
-  input.addEventListener('input',function(){
-    clearTimeout(searchTimeout);
-    const val=this.value.trim();
-    if(val.length<5){
-      document.getElementById('dirSuggestions').innerHTML='';
-      document.getElementById('dirSuggestions').style.display='none';
-      return;
-    }
-    searchTimeout=setTimeout(()=>buscarDireccion(val),600);
+  const ac=new google.maps.places.Autocomplete(input,{
+    componentRestrictions:{country:'co'},
+    bounds:new google.maps.LatLngBounds(
+      new google.maps.LatLng(6.180,-75.600),
+      new google.maps.LatLng(6.250,-75.550)
+    ),
+    strictBounds:false,
+    fields:['geometry','formatted_address','name']
   });
-}
-
-async function buscarDireccion(addr){
-  const hint=document.getElementById('dirHint');
-  hint.textContent='Buscando...';hint.className='fg-hint';
-  // Normalize Colombian address
-  const norm=addr.replace(/Cl\.?\s*/gi,'Calle ').replace(/Cr\.?\s*/gi,'Carrera ').replace(/#\s*/g,'').trim();
-  const queries=[
-    norm+', Ciudad del Rio, Medellin, Antioquia, Colombia',
-    norm+', El Poblado, Medellin, Antioquia, Colombia',
-    norm+', Medellin, Antioquia, Colombia'
-  ];
-  const box=document.getElementById('dirSuggestions');
-  for(const q of queries){
-    try{
-      const url='https://nominatim.openstreetmap.org/search?format=json&q='+encodeURIComponent(q)+'&limit=4&countrycodes=co&viewbox=-75.58,6.20,-75.56,6.24&bounded=0';
-      const res=await fetch(url,{headers:{'Accept-Language':'es','User-Agent':'UrbanBrokers/1.0'}});
-      const data=await res.json();
-      if(data&&data.length>0){
-        box.innerHTML=data.map(r=>{const lb=r.display_name.substring(0,60).replace(/"/g,'&quot;');return '<div class="dir-suggestion" data-lat="'+r.lat+'" data-lng="'+r.lon+'" data-lbl="'+lb+'">'+lb+'</div>';}).join('');
-        box.querySelectorAll('.dir-suggestion').forEach(el=>el.addEventListener('click',function(){selectDireccion(this.dataset.lat,this.dataset.lng,this.dataset.lbl);}));
-        box.style.display='block';
-        hint.textContent='Selecciona la dirección de la lista';hint.className='fg-hint';
-        return;
-      }
-    }catch(e){}
-  }
-  // Nothing found - let user proceed with manual coordinates
-  var manualEl=document.createElement('div');
-  manualEl.className='dir-suggestion';
-  manualEl.textContent='Usar: '+addr.substring(0,50)+' (Ciudad del Rio)';
-  manualEl.addEventListener('click',function(){selectDireccion(6.2100,-75.5730,addr);});
-  box.innerHTML='';
-  box.appendChild(manualEl);
-  box.style.display='block';
-  hint.textContent='No encontramos esa direccion. Selecciona la opcion manual.';hint.className='fg-hint';
+  ac.addListener('place_changed',function(){
+    const place=ac.getPlace();
+    if(place&&place.geometry&&place.geometry.location){
+      const lat=place.geometry.location.lat();
+      const lng=place.geometry.location.lng();
+      state.lat=lat;state.lng=lng;
+      document.getElementById('coordsInfo').textContent='📍 '+lat.toFixed(5)+', '+lng.toFixed(5);
+      document.getElementById('dirHint').textContent='✅ Dirección geoposicionada correctamente';
+      document.getElementById('dirHint').className='fg-hint good';
+      checkComparables();
+    }
+  });
+  autocompleteWidget=ac;
 }
 
 function selectDireccion(lat,lng,label){
   state.lat=parseFloat(lat);state.lng=parseFloat(lng);
-  if(label&&label.length>5)document.getElementById('direccion').value=label;
-  document.getElementById('dirSuggestions').style.display='none';
-  document.getElementById('coordsInfo').textContent='📍 '+lat.toFixed(5)+', '+lng.toFixed(5);
+  document.getElementById('coordsInfo').textContent='📍 '+parseFloat(lat).toFixed(5)+', '+parseFloat(lng).toFixed(5);
   document.getElementById('dirHint').textContent='✅ Dirección ubicada correctamente';
   document.getElementById('dirHint').className='fg-hint good';
   checkComparables();
@@ -663,5 +636,6 @@ setStep('step1');
 </script>
 
 
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAheBS8Ha9yB4LVA9PSd7i0sa_WvA-fHfI&libraries=places&language=es&region=CO&loading=async"></script>
 </body>
 </html>
