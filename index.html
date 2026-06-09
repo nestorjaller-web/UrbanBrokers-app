@@ -348,7 +348,7 @@ const WA_NUM='573108250451';
 const GMAPS_KEY='AIzaSyAheBS8Ha9yB4LVA9PSd7i0sa_WvA-fHfI';
 
 // Proyectos con coordenadas reales y atributos completos
-const PROYECTOS=[
+    const PROYECTOS=[
   {n:"Bosque del Rio",lat:6.2173,lng:-75.5748,m2:8067906,sz:"bavaria",habs:[1,2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia","Piscina"]},
   {n:"Ferrara y Florencia Rio",lat:6.2168,lng:-75.5752,m2:8300000,sz:"bavaria",habs:[2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia"]},
   {n:"Reserva del Rio",lat:6.2180,lng:-75.5745,m2:9200000,sz:"bavaria",habs:[1,2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia","Piscina"]},
@@ -538,6 +538,7 @@ function hidePDF(){
   document.querySelector('.app').style.display='block';
 }
 
+cargarProyectos();  
 setStep('step1');}
 function goBackStep2(){setStep('step2');}
 
