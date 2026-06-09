@@ -105,10 +105,20 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .no-comp-box{background:#ffebea;border-radius:12px;padding:12px 14px;margin-top:.5rem;display:flex;gap:8px;align-items:flex-start}
 .no-comp-box p{font-size:12px;color:#C62828;line-height:1.5}
 @media print{
-  .brand,.steps,.wa-box,.wa-send-btn,.reset-btn,.btn-pdf{display:none!important}
+  #step1,#step2,#step3,#loader,#zonaNoCubierta,.steps,.wa-send-btn,.reset-btn,.btn-pdf{display:none!important}
+  #step4{display:block!important}
+  .wa-box{display:none!important}
   .app{padding:.5rem!important;max-width:100%!important}
-  .card{box-shadow:none!important;border:.5px solid #e8e8ed!important}
-  body{background:#fff!important}
+  .card{box-shadow:none!important;border:.5px solid #e8e8ed!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  body{background:#f5f5f7!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .brand{display:block!important;margin-bottom:1rem!important}
+  .brand-name{font-size:1.4rem!important}
+  .free-pill{display:none!important}
+  .price-box .pb2{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .rchip{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .verdict-pill{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .addr-badge{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .card[style*="green-light"]{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
 </head>
