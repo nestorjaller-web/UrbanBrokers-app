@@ -105,7 +105,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .no-comp-box{background:#ffebea;border-radius:12px;padding:12px 14px;margin-top:.5rem;display:flex;gap:8px;align-items:flex-start}
 .no-comp-box p{font-size:12px;color:#C62828;line-height:1.5}
 @media print{
-  #step1,#step2,#step3,#loader,#zonaNoCubierta,.steps,.wa-send-btn,.reset-btn,.btn-pdf{display:none!important}
+  #step1,#step2,#step3,#loader,#zonaNoCubierta,.steps,.wa-send-btn,.reset-btn,.btn-pdf,#portada{display:none!important}
   #step4{display:block!important}
   .wa-box{display:none!important}
   .app{padding:.5rem!important;max-width:100%!important}
@@ -120,9 +120,54 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   .addr-badge{-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .card[style*="green-light"]{-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
+/* PORTADA */
+#portada{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;overflow:hidden}
+#portada .cover-img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center}
+#portada .cover-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to bottom,rgba(0,0,0,0) 40%,rgba(0,0,0,0.75) 100%)}
+#portada .cover-content{position:relative;z-index:2;width:100%;max-width:480px;padding:2rem 1.5rem 3rem;text-align:center}
+#portada .cover-tag{font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1.5rem}
+#portada .lang-row{display:flex;justify-content:center;gap:8px;margin-bottom:2rem}
+#portada .lang-btn{padding:6px 18px;border-radius:980px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:#fff;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;backdrop-filter:blur(8px);transition:all .2s}
+#portada .lang-btn.active{background:#fff;color:#1d1d1f;border-color:#fff}
+#portada .module-btn{width:100%;padding:14px 20px;border-radius:16px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.12);backdrop-filter:blur(12px);color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px;text-align:left;display:flex;align-items:center;gap:12px;transition:all .2s;letter-spacing:-0.01em}
+#portada .module-btn:hover{background:rgba(255,255,255,0.22);border-color:rgba(255,255,255,0.4)}
+#portada .module-btn.disabled{opacity:.4;cursor:not-allowed}
+#portada .module-btn .mb-icon{font-size:1.4rem;flex-shrink:0}
+#portada .module-btn .mb-text .mb-title{font-size:14px;font-weight:600}
+#portada .module-btn .mb-text .mb-sub{font-size:11px;color:rgba(255,255,255,0.6);font-weight:400;margin-top:2px}
+#portada .module-btn .mb-arrow{margin-left:auto;opacity:.6;font-size:16px}
+#portada .cover-footer{font-size:10px;color:rgba(255,255,255,0.35);margin-top:1rem;letter-spacing:-0.01em}
 </style>
 </head>
 <body>
+<div id="portada">
+  <img class="cover-img" src="Imagen%20Portada%20Herramienta.jpeg" alt="UrbanBrokers">
+  <div class="cover-overlay"></div>
+  <div class="cover-content">
+    <div class="cover-tag" id="cover-tag">Análisis inteligente de inmuebles · Medellín</div>
+    <div class="lang-row">
+      <button class="lang-btn active" onclick="setLang('es')">🇨🇴 Español</button>
+      <button class="lang-btn" onclick="setLang('en')">🇺🇸 English</button>
+    </div>
+    <button class="module-btn" onclick="selectModule('compraventa')">
+      <span class="mb-icon">🏠</span>
+      <span class="mb-text"><div class="mb-title" id="m1-title">Análisis Compra / Venta</div><div class="mb-sub" id="m1-sub">¿El precio es justo? ¿Cuánto negociar?</div></span>
+      <span class="mb-arrow">›</span>
+    </button>
+    <button class="module-btn disabled" onclick="showComingSoon()">
+      <span class="mb-icon">🏘️</span>
+      <span class="mb-text"><div class="mb-title" id="m2-title">Análisis Renta Tradicional</div><div class="mb-sub" id="m2-sub">Rentabilidad, canon ideal y proyección</div></span>
+      <span class="mb-arrow">›</span>
+    </button>
+    <button class="module-btn disabled" onclick="showComingSoon()">
+      <span class="mb-icon">🌐</span>
+      <span class="mb-text"><div class="mb-title" id="m3-title">Análisis Renta Corta</div><div class="mb-sub" id="m3-sub">Airbnb / Booking — ocupación y ROI</div></span>
+      <span class="mb-arrow">›</span>
+    </button>
+    <div class="cover-footer" id="cover-footer">✦ Gratis durante junio 2026 · Desde julio $10 USD</div>
+  </div>
+</div>
+
 <div class="app">
   <div class="brand">
     <div class="brand-name">Urban<span>Brokers</span></div>
@@ -675,6 +720,35 @@ function imprimirPDF(){
   <script>window.onload=function(){window.print();}<\/script>
   </body></html>`);
   win.document.close();
+}
+
+// PORTADA
+const TEXTS={
+  es:{tag:'Análisis inteligente de inmuebles · Medellín',m1t:'Análisis Compra / Venta',m1s:'¿El precio es justo? ¿Cuánto negociar?',m2t:'Análisis Renta Tradicional',m2s:'Rentabilidad, canon ideal y proyección',m3t:'Análisis Renta Corta',m3s:'Airbnb / Booking — ocupación y ROI',footer:'✦ Gratis durante junio 2026 · Desde julio $10 USD'},
+  en:{tag:'Smart real estate analysis · Medellín',m1t:'Buy / Sell Analysis',m1s:'Is the price fair? How much to negotiate?',m2t:'Traditional Rental Analysis',m2s:'Profitability, ideal rent and projection',m3t:'Short-term Rental Analysis',m3s:'Airbnb / Booking — occupancy and ROI',footer:'✦ Free during June 2026 · From July $10 USD'}
+};
+let currentLang='es';
+function setLang(lang){
+  currentLang=lang;
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.lang-btn['+'onclick="setLang(\''+lang+'\')"'+']').classList.add('active');
+  const t=TEXTS[lang];
+  document.getElementById('cover-tag').textContent=t.tag;
+  document.getElementById('m1-title').textContent=t.m1t;
+  document.getElementById('m1-sub').textContent=t.m1s;
+  document.getElementById('m2-title').textContent=t.m2t;
+  document.getElementById('m2-sub').textContent=t.m2s;
+  document.getElementById('m3-title').textContent=t.m3t;
+  document.getElementById('m3-sub').textContent=t.m3s;
+  document.getElementById('cover-footer').textContent=t.footer;
+}
+function selectModule(mod){
+  if(mod==='compraventa'){
+    document.getElementById('portada').style.display='none';
+  }
+}
+function showComingSoon(){
+  alert(currentLang==='es'?'Próximamente disponible 🚀':'Coming soon 🚀');
 }
 
 // Iniciar cargando datos del Sheet
