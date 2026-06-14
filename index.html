@@ -618,7 +618,7 @@ function getComparables(lat,lng,m2,habs,parq,tipo,amenidades,precioM2){
   }).filter(x=>x.valid).sort((a,b)=>a.dist-b.dist);
 }
 
-function fmtCOP(n){return'$'+Math.round(n).toLocaleString('es-CO');}
+function fmtCOP(n){return'$'+(n/1000000).toFixed(1)+'M';}
 function fmtFull(n){return'$'+Math.round(n).toLocaleString('es-CO');}
 
 function setStep(n){
@@ -860,18 +860,18 @@ function showStep4(){
   document.getElementById('s4RentLabel').innerHTML='2 · ¿Cuánto dinero te genera en arriendo? <span class="s4canon-badge">'+canonFuente+'</span>';
 
   document.getElementById('s4Cascade').innerHTML=
-    '<div class="s4row"><div class="s4row-icon" style="background:#e6f0fd"><span style="font-size:18px">🏠</span></div><div class="s4row-info"><div class="s4row-label">El inquilino te paga cada mes</div><div class="s4row-name">Canon mensual estimado</div></div><div class="s4row-val" style="color:#0071e3">+'+fmtCOP(canon)+'</div></div>'+
+    '<div class="s4row"><div class="s4row-icon" style="background:#e6f0fd"><span style="font-size:18px">🏠</span></div><div class="s4row-info"><div class="s4row-label">El inquilino te paga cada mes</div><div class="s4row-name">Canon mensual estimado</div></div><div class="s4row-val" style="color:#0071e3">+'+fmtFull(canon)+'</div></div>'+
     '<div class="s4arrow">↓</div>'+
-    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><span style="font-size:18px">🔧</span></div><div class="s4row-info"><div class="s4row-label">Pagas al edificio cada mes</div><div class="s4row-name">Administración</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtCOP(admin)+'</div></div>'+
-    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><span style="font-size:18px">📅</span></div><div class="s4row-info"><div class="s4row-label">Meses sin inquilino (~1 mes/año)</div><div class="s4row-name">Vacancia estimada 8%</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtCOP(vacancia)+'</div></div>'+
-    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><span style="font-size:18px">🧾</span></div><div class="s4row-info"><div class="s4row-label">Impuesto anual del inmueble</div><div class="s4row-name">Predial + seguros</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtCOP(predial)+'</div></div>'+
+    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><span style="font-size:18px">🔧</span></div><div class="s4row-info"><div class="s4row-label">Pagas al edificio cada mes</div><div class="s4row-name">Administración</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtFull(admin)+'</div></div>'+
+    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><span style="font-size:18px">📅</span></div><div class="s4row-info"><div class="s4row-label">Meses sin inquilino (~1 mes/año)</div><div class="s4row-name">Vacancia estimada 8%</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtFull(vacancia)+'</div></div>'+
+    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><span style="font-size:18px">🧾</span></div><div class="s4row-info"><div class="s4row-label">Impuesto anual del inmueble</div><div class="s4row-name">Predial + seguros</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtFull(predial)+'</div></div>'+
     '<div class="s4arrow">↓</div>'+
-    '<div class="s4net-row"><div class="s4net-icon"><span style="font-size:20px">👛</span></div><div style="flex:1"><div style="font-size:11px;color:#2d7a4f;margin-bottom:2px">Lo que llega a tu bolsillo cada mes</div><div style="font-size:13px;font-weight:700;color:#1a5c38">Ingreso neto mensual</div></div><div class="s4net-val">+'+fmtCOP(neto)+'</div></div>';
+    '<div class="s4net-row"><div class="s4net-icon"><span style="font-size:20px">👛</span></div><div style="flex:1"><div style="font-size:11px;color:#2d7a4f;margin-bottom:2px">Lo que llega a tu bolsillo cada mes</div><div style="font-size:13px;font-weight:700;color:#1a5c38">Ingreso neto mensual</div></div><div class="s4net-val">+'+fmtFull(neto)+'</div></div>';
 
   document.getElementById('s4RentBox').innerHTML=
     '<div class="s4rent-title">¿Y al año cuánto es?</div>'+
-    '<div class="s4rent-row"><span class="s4rl">Ingreso neto al año</span><span class="s4rv" style="color:#1a5c38">+'+fmtCOP(netoAnual)+'</span></div>'+
-    '<div class="s4rent-row"><span class="s4rl">Precio que pagaste</span><span class="s4rv">'+fmtCOP(d.precio)+'</span></div>'+
+    '<div class="s4rent-row"><span class="s4rl">Ingreso neto al año</span><span class="s4rv" style="color:#1a5c38">+'+fmtFull(netoAnual)+'</span></div>'+
+    '<div class="s4rent-row"><span class="s4rl">Precio que pagaste</span><span class="s4rv">'+fmtFull(d.precio)+'</span></div>'+
     '<div style="border-top:0.5px solid #d1d5db;margin:8px 0"></div>'+
     '<div class="s4rent-row"><span class="s4rl">🟡 Rentabilidad anual por rentas</span><span class="s4rv" style="color:#b45309;font-size:16px">'+rentabilidad+'%</span></div>'+
     '<div style="font-size:10px;color:#6b7280;margin-top:8px;line-height:1.5">Por cada $100M invertidos, el arriendo te devuelve $'+rentabilidad+'M al año. Sin contar valorización.</div>';
@@ -904,14 +904,14 @@ function showStep4(){
   const retorno=((totalAnio1/d.precio)*100).toFixed(1);
   document.getElementById('s4ResSub').textContent='Si negocias bien el precio, en un año este inmueble te habrá generado '+fmtCOP(totalAnio1)+' entre arriendo y valorización.';
   document.getElementById('s4Ingresos').innerHTML=
-    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(0,113,227,0.15)"><span style="font-size:18px">🏠</span></div><div class="s4ing-info"><div class="s4ing-label">Lo que ganas arrendando (año 1)</div><div class="s4ing-name">Ingreso neto por rentas</div></div><div class="s4ing-val">+'+fmtCOP(netoAnual)+'</div></div>'+
+    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(0,113,227,0.15)"><span style="font-size:18px">🏠</span></div><div class="s4ing-info"><div class="s4ing-label">Lo que ganas arrendando (año 1)</div><div class="s4ing-name">Ingreso neto por rentas</div></div><div class="s4ing-val">+'+fmtFull(netoAnual)+'</div></div>'+
     '<div class="s4plus">+</div>'+
-    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(74,222,128,0.12)"><span style="font-size:18px">📈</span></div><div class="s4ing-info"><div class="s4ing-label">Lo que sube de precio el inmueble</div><div class="s4ing-name">Valorización estimada año 1</div></div><div class="s4ing-val">+'+fmtCOP(val1-d.precio)+'</div></div>';
+    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(74,222,128,0.12)"><span style="font-size:18px">📈</span></div><div class="s4ing-info"><div class="s4ing-label">Lo que sube de precio el inmueble</div><div class="s4ing-name">Valorización estimada año 1</div></div><div class="s4ing-val">+'+fmtFull(val1-d.precio)+'</div></div>';
 
   document.getElementById('s4Total').innerHTML=
     '<div class="s4total-label">Total que genera tu inversión en el año 1</div>'+
-    '<div class="s4total-val">+'+fmtCOP(totalAnio1)+'</div>'+
-    '<div class="s4total-sub">sobre una inversión de '+fmtCOP(d.precio)+' = <strong style="color:#4ade80">'+retorno+'% de retorno total</strong></div>';
+    '<div class="s4total-val">+'+fmtFull(totalAnio1)+'</div>'+
+    '<div class="s4total-sub">sobre una inversión de '+fmtFull(d.precio)+' = <strong style="color:#4ade80">'+retorno+'% de retorno total</strong></div>';
 
   // WA
   let cel=d.celular.replace(/\D/g,'');
