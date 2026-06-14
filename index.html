@@ -104,7 +104,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .map-hint{font-size:11px;color:var(--blue);margin-top:4px;letter-spacing:-0.01em}
 .no-comp-box{background:#ffebea;border-radius:12px;padding:12px 14px;margin-top:.5rem;display:flex;gap:8px;align-items:flex-start}
 .no-comp-box p{font-size:12px;color:#C62828;line-height:1.5}
-
 /* ===== STEP 4 NUEVO DISEÑO ===== */
 :root{--s4-orange:#ff6200;--s4-accent:#0071e3;--s4-blue:#0F3460;--s4-navy:#16213E;--s4-g1:#f0f2f5;--s4-g2:#d1d5db;--s4-g3:#6b7280;}
 #step4{display:flex;flex-direction:column;gap:1rem}
@@ -194,6 +193,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .s4total-val{font-size:32px;font-weight:700;color:#4ade80;margin-bottom:4px}
 .s4total-sub{font-size:11px;color:rgba(255,255,255,0.4)}
 .s4foot-note{font-size:10px;color:rgba(255,255,255,0.3);text-align:center;line-height:1.5}
+.s4canon-badge{font-size:10px;background:rgba(0,113,227,0.15);color:#0071e3;padding:2px 8px;border-radius:980px;margin-left:6px;font-weight:500}
 @media print{
   #step1,#step2,#step3,#loader,#zonaNoCubierta,#portada,.steps,.wa-send-btn,.reset-btn,.btn-pdf{display:none!important}
   #step4{display:flex!important}
@@ -204,28 +204,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   .brand{display:block!important;margin-bottom:1rem!important}
   .free-pill{display:none!important}
 }
-@media print{
-  #step1,#step2,#step3,#loader,#zonaNoCubierta,.steps,.wa-send-btn,.reset-btn,.btn-pdf,#portada{display:none!important}
-  #step4{display:block!important}
-  .wa-box{display:none!important}
-  .app{padding:.5rem!important;max-width:100%!important}
-  .card{box-shadow:none!important;border:.5px solid #e8e8ed!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  body{background:#f5f5f7!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .brand{display:block!important;margin-bottom:1rem!important}
-  .brand-name{font-size:1.4rem!important}
-  .free-pill{display:none!important}
-  .price-box .pb2{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .rchip{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .verdict-pill{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .addr-badge{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  .card[style*="green-light"]{-webkit-print-color-adjust:exact;print-color-adjust:exact}
-}
 /* PORTADA */
 #portada{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;overflow:hidden}
 #portada .cover-img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center top}
 #portada .cover-content{position:relative;z-index:2;width:100%;max-width:480px;padding:2rem 1.5rem 3rem;text-align:center;margin:0 auto}
 #portada .cover-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to bottom,rgba(0,0,0,0) 40%,rgba(0,0,0,0.75) 100%)}
-#portada .cover-content{position:relative;z-index:2;width:100%;max-width:480px;padding:2rem 1.5rem 3rem;text-align:center}
 #portada .cover-tag{font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1.5rem}
 #portada .lang-row{display:flex;justify-content:center;gap:8px;margin-bottom:2rem}
 #portada .lang-btn{padding:6px 18px;border-radius:980px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:#fff;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;backdrop-filter:blur(8px);transition:all .2s}
@@ -410,8 +393,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   </div>
 
   <div id="step4" class="hidden">
-
-    <!-- VEREDICTO -->
     <div class="s4card-dark">
       <div class="s4sec-label-d">Veredicto</div>
       <div id="addrBadgeFull" style="margin-bottom:.75rem"></div>
@@ -421,33 +402,23 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
         <div class="s4v-sub" id="s4VJust">—</div>
       </div>
     </div>
-
-    <!-- 1 VALORES DE REFERENCIA -->
     <div class="s4card">
       <div class="s4sec-label">1 · ¿Cuánto vale realmente este inmueble?</div>
-      <div class="s4chart-area" id="s4Bars">
-        <!-- barras generadas por JS -->
-      </div>
+      <div class="s4chart-area" id="s4Bars"></div>
       <div class="s4diff-box" id="s4DiffBox"></div>
       <div class="s4legend4" id="s4Legend"></div>
     </div>
-
-    <!-- 2 RENTABILIDAD -->
     <div class="s4card">
-      <div class="s4sec-label">2 · ¿Cuánto dinero te genera en arriendo?</div>
+      <div class="s4sec-label" id="s4RentLabel">2 · ¿Cuánto dinero te genera en arriendo?</div>
       <div class="s4cascade" id="s4Cascade"></div>
       <div class="s4rent-box" id="s4RentBox"></div>
     </div>
-
-    <!-- 3 VALORACION TEMPORAL -->
     <div class="s4card">
       <div class="s4sec-label">3 · ¿Cuánto valdrá tu inmueble con el tiempo?</div>
       <div class="s4timeline" id="s4Timeline"></div>
       <div class="s4gain-box" id="s4GainBox"></div>
-      <div class="s4note-box"><i class="ti ti-info-circle" style="font-size:16px;color:#6b7280;flex-shrink:0;margin-top:1px" aria-hidden="true"></i><div class="s4note-text">Proyección basada en valorización histórica de Ciudad del Río (6% anual promedio). No es una garantía de rendimiento futuro.</div></div>
+      <div class="s4note-box"><span style="font-size:16px;color:#6b7280;flex-shrink:0;margin-top:1px">ℹ️</span><div class="s4note-text">Proyección basada en valorización histórica de Ciudad del Río (6% anual promedio). No es una garantía de rendimiento futuro.</div></div>
     </div>
-
-    <!-- 4 ENTORNO -->
     <div class="s4card">
       <div class="s4sec-label">4 · ¿Qué hay cerca de tu inmueble?</div>
       <div class="s4map-wrap">
@@ -501,23 +472,21 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
         <div class="s4leg"><div class="s4leg-d" style="background:#7c3aed"></div>Transporte</div>
       </div>
       <div class="s4poi-list">
-        <div class="s4poi-row"><div class="s4poi-icon-wrap" style="background:#fde8e8"><i class="ti ti-building-hospital" style="font-size:18px;color:#e53935" aria-hidden="true"></i></div><div class="s4poi-info"><div class="s4poi-name">Clínica El Rosario</div><div class="s4poi-cat">Salud · 0.4 km · ~5 min caminando</div></div><div class="s4poi-badge s4pb-g">Muy cerca</div></div>
-        <div class="s4poi-row"><div class="s4poi-icon-wrap" style="background:#e6f0fd"><i class="ti ti-school" style="font-size:18px;color:#0071e3" aria-hidden="true"></i></div><div class="s4poi-info"><div class="s4poi-name">Colegio Alemán</div><div class="s4poi-cat">Educación · 0.9 km · ~11 min caminando</div></div><div class="s4poi-badge s4pb-g">Cerca</div></div>
-        <div class="s4poi-row"><div class="s4poi-icon-wrap" style="background:#fef3c7"><i class="ti ti-shopping-cart" style="font-size:18px;color:#f59e0b" aria-hidden="true"></i></div><div class="s4poi-info"><div class="s4poi-name">Éxito El Poblado</div><div class="s4poi-cat">Comercio · 1.2 km · ~15 min caminando</div></div><div class="s4poi-badge s4pb-g">Cerca</div></div>
-        <div class="s4poi-row"><div class="s4poi-icon-wrap" style="background:#d1fae5"><i class="ti ti-tools-kitchen-2" style="font-size:18px;color:#059669" aria-hidden="true"></i></div><div class="s4poi-info"><div class="s4poi-name">Zona gastronómica</div><div class="s4poi-cat">Restaurantes · 0.2 km · ~2 min caminando</div></div><div class="s4poi-badge s4pb-g">Inmediato</div></div>
-        <div class="s4poi-row"><div class="s4poi-icon-wrap" style="background:#ede9fe"><i class="ti ti-bus" style="font-size:18px;color:#7c3aed" aria-hidden="true"></i></div><div class="s4poi-info"><div class="s4poi-name">Metro Industriales</div><div class="s4poi-cat">Transporte · 1.8 km · ~22 min caminando</div></div><div class="s4poi-badge s4pb-y">Moderado</div></div>
+        <div class="s4poi-row"><div class="s4poi-icon-wrap" style="background:#fde8e8">🏥</div><div class="s4poi-info"><div class="s4poi-name">Clínica El Rosario</div><div class="s4poi-cat">Salud · 0.4 km · ~5 min caminando</div></div><div class="s4poi-badge s4pb-g">Muy cerca</div></div>
+        <div class="s4poi-row"><div class="s4poi-icon-wrap" style="background:#e6f0fd">🎓</div><div class="s4poi-info"><div class="s4poi-name">Colegio Alemán</div><div class="s4poi-cat">Educación · 0.9 km · ~11 min caminando</div></div><div class="s4poi-badge s4pb-g">Cerca</div></div>
+        <div class="s4poi-row"><div class="s4poi-icon-wrap" style="background:#fef3c7">🛒</div><div class="s4poi-info"><div class="s4poi-name">Éxito El Poblado</div><div class="s4poi-cat">Comercio · 1.2 km · ~15 min caminando</div></div><div class="s4poi-badge s4pb-g">Cerca</div></div>
+        <div class="s4poi-row"><div class="s4poi-icon-wrap" style="background:#d1fae5">🍽️</div><div class="s4poi-info"><div class="s4poi-name">Zona gastronómica</div><div class="s4poi-cat">Restaurantes · 0.2 km · ~2 min caminando</div></div><div class="s4poi-badge s4pb-g">Inmediato</div></div>
+        <div class="s4poi-row"><div class="s4poi-icon-wrap" style="background:#ede9fe">🚇</div><div class="s4poi-info"><div class="s4poi-name">Metro Industriales</div><div class="s4poi-cat">Transporte · 1.8 km · ~22 min caminando</div></div><div class="s4poi-badge s4pb-y">Moderado</div></div>
       </div>
     </div>
-
-    <!-- 5 RESUMEN FINAL -->
     <div class="s4card-dark">
       <div class="s4sec-label-d">5 · Resumen final — ¿vale la pena comprarlo?</div>
-      <div class="s4semaforo" id="s4Semaforo">
-        <div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(239,68,68,0.2)"><i class="ti ti-x" style="font-size:20px;color:#ef4444" aria-hidden="true"></i></div><div class="s4sem-lbl" style="color:rgba(255,255,255,0.3)">No<br>comprar</div></div>
-        <div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(251,191,36,0.2)"><i class="ti ti-minus" style="font-size:20px;color:#fbbf24" aria-hidden="true"></i></div><div class="s4sem-lbl" style="color:rgba(255,255,255,0.3)">Pensarlo<br>bien</div></div>
-        <div class="s4sem-col" id="s4SemVerde"><div class="s4sem-circle" style="background:rgba(74,222,128,0.25);box-shadow:0 0 0 4px rgba(255,255,255,0.15)"><i class="ti ti-check" style="font-size:22px;color:#4ade80" aria-hidden="true"></i></div><div class="s4sem-lbl" style="color:#4ade80;font-weight:700">¡Buena<br>compra!</div></div>
+      <div class="s4semaforo">
+        <div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(239,68,68,0.2)"><span style="font-size:20px;color:#ef4444">✗</span></div><div class="s4sem-lbl" style="color:rgba(255,255,255,0.3)">No<br>comprar</div></div>
+        <div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(251,191,36,0.2)"><span style="font-size:20px;color:#fbbf24">−</span></div><div class="s4sem-lbl" style="color:rgba(255,255,255,0.3)">Pensarlo<br>bien</div></div>
+        <div class="s4sem-col" id="s4SemVerde"><div class="s4sem-circle" style="background:rgba(74,222,128,0.25);box-shadow:0 0 0 4px rgba(255,255,255,0.15)"><span style="font-size:22px;color:#4ade80">✓</span></div><div class="s4sem-lbl" style="color:#4ade80;font-weight:700">¡Buena<br>compra!</div></div>
       </div>
-      <div class="s4veredicto-inner" id="s4ResumenBox">
+      <div class="s4veredicto-inner">
         <div class="s4v-icon">🏆</div>
         <div class="s4v-title" id="s4ResTitle">Este inmueble genera dinero</div>
         <div class="s4v-sub" id="s4ResSub">—</div>
@@ -526,7 +495,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="s4total-box" id="s4Total"></div>
       <div class="s4foot-note">Proyección estimada. Valorización basada en histórico Ciudad del Río 6% anual.<br>No constituye asesoría financiera.</div>
     </div>
-
     <a id="waSendBtn" class="wa-send-btn" href="#" target="_blank">📲 Recibir resumen por WhatsApp</a>
     <span id="waNum" style="display:none"></span>
     <button class="btn btn-blue btn-pdf" onclick="window.print()" style="margin-top:8px">⬇ Guardar informe como PDF</button>
@@ -540,11 +508,12 @@ const WA_NUM='573108250451';
 const GMAPS_KEY='AIzaSyAheBS8Ha9yB4LVA9PSd7i0sa_WvA-fHfI';
 const SHEET_ID='1CBszkSAEg8lVJntJ-BGFeI2mlcqyvQqUVJclY5VR0qM';
 const SHEET_URL='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=datos';
+const ARRIENDOS_URL='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=arriendos';
 
 let PROYECTOS=[];
+let ARRIENDOS=[];
 let state={};
 
-// Cargar proyectos desde Google Sheet
 async function cargarProyectos(){
   try{
     const res=await fetch(SHEET_URL);
@@ -565,34 +534,64 @@ async function cargarProyectos(){
       const habs_val=c[5]&&c[5].v?parseInt(c[5].v):2;
       const garajes=c[7]&&c[7].v?parseFloat(c[7].v):0;
       const mercado=c[15]&&c[15].v?c[15].v.toLowerCase().trim():'nuevo';
-      return {
-        n:c[1]&&c[1].v?c[1].v:'Sin nombre',
-        lat:6.2200,lng:-75.5715,
-        m2:m2,
-        sz:sz,
-        habs:[habs_val],
-        parq:garajes>0,
-        tipo:mercado,
-        amen:['Gimnasio','Vigilancia']
-      };
+      return{n:c[1]&&c[1].v?c[1].v:'Sin nombre',lat:6.2200,lng:-75.5715,m2:m2,sz:sz,habs:[habs_val],parq:garajes>0,tipo:mercado,amen:['Gimnasio','Vigilancia']};
     }).filter(p=>p&&p.m2>0);
-    console.log('Sheet cargado: '+PROYECTOS.length+' proyectos (nuevos: '+PROYECTOS.filter(p=>p.tipo==='nuevo').length+', usados: '+PROYECTOS.filter(p=>p.tipo==='usado').length+')');
+    console.log('Ventas cargadas: '+PROYECTOS.length);
   }catch(e){
-    console.error('Error cargando Sheet, usando datos locales:',e);
-    // Fallback con datos hardcodeados
+    console.error('Error cargando ventas:',e);
     PROYECTOS=[
       {n:"Bosque del Rio",lat:6.2173,lng:-75.5748,m2:8067906,sz:"bavaria",habs:[1,2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia","Piscina"]},
-      {n:"Ferrara y Florencia Rio",lat:6.2168,lng:-75.5752,m2:8300000,sz:"bavaria",habs:[2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia"]},
       {n:"Reserva del Rio",lat:6.2180,lng:-75.5745,m2:9200000,sz:"bavaria",habs:[1,2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia","Piscina"]},
-      {n:"Kiva del Rio",lat:6.2195,lng:-75.5730,m2:10800000,sz:"cercaViva",habs:[1,2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia","Piscina"]},
-      {n:"River Park",lat:6.2205,lng:-75.5718,m2:12594916,sz:"cercaViva",habs:[1,2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia","Piscina","Vista ciudad"]},
+      {n:"River Park",lat:6.2205,lng:-75.5718,m2:12594916,sz:"cercaViva",habs:[1,2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia","Piscina"]},
       {n:"Linz y Graz del Rio",lat:6.2200,lng:-75.5722,m2:12200000,sz:"cercaViva",habs:[2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia"]},
-      {n:"Palmanova",lat:6.2208,lng:-75.5715,m2:11800000,sz:"cercaViva",habs:[2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia","Piscina"]},
-      {n:"Icon River",lat:6.2212,lng:-75.5710,m2:14500000,sz:"cercaViva",habs:[1,2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia","Piscina","Vista ciudad"]},
       {n:"Ventto del Rio",lat:6.2230,lng:-75.5700,m2:13959167,sz:"jardines",habs:[1,2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia","Piscina"]},
       {n:"Arrayan del Rio",lat:6.2235,lng:-75.5702,m2:13200000,sz:"jardines",habs:[1,2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia","Piscina"]}
     ];
   }
+  // Cargar arriendos en paralelo
+  try{
+    const res2=await fetch(ARRIENDOS_URL);
+    const txt2=await res2.text();
+    const json2=JSON.parse(txt2.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
+    const rows2=json2.table.rows;
+    ARRIENDOS=rows2.slice(1).map(r=>{
+      const c=r.c;
+      if(!c||!c[9])return null; // col J = Canon COP
+      const canon=c[9].v||0;
+      if(canon===0)return null;
+      const habs_val=c[5]&&c[5].v?parseInt(c[5].v):2;
+      const area=c[8]&&c[8].v?parseFloat(c[8].v):0;
+      const modalidad=c[16]&&c[16].v?c[16].v.toLowerCase().trim():'tradicional';
+      const mercado=c[12]&&c[12].v?c[12].v.toLowerCase().trim():'nuevo';
+      return{n:c[1]&&c[1].v?c[1].v:'Sin nombre',canon:canon,habs:habs_val,area:area,modalidad:modalidad,mercado:mercado};
+    }).filter(a=>a&&a.canon>0);
+    console.log('Arriendos cargados: '+ARRIENDOS.length);
+  }catch(e){
+    console.error('Error cargando arriendos (se usará fórmula):',e);
+    ARRIENDOS=[];
+  }
+}
+
+function getCanonMercado(habs,area,tipo,modalidad){
+  modalidad=modalidad||'tradicional';
+  const habN=parseInt(habs)||2;
+  // Filtrar arriendos por habitaciones, mercado y modalidad
+  let matches=ARRIENDOS.filter(a=>{
+    const habMatch=Math.abs(a.habs-habN)<=1;
+    const modMatch=a.modalidad===modalidad;
+    return habMatch&&modMatch;
+  });
+  // Si hay matches con area similar (±20%), refinar
+  if(area>0&&matches.length>=3){
+    const byArea=matches.filter(a=>a.area>0&&Math.abs(a.area-area)/area<=0.2);
+    if(byArea.length>=3)matches=byArea;
+  }
+  if(matches.length===0){
+    // Fallback: fórmula genérica 0.4% del precio justo
+    return null;
+  }
+  const sum=matches.reduce((a,m)=>a+m.canon,0);
+  return{canon:Math.round(sum/matches.length),fuente:'mercado ('+matches.length+' arriendos)',modalidad:modalidad};
 }
 
 function distKm(lat1,lng1,lat2,lng2){
@@ -604,14 +603,9 @@ function distKm(lat1,lng1,lat2,lng2){
 function getComparables(lat,lng,m2,habs,parq,tipo,amenidades,precioM2){
   const habN=parseInt(habs)||1;
   const amenSet=new Set(amenidades);
-  const tieneGim=amenSet.has('Gimnasio');
-  const tienePisc=amenSet.has('Piscina');
-
-  // Para usados: criterios más flexibles porque hay menos datos
   const esUsado=(tipo==='usado');
   const radioMax=esUsado?1.5:0.8;
   const diffMax=esUsado?30:20;
-
   return PROYECTOS.filter(p=>p.tipo===tipo).map(p=>{
     const dist=distKm(lat,lng,p.lat,p.lng);
     let valid=true;
@@ -620,7 +614,7 @@ function getComparables(lat,lng,m2,habs,parq,tipo,amenidades,precioM2){
     if(p.parq!==parq&&!esUsado)valid=false;
     const diffPct=Math.abs((p.m2-precioM2)/precioM2)*100;
     if(diffPct>diffMax)valid=false;
-    return {p,dist,valid};
+    return{p,dist,valid};
   }).filter(x=>x.valid).sort((a,b)=>a.dist-b.dist);
 }
 
@@ -646,11 +640,8 @@ function onZona(){
   const v=document.getElementById('zona').value;
   const sg=document.getElementById('subzonaGroup');
   if(v==='poblado'){sg.classList.remove('hidden');}
-  else if(v==='otro'){
-    sg.classList.add('hidden');
-    document.getElementById('step1').classList.add('hidden');
-    document.getElementById('zonaNoCubierta').classList.remove('hidden');
-  }else{sg.classList.add('hidden');}
+  else if(v==='otro'){sg.classList.add('hidden');document.getElementById('step1').classList.add('hidden');document.getElementById('zonaNoCubierta').classList.remove('hidden');}
+  else{sg.classList.add('hidden');}
 }
 
 function onSubzona(){
@@ -712,13 +703,10 @@ function checkComparables(){
   const m2=precio&&area?Math.round(precio/area):MERCADO.mediana;
   const comps=getComparables(state.lat,state.lng,area,habs,parq,tipo,amenidades,m2);
   const noCompBox=document.getElementById('noCompBox');
-  const noCompMsg=document.getElementById('noCompMsg');
   if(comps.length<3){
     noCompBox.classList.remove('hidden');
-    noCompMsg.textContent='Solo encontramos '+comps.length+' comparable(s) válido(s). Se requieren mínimo 3 para generar el informe.';
-  }else{
-    noCompBox.classList.add('hidden');
-  }
+    document.getElementById('noCompMsg').textContent='Solo encontramos '+comps.length+' comparable(s) válido(s). Se requieren mínimo 3 para generar el informe.';
+  }else{noCompBox.classList.add('hidden');}
   state.comparables=comps;
 }
 
@@ -829,10 +817,7 @@ function showStep4(){
   const lm={buena_oferta:'✅ Buena oferta',precio_justo:'⚖️ Precio justo',sobrevalorado:'⚠️ Sobrevalorado'};
   const iconMap={buena_oferta:'✅',precio_justo:'⚖️',sobrevalorado:'⚠️'};
 
-  // Dirección badge
   document.getElementById('addrBadgeFull').innerHTML='<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.1);color:#fff;font-size:11px;font-weight:500;padding:3px 10px;border-radius:980px;">📍 '+d.direccion+'</div>';
-
-  // Veredicto
   document.getElementById('s4VIcon').textContent=iconMap[r.veredicto_tipo]||'⚖️';
   document.getElementById('s4VTitle').textContent=lm[r.veredicto_tipo]||'—';
   document.getElementById('s4VJust').textContent=r.justificacion||'—';
@@ -861,22 +846,27 @@ function showStep4(){
     '<div class="s4leg-item"><div class="s4leg-dot" style="background:#0F3460"></div><div><div class="s4leg-title">'+ofertaM+' oferta</div><div class="s4leg-sub">Arranca aquí</div></div></div>'+
     '<div class="s4leg-item"><div class="s4leg-dot" style="background:#6b7280"></div><div><div class="s4leg-title">'+maxM+' límite</div><div class="s4leg-sub">Máximo a pagar</div></div></div>';
 
-  // Punto 2: Rentabilidad
-  const canon=Math.round(r.precio_justo*0.004);
+  // Punto 2: Rentabilidad con datos reales de arriendos
+  const canonData=getCanonMercado(d.hab,d.area,d.tipo,'tradicional');
+  const canon=canonData?canonData.canon:Math.round(r.precio_justo*0.004);
+  const canonFuente=canonData?canonData.fuente:'estimado (0.4% precio justo)';
   const admin=Math.round(canon*0.145);
   const vacancia=Math.round(canon*0.08);
   const predial=Math.round(canon*0.062);
   const neto=canon-admin-vacancia-predial;
   const netoAnual=neto*12;
   const rentabilidad=((netoAnual/d.precio)*100).toFixed(1);
+
+  document.getElementById('s4RentLabel').innerHTML='2 · ¿Cuánto dinero te genera en arriendo? <span class="s4canon-badge">'+canonFuente+'</span>';
+
   document.getElementById('s4Cascade').innerHTML=
-    '<div class="s4row"><div class="s4row-icon" style="background:#e6f0fd"><i class="ti ti-home-dollar" style="font-size:18px;color:#0071e3" aria-hidden="true"></i></div><div class="s4row-info"><div class="s4row-label">El inquilino te paga cada mes</div><div class="s4row-name">Canon mensual estimado</div></div><div class="s4row-val" style="color:#0071e3">+'+fmtCOP(canon)+'</div></div>'+
-    '<div class="s4arrow"><i class="ti ti-arrow-down" aria-hidden="true"></i></div>'+
-    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><i class="ti ti-tools" style="font-size:18px;color:#ff6200" aria-hidden="true"></i></div><div class="s4row-info"><div class="s4row-label">Pagas al edificio cada mes</div><div class="s4row-name">Administración</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtCOP(admin)+'</div></div>'+
-    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><i class="ti ti-calendar-off" style="font-size:18px;color:#ff6200" aria-hidden="true"></i></div><div class="s4row-info"><div class="s4row-label">Meses sin inquilino (~1 mes/año)</div><div class="s4row-name">Vacancia estimada 8%</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtCOP(vacancia)+'</div></div>'+
-    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><i class="ti ti-receipt-tax" style="font-size:18px;color:#ff6200" aria-hidden="true"></i></div><div class="s4row-info"><div class="s4row-label">Impuesto anual del inmueble</div><div class="s4row-name">Predial + seguros</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtCOP(predial)+'</div></div>'+
-    '<div class="s4arrow"><i class="ti ti-arrow-down" aria-hidden="true"></i></div>'+
-    '<div class="s4net-row"><div class="s4net-icon"><i class="ti ti-wallet" style="font-size:20px;color:#1a5c38" aria-hidden="true"></i></div><div style="flex:1"><div style="font-size:11px;color:#2d7a4f;margin-bottom:2px">Lo que llega a tu bolsillo cada mes</div><div style="font-size:13px;font-weight:700;color:#1a5c38">Ingreso neto mensual</div></div><div class="s4net-val">+'+fmtCOP(neto)+'</div></div>';
+    '<div class="s4row"><div class="s4row-icon" style="background:#e6f0fd"><span style="font-size:18px">🏠</span></div><div class="s4row-info"><div class="s4row-label">El inquilino te paga cada mes</div><div class="s4row-name">Canon mensual estimado</div></div><div class="s4row-val" style="color:#0071e3">+'+fmtCOP(canon)+'</div></div>'+
+    '<div class="s4arrow">↓</div>'+
+    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><span style="font-size:18px">🔧</span></div><div class="s4row-info"><div class="s4row-label">Pagas al edificio cada mes</div><div class="s4row-name">Administración</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtCOP(admin)+'</div></div>'+
+    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><span style="font-size:18px">📅</span></div><div class="s4row-info"><div class="s4row-label">Meses sin inquilino (~1 mes/año)</div><div class="s4row-name">Vacancia estimada 8%</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtCOP(vacancia)+'</div></div>'+
+    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><span style="font-size:18px">🧾</span></div><div class="s4row-info"><div class="s4row-label">Impuesto anual del inmueble</div><div class="s4row-name">Predial + seguros</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtCOP(predial)+'</div></div>'+
+    '<div class="s4arrow">↓</div>'+
+    '<div class="s4net-row"><div class="s4net-icon"><span style="font-size:20px">👛</span></div><div style="flex:1"><div style="font-size:11px;color:#2d7a4f;margin-bottom:2px">Lo que llega a tu bolsillo cada mes</div><div style="font-size:13px;font-weight:700;color:#1a5c38">Ingreso neto mensual</div></div><div class="s4net-val">+'+fmtCOP(neto)+'</div></div>';
 
   document.getElementById('s4RentBox').innerHTML=
     '<div class="s4rent-title">¿Y al año cuánto es?</div>'+
@@ -914,9 +904,9 @@ function showStep4(){
   const retorno=((totalAnio1/d.precio)*100).toFixed(1);
   document.getElementById('s4ResSub').textContent='Si negocias bien el precio, en un año este inmueble te habrá generado '+fmtCOP(totalAnio1)+' entre arriendo y valorización.';
   document.getElementById('s4Ingresos').innerHTML=
-    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(0,113,227,0.15)"><i class="ti ti-home-dollar" style="font-size:18px;color:#0071e3" aria-hidden="true"></i></div><div class="s4ing-info"><div class="s4ing-label">Lo que ganas arrendando (año 1)</div><div class="s4ing-name">Ingreso neto por rentas</div></div><div class="s4ing-val">+'+fmtCOP(netoAnual)+'</div></div>'+
+    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(0,113,227,0.15)"><span style="font-size:18px">🏠</span></div><div class="s4ing-info"><div class="s4ing-label">Lo que ganas arrendando (año 1)</div><div class="s4ing-name">Ingreso neto por rentas</div></div><div class="s4ing-val">+'+fmtCOP(netoAnual)+'</div></div>'+
     '<div class="s4plus">+</div>'+
-    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(74,222,128,0.12)"><i class="ti ti-trending-up" style="font-size:18px;color:#4ade80" aria-hidden="true"></i></div><div class="s4ing-info"><div class="s4ing-label">Lo que sube de precio el inmueble</div><div class="s4ing-name">Valorización estimada año 1</div></div><div class="s4ing-val">+'+fmtCOP(val1-d.precio)+'</div></div>';
+    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(74,222,128,0.12)"><span style="font-size:18px">📈</span></div><div class="s4ing-info"><div class="s4ing-label">Lo que sube de precio el inmueble</div><div class="s4ing-name">Valorización estimada año 1</div></div><div class="s4ing-val">+'+fmtCOP(val1-d.precio)+'</div></div>';
 
   document.getElementById('s4Total').innerHTML=
     '<div class="s4total-label">Total que genera tu inversión en el año 1</div>'+
@@ -950,70 +940,6 @@ function resetAll(){
   setStep('step1');
 }
 
-function imprimirPDF(){
-  const r=state.report;
-  if(!r){alert('Primero genera el informe completo.');return;}
-  const lm={buena_oferta:'Buena oferta',precio_justo:'Precio justo',sobrevalorado:'Sobrevalorado'};
-  const win=window.open('','_blank');
-  win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Informe UrbanBrokers</title>
-  <style>body{font-family:Inter,sans-serif;max-width:700px;margin:0 auto;padding:2rem;color:#1d1d1f}
-  .header{background:#1A3D5C;color:#fff;padding:1.5rem 2rem;border-radius:12px;margin-bottom:1.5rem}
-  .title{font-size:1.4rem;font-weight:700}
-  .section{margin-bottom:1.5rem;padding:1.2rem;background:#f5f5f7;border-radius:12px}
-  .label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:#6e6e73;margin-bottom:4px}
-  .value{font-size:1rem;font-weight:700}
-  .grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem}
-  .box{background:#fff;border-radius:8px;padding:.8rem;text-align:center;border:.5px solid #e8e8ed}
-  table{width:100%;border-collapse:collapse;font-size:13px}
-  th{background:#1A3D5C;color:#fff;padding:8px 10px;text-align:left;font-size:11px}
-  td{padding:8px 10px;border-bottom:.5px solid #e8e8ed}
-  .chip{font-size:9px;font-weight:700;text-transform:uppercase;padding:2px 8px;border-radius:980px}
-  .alto{background:#ffebea;color:#C62828}.medio{background:#fff0e6;color:#E65100}.bajo{background:#d5f5e3;color:#2E7D32}
-  @media print{body{padding:0}}</style></head><body>
-  <div class="header">
-    <div class="title">UrbanBrokers — Informe de Análisis</div>
-    <div style="font-size:12px;opacity:.7;margin-top:4px">${state.proyecto} · ${state.direccion} · ${new Date().toLocaleDateString('es-CO')}</div>
-  </div>
-  <div class="section">
-    <div class="label">Veredicto</div>
-    <div class="value" style="font-size:1.3rem;color:${r.veredicto_tipo==='buena_oferta'?'#1d8348':r.veredicto_tipo==='sobrevalorado'?'#ff6200':'#6e6e73'}">${lm[r.veredicto_tipo]||'-'}</div>
-    <div style="margin-top:8px;font-size:13px;color:#424245;line-height:1.6">${r.justificacion}</div>
-  </div>
-  <div class="section">
-    <div class="label" style="margin-bottom:12px">Métricas de precio</div>
-    <div class="grid3">
-      <div class="box"><div class="label">Precio pedido /m²</div><div class="value" style="color:#ff6200">${fmtCOP(state.m2)}</div></div>
-      <div class="box"><div class="label">Referencia zona</div><div class="value">${fmtCOP(state.ref)}</div></div>
-      <div class="box"><div class="label">Diferencia</div><div class="value" style="color:${state.diff>0?'#ff6200':'#1d8348'}">${state.diff>0?'+':''}${state.diff}%</div></div>
-    </div>
-  </div>
-  <div class="section">
-    <div class="label" style="margin-bottom:12px">Estrategia de negociación</div>
-    <div class="grid">
-      <div class="box"><div class="label">Precio justo estimado</div><div class="value" style="color:#1d8348">${fmtFull(r.precio_justo)}</div></div>
-      <div class="box"><div class="label">Oferta de apertura</div><div class="value" style="color:#0071e3">${fmtFull(r.oferta_apertura)}</div></div>
-      <div class="box"><div class="label">Precio máximo</div><div class="value" style="color:#ff3b30">${fmtFull(r.precio_maximo)}</div></div>
-      <div class="box"><div class="label">Margen negociación</div><div class="value" style="color:#ff6200">${r.margen_negociacion}%</div></div>
-    </div>
-    <div style="margin-top:12px;font-size:13px;color:#424245;line-height:1.6;padding:10px;background:#d5f5e3;border-radius:8px">${r.recomendacion}</div>
-  </div>
-  <div class="section">
-    <div class="label" style="margin-bottom:12px">Comparables válidos</div>
-    <table><tr><th>Proyecto</th><th>Precio/m²</th><th>Distancia</th></tr>
-    ${r.comparables.map(c=>`<tr><td>${c.nombre}</td><td style="font-weight:700">${fmtCOP(c.precio_m2)}</td><td>${c.distancia||''}</td></tr>`).join('')}
-    </table>
-  </div>
-  <div class="section">
-    <div class="label" style="margin-bottom:12px">Riesgos identificados</div>
-    ${r.riesgos.map(ri=>`<div style="display:flex;gap:10px;padding:8px 0;border-bottom:.5px solid #e8e8ed"><span class="chip ${ri.nivel}">${ri.nivel}</span><div><div style="font-size:12px;font-weight:600">${ri.titulo}</div><div style="font-size:11px;color:#6e6e73">${ri.descripcion}</div></div></div>`).join('')}
-  </div>
-  <div style="text-align:center;font-size:11px;color:#6e6e73;margin-top:2rem">UrbanBrokers · Datos que negocian por ti · Medellín 2026</div>
-  <script>window.onload=function(){window.print();}<\/script>
-  </body></html>`);
-  win.document.close();
-}
-
 // PORTADA
 const TEXTS={
   es:{tag:'Análisis inteligente de inmuebles · Medellín',m1t:'Análisis Compra / Venta',m1s:'¿El precio es justo? ¿Cuánto negociar?',m2t:'Análisis Renta Tradicional',m2s:'Rentabilidad, canon ideal y proyección',m3t:'Análisis Renta Corta',m3s:'Airbnb / Booking — ocupación y ROI',footer:'✦ Gratis durante junio 2026 · Desde julio $10 USD'},
@@ -1023,7 +949,7 @@ let currentLang='es';
 function setLang(lang){
   currentLang=lang;
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelector('.lang-btn['+'onclick="setLang(\''+lang+'\')"'+']').classList.add('active');
+  document.querySelector('.lang-btn[onclick="setLang(\''+lang+'\')"]').classList.add('active');
   const t=TEXTS[lang];
   document.getElementById('cover-tag').textContent=t.tag;
   document.getElementById('m1-title').textContent=t.m1t;
@@ -1035,19 +961,15 @@ function setLang(lang){
   document.getElementById('cover-footer').textContent=t.footer;
 }
 function selectModule(mod){
-  if(mod==='compraventa'){
-    document.getElementById('portada').style.display='none';
-  }
+  if(mod==='compraventa'){document.getElementById('portada').style.display='none';}
 }
 function showComingSoon(){
   alert(currentLang==='es'?'Próximamente disponible 🚀':'Coming soon 🚀');
 }
 
-// Iniciar cargando datos del Sheet
 cargarProyectos();
 setStep('step1');
 </script>
-
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAheBS8Ha9yB4LVA9PSd7i0sa_WvA-fHfI&libraries=places&language=es&region=CO&loading=async"></script>
 </body>
 </html>
