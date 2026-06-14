@@ -407,6 +407,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="s4chart-area" id="s4Bars"></div>
       <div class="s4diff-box" id="s4DiffBox"></div>
       <div class="s4legend4" id="s4Legend"></div>
+      <div style="background:#f0f2f5;border-radius:12px;padding:12px 14px;margin-top:1rem" id="s4CoverageBox"></div>
     </div>
     <div class="s4card">
       <div class="s4sec-label" id="s4RentLabel">2 · ¿Cuánto dinero te genera en arriendo?</div>
@@ -600,22 +601,43 @@ function distKm(lat1,lng1,lat2,lng2){
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
 
-function getComparables(lat,lng,m2,habs,parq,tipo,amenidades,precioM2){
+function getRangoArea(area){
+  if(area<60)return'pequeño';
+  if(area<=100)return'mediano';
+  return'grande';
+}
+
+function getComparables(lat,lng,area,habs,parq,tipo,amenidades,precioM2){
   const habN=parseInt(habs)||1;
-  const amenSet=new Set(amenidades);
   const esUsado=(tipo==='usado');
   const radioMax=esUsado?1.5:0.8;
   const diffMax=esUsado?30:20;
-  return PROYECTOS.filter(p=>p.tipo===tipo).map(p=>{
-    const dist=distKm(lat,lng,p.lat,p.lng);
-    let valid=true;
-    if(dist>radioMax)valid=false;
-    if(!p.habs.includes(habN)&&!esUsado)valid=false;
-    if(p.parq!==parq&&!esUsado)valid=false;
-    const diffPct=Math.abs((p.m2-precioM2)/precioM2)*100;
-    if(diffPct>diffMax)valid=false;
-    return{p,dist,valid};
-  }).filter(x=>x.valid).sort((a,b)=>a.dist-b.dist);
+  const rango=getRangoArea(area);
+
+  function filtrar(proyectos,usarRangoArea){
+    return proyectos.filter(p=>p.tipo===tipo).map(p=>{
+      const dist=distKm(lat,lng,p.lat,p.lng);
+      let valid=true;
+      if(dist>radioMax)valid=false;
+      if(!p.habs.includes(habN)&&!esUsado)valid=false;
+      if(p.parq!==parq&&!esUsado)valid=false;
+      const diffPct=Math.abs((p.m2-precioM2)/precioM2)*100;
+      if(diffPct>diffMax)valid=false;
+      // Filtro de rango de área si aplica
+      if(usarRangoArea&&p.area>0){
+        const rP=getRangoArea(p.area);
+        if(rP!==rango)valid=false;
+      }
+      return{p,dist,valid};
+    }).filter(x=>x.valid).sort((a,b)=>a.dist-b.dist);
+  }
+
+  // Primero intenta con rango de área
+  const conRango=filtrar(PROYECTOS,true);
+  if(conRango.length>=3)return conRango;
+
+  // Fallback: sin filtro de área
+  return filtrar(PROYECTOS,false);
 }
 
 function fmtCOP(n){return'$'+(n/1000000).toFixed(1)+'M';}
@@ -822,29 +844,45 @@ function showStep4(){
   document.getElementById('s4VTitle').textContent=lm[r.veredicto_tipo]||'—';
   document.getElementById('s4VJust').textContent=r.justificacion||'—';
 
-  // Punto 1: Barras
-  const precioM=fmtCOP(d.precio);
-  const justoM=fmtCOP(r.precio_justo);
-  const ofertaM=fmtCOP(r.oferta_apertura);
-  const maxM=fmtCOP(r.precio_maximo);
+  // Punto 1: Barras con valor redondeado y "Millones"
+  function fmtBar(n){
+    const m=Math.round(n/1000000);
+    return'<span style="font-size:13px;font-weight:700;color:#fff">$'+m+'</span><span style="font-size:10px;color:rgba(255,255,255,0.8);display:block;margin-top:1px">Millones</span>';
+  }
   const maxVal=Math.max(d.precio,r.precio_justo,r.oferta_apertura,r.precio_maximo);
   function pct(v){return Math.round(v/maxVal*100);}
   document.getElementById('s4Bars').innerHTML=
-    '<div class="s4bar-col"><div class="s4bar-rect" style="height:100%;background:#ff6200"><span class="s4bar-price">'+precioM+'</span></div><div class="s4axis"></div><div style="font-size:16px;color:#ff6200;margin-top:6px">🏷️</div><div class="s4bar-name">Lo que piden</div><div class="s4bar-desc">Precio vendedor</div></div>'+
-    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+pct(r.precio_justo)+'%;background:#0071e3"><span class="s4bar-price">'+justoM+'</span></div><div class="s4axis"></div><div style="font-size:16px;color:#0071e3;margin-top:6px">✅</div><div class="s4bar-name">Lo que vale</div><div class="s4bar-desc">Precio mercado</div></div>'+
-    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+pct(r.oferta_apertura)+'%;background:#0F3460"><span class="s4bar-price">'+ofertaM+'</span></div><div class="s4axis"></div><div style="font-size:16px;color:#0F3460;margin-top:6px">💬</div><div class="s4bar-name">Tu oferta</div><div class="s4bar-desc">Con qué arrancar</div></div>'+
-    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+pct(r.precio_maximo)+'%;background:#6b7280"><span class="s4bar-price">'+maxM+'</span></div><div class="s4axis"></div><div style="font-size:16px;color:#6b7280;margin-top:6px">🛑</div><div class="s4bar-name">Tu límite</div><div class="s4bar-desc">No pagues más</div></div>';
+    '<div class="s4bar-col"><div class="s4bar-rect" style="height:100%;background:#ff6200;flex-direction:column;align-items:center;padding-top:8px">'+fmtBar(d.precio)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#ff6200;margin-top:6px">🏷️</div><div class="s4bar-name">Lo que piden</div><div class="s4bar-desc">Precio vendedor</div></div>'+
+    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+pct(r.precio_justo)+'%;background:#0071e3;flex-direction:column;align-items:center;padding-top:8px">'+fmtBar(r.precio_justo)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#0071e3;margin-top:6px">✅</div><div class="s4bar-name">Lo que vale</div><div class="s4bar-desc">Precio mercado</div></div>'+
+    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+pct(r.oferta_apertura)+'%;background:#0F3460;flex-direction:column;align-items:center;padding-top:8px">'+fmtBar(r.oferta_apertura)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#0F3460;margin-top:6px">💬</div><div class="s4bar-name">Tu oferta</div><div class="s4bar-desc">Con qué arrancar</div></div>'+
+    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+pct(r.precio_maximo)+'%;background:#6b7280;flex-direction:column;align-items:center;padding-top:8px">'+fmtBar(r.precio_maximo)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#6b7280;margin-top:6px">🛑</div><div class="s4bar-name">Tu límite</div><div class="s4bar-desc">No pagues más</div></div>';
 
   const diff=d.diff;
   const exceso=fmtCOP(Math.abs(d.precio-r.precio_justo));
   document.getElementById('s4DiffBox').innerHTML='<span style="font-size:22px;color:#ff6200;flex-shrink:0">⚠️</span><div class="s4diff-text">'+
     (diff>0?'El vendedor está pidiendo <strong>'+exceso+' más</strong> de lo que vale según el mercado. Tienes espacio para negociar.':'El precio está <strong>'+Math.abs(diff)+'% por debajo</strong> del mercado. Es una buena oportunidad.')+
     '</div>';
-  document.getElementById('s4Legend').innerHTML=
-    '<div class="s4leg-item"><div class="s4leg-dot" style="background:#ff6200"></div><div><div class="s4leg-title">'+precioM+' pedido</div><div class="s4leg-sub">'+(diff>0?'+':'')+diff+'% sobre mercado</div></div></div>'+
-    '<div class="s4leg-item"><div class="s4leg-dot" style="background:#0071e3"></div><div><div class="s4leg-title">'+justoM+' justo</div><div class="s4leg-sub">'+d.comparables.length+' comparables</div></div></div>'+
-    '<div class="s4leg-item"><div class="s4leg-dot" style="background:#0F3460"></div><div><div class="s4leg-title">'+ofertaM+' oferta</div><div class="s4leg-sub">Arranca aquí</div></div></div>'+
-    '<div class="s4leg-item"><div class="s4leg-dot" style="background:#6b7280"></div><div><div class="s4leg-title">'+maxM+' límite</div><div class="s4leg-sub">Máximo a pagar</div></div></div>';
+
+  // Ajuste 1: Quitar legend (s4Legend vacío)
+  document.getElementById('s4Legend').innerHTML='';
+
+  // Ajuste 4: Dato clave de cobertura por rango de área
+  const rango=getRangoArea(d.area);
+  const totalProyectos=PROYECTOS.filter(p=>p.tipo===d.tipo).length;
+  const enRango=PROYECTOS.filter(p=>p.tipo===d.tipo&&p.area>0&&getRangoArea(p.area)===rango).length;
+  const pctRango=totalProyectos>0?Math.round(enRango/totalProyectos*100):0;
+  const rangoLabel=rango==='pequeño'?'< 60 m²':rango==='mediano'?'60 - 100 m²':'> 100 m²';
+  const useFallback=d.comparables.length>=3&&PROYECTOS.filter(p=>p.tipo===d.tipo&&p.area>0&&getRangoArea(p.area)===rango).length<3;
+  document.getElementById('s4CoverageBox').innerHTML=
+    '<div style="display:flex;align-items:center;gap:10px">'+
+    '<span style="font-size:24px">📊</span>'+
+    '<div>'+
+    '<div style="font-size:12px;font-weight:700;color:#1A1A2E">Cobertura en tu rango: '+rangoLabel+'</div>'+
+    '<div style="font-size:11px;color:#6b7280;margin-top:2px">'+
+    (enRango>0?enRango+' de '+totalProyectos+' registros ('+pctRango+'%) están en este rango de área':'Sin registros en este rango — análisis con rango extendido')+
+    '</div>'+
+    (useFallback?'<div style="font-size:10px;color:#f59e0b;margin-top:2px">⚡ Pocos comparables en tu rango exacto — se amplió la búsqueda</div>':'')+
+    '</div></div>';
 
   // Punto 2: Rentabilidad con datos reales de arriendos
   const canonData=getCanonMercado(d.hab,d.area,d.tipo,'tradicional');
