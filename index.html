@@ -618,7 +618,7 @@ function getComparables(lat,lng,m2,habs,parq,tipo,amenidades,precioM2){
   }).filter(x=>x.valid).sort((a,b)=>a.dist-b.dist);
 }
 
-function fmtCOP(n){return'$'+(n/1000000).toFixed(1)+'M';}
+function fmtCOP(n){return'$'+Math.round(n).toLocaleString('es-CO');}
 function fmtFull(n){return'$'+Math.round(n).toLocaleString('es-CO');}
 
 function setStep(n){
