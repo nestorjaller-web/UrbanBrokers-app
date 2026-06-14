@@ -535,7 +535,7 @@ async function cargarProyectos(){
       const habs_val=c[5]&&c[5].v?parseInt(c[5].v):2;
       const garajes=c[7]&&c[7].v?parseFloat(c[7].v):0;
       const mercado=c[15]&&c[15].v?c[15].v.toLowerCase().trim():'nuevo';
-      return{n:c[1]&&c[1].v?c[1].v:'Sin nombre',lat:6.2200,lng:-75.5715,m2:m2,sz:sz,habs:[habs_val],parq:garajes>0,tipo:mercado,amen:['Gimnasio','Vigilancia']};
+      return{n:c[1]&&c[1].v?c[1].v:'Sin nombre',lat:6.2200,lng:-75.5715,m2:m2,area:area,sz:sz,habs:[habs_val],parq:garajes>0,tipo:mercado,amen:['Gimnasio','Vigilancia']};
     }).filter(p=>p&&p.m2>0);
     console.log('Ventas cargadas: '+PROYECTOS.length);
   }catch(e){
