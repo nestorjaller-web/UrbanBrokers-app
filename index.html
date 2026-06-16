@@ -205,29 +205,56 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   .free-pill{display:none!important}
 }
 /* PORTADA */
-#portada{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;overflow:hidden}
-#portada .cover-img{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center top}
-#portada .cover-content{position:relative;z-index:2;width:100%;max-width:480px;padding:2rem 1.5rem 3rem;text-align:center;margin:0 auto}
-#portada .cover-overlay{position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to bottom,rgba(0,0,0,0) 40%,rgba(0,0,0,0.75) 100%)}
-#portada .cover-tag{font-size:11px;color:rgba(255,255,255,0.6);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:1.5rem}
-#portada .lang-row{display:flex;justify-content:center;gap:8px;margin-bottom:2rem}
-#portada .lang-btn{padding:6px 18px;border-radius:980px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:#fff;font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;backdrop-filter:blur(8px);transition:all .2s}
-#portada .lang-btn.active{background:#fff;color:#1d1d1f;border-color:#fff}
-#portada .module-btn{width:100%;padding:14px 20px;border-radius:16px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.12);backdrop-filter:blur(12px);color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px;text-align:left;display:flex;align-items:center;gap:12px;transition:all .2s;letter-spacing:-0.01em}
-#portada .module-btn:hover{background:rgba(255,255,255,0.22);border-color:rgba(255,255,255,0.4)}
+#portada{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#0f1115;display:flex;align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto}
+#portada .cover-card{background:#1a1d24;border-radius:20px;padding:2rem 1.75rem;max-width:380px;width:100%;text-align:center;border:0.5px solid rgba(255,255,255,0.08)}
+#portada .cover-icon{font-size:2rem;margin-bottom:1rem}
+#portada .cover-logo{font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:6px;letter-spacing:-0.03em}
+#portada .cover-logo span{color:#0071e3}
+#portada .cover-tag{font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:1.5rem;letter-spacing:-0.01em}
+#portada .lang-row{display:flex;justify-content:center;gap:8px;margin-bottom:1.5rem}
+#portada .lang-btn{padding:6px 18px;border-radius:980px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
+#portada .lang-btn.active{background:#fff;color:#1a1d24;border-color:#fff}
+#portada .module-btn{width:100%;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px;text-align:left;display:flex;align-items:center;gap:12px;transition:all .2s;letter-spacing:-0.01em}
+#portada .module-btn:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2)}
 #portada .module-btn.disabled{opacity:.4;cursor:not-allowed}
 #portada .module-btn .mb-icon{font-size:1.4rem;flex-shrink:0}
 #portada .module-btn .mb-text .mb-title{font-size:14px;font-weight:600}
-#portada .module-btn .mb-text .mb-sub{font-size:11px;color:rgba(255,255,255,0.6);font-weight:400;margin-top:2px}
-#portada .module-btn .mb-arrow{margin-left:auto;opacity:.6;font-size:16px}
-#portada .cover-footer{font-size:10px;color:rgba(255,255,255,0.35);margin-top:1rem;letter-spacing:-0.01em}
+#portada .module-btn .mb-text .mb-sub{font-size:11px;color:rgba(255,255,255,0.45);font-weight:400;margin-top:2px}
+#portada .module-btn .mb-arrow{margin-left:auto;opacity:.5;font-size:16px}
+#portada .cover-footer{font-size:10px;color:rgba(255,255,255,0.3);margin-top:1.25rem;letter-spacing:-0.01em;line-height:1.5}
+/* PANTALLA DE ACCESO */
+#accesoScreen{position:fixed;top:0;left:0;width:100%;height:100%;z-index:10000;background:#0f1115;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+#accesoScreen .acceso-card{background:#1a1d24;border-radius:20px;padding:2rem 1.75rem;max-width:380px;width:100%;text-align:center;border:0.5px solid rgba(255,255,255,0.08)}
+#accesoScreen .acceso-logo{font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:6px;letter-spacing:-0.03em}
+#accesoScreen .acceso-logo span{color:#0071e3}
+#accesoScreen .acceso-tag{font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:1.5rem;letter-spacing:-0.01em}
+#accesoScreen .acceso-icon{font-size:2rem;margin-bottom:1rem}
+#accesoScreen input{width:100%;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-family:inherit;font-size:16px;text-align:center;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px}
+#accesoScreen input::placeholder{color:rgba(255,255,255,0.3);letter-spacing:normal;text-transform:none}
+#accesoScreen input:focus{outline:none;border-color:#0071e3}
+#accesoScreen .acceso-btn{width:100%;padding:14px;border:none;border-radius:980px;background:#0071e3;color:#fff;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}
+#accesoScreen .acceso-btn:hover{opacity:.9}
+#accesoScreen .acceso-err{font-size:12px;color:#ff6b6b;margin-top:10px;min-height:16px}
+#accesoScreen .acceso-foot{font-size:10px;color:rgba(255,255,255,0.3);margin-top:1.5rem;line-height:1.5}
 </style>
 </head>
 <body>
+<div id="accesoScreen">
+  <div class="acceso-card">
+    <div class="acceso-icon">🔐</div>
+    <div class="acceso-logo">Urban<span>Brokers</span></div>
+    <div class="acceso-tag">Acceso exclusivo · Fase beta</div>
+    <input type="text" id="codigoAcceso" placeholder="Ingresa tu código" maxlength="10" autocomplete="off">
+    <button class="acceso-btn" onclick="verificarCodigo()">Ingresar</button>
+    <div class="acceso-err" id="accesoErr"></div>
+    <div class="acceso-foot">¿No tienes un código? Escríbenos por WhatsApp para solicitar acceso a la beta.</div>
+  </div>
+</div>
+
 <div id="portada">
-  <img class="cover-img" src="Imagen%20Portada%20Herramienta.jpeg" alt="UrbanBrokers">
-  <div class="cover-overlay"></div>
-  <div class="cover-content">
+  <div class="cover-card">
+    <div class="cover-icon">🏢</div>
+    <div class="cover-logo">Urban<span>Brokers</span></div>
     <div class="cover-tag" id="cover-tag">Análisis inteligente de inmuebles · Medellín</div>
     <div class="lang-row">
       <button class="lang-btn active" onclick="setLang('es')">🇨🇴 Español</button>
@@ -976,6 +1003,31 @@ function resetAll(){
   document.querySelectorAll('#amenidades .chk').forEach(el=>{el.classList.remove('sel');el.querySelector('input').checked=false;});
   autocompleteWidget=null;
   setStep('step1');
+}
+
+// PANTALLA DE ACCESO - 50 códigos beta
+const CODIGOS_VALIDOS=['UB001','UB002','UB003','UB004','UB005','UB006','UB007','UB008','UB009','UB010','UB011','UB012','UB013','UB014','UB015','UB016','UB017','UB018','UB019','UB020','UB021','UB022','UB023','UB024','UB025','UB026','UB027','UB028','UB029','UB030','UB031','UB032','UB033','UB034','UB035','UB036','UB037','UB038','UB039','UB040','UB041','UB042','UB043','UB044','UB045','UB046','UB047','UB048','UB049','UB050'];
+
+function verificarCodigo(){
+  const input=document.getElementById('codigoAcceso');
+  const codigo=input.value.trim().toUpperCase();
+  const err=document.getElementById('accesoErr');
+  if(CODIGOS_VALIDOS.includes(codigo)){
+    sessionStorage.setItem('ub_acceso','ok');
+    document.getElementById('accesoScreen').style.display='none';
+  }else{
+    err.textContent='Código inválido. Verifica e intenta de nuevo.';
+    input.style.borderColor='#ff6b6b';
+  }
+}
+
+document.getElementById('codigoAcceso').addEventListener('keypress',function(e){
+  if(e.key==='Enter')verificarCodigo();
+});
+
+// Verificar si ya tiene acceso en esta sesión
+if(sessionStorage.getItem('ub_acceso')==='ok'){
+  document.getElementById('accesoScreen').style.display='none';
 }
 
 // PORTADA
