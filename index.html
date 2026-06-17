@@ -195,7 +195,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .s4foot-note{font-size:10px;color:rgba(255,255,255,0.3);text-align:center;line-height:1.5}
 .s4canon-badge{font-size:10px;background:rgba(0,113,227,0.15);color:#0071e3;padding:2px 8px;border-radius:980px;margin-left:6px;font-weight:500}
 @media print{
-  #step1,#step2,#step3,#loader,#zonaNoCubierta,#portada,.steps,.wa-send-btn,.reset-btn,.btn-pdf{display:none!important}
+  #step1,#step2,#step3,#loader,#zonaNoCubierta,#portada,#accesoScreen,#encuestaScreen,.steps,.wa-send-btn,.reset-btn,.btn-pdf{display:none!important}
   #step4{display:flex!important}
   .app{padding:.5rem!important;max-width:100%!important}
   .s4card,.s4card-dark{box-shadow:none!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -236,6 +236,19 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 #accesoScreen .acceso-btn:hover{opacity:.9}
 #accesoScreen .acceso-err{font-size:12px;color:#ff6b6b;margin-top:10px;min-height:16px}
 #accesoScreen .acceso-foot{font-size:10px;color:rgba(255,255,255,0.3);margin-top:1.5rem;line-height:1.5}
+/* ENCUESTA BETA */
+#encuestaScreen{position:fixed;top:0;left:0;width:100%;height:100%;z-index:10001;background:rgba(15,17,21,0.92);display:flex;align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto}
+#encuestaScreen .enc-card{background:#1a1d24;border-radius:20px;padding:1.75rem;max-width:400px;width:100%;border:0.5px solid rgba(255,255,255,0.08);max-height:90vh;overflow-y:auto}
+#encuestaScreen .enc-title{font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:4px;text-align:center}
+#encuestaScreen .enc-sub{font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:1.5rem;text-align:center;line-height:1.5}
+#encuestaScreen .enc-fg{margin-bottom:1rem}
+#encuestaScreen .enc-fg label{display:block;font-size:11px;font-weight:600;color:rgba(255,255,255,0.7);margin-bottom:6px}
+#encuestaScreen select,#encuestaScreen textarea{width:100%;padding:11px 12px;border-radius:12px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-family:inherit;font-size:13px}
+#encuestaScreen select:focus,#encuestaScreen textarea:focus{outline:none;border-color:#0071e3}
+#encuestaScreen textarea{resize:none;min-height:70px}
+#encuestaScreen option{background:#1a1d24;color:#fff}
+#encuestaScreen .enc-btn{width:100%;padding:14px;border:none;border-radius:980px;background:#0071e3;color:#fff;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;margin-top:.5rem}
+#encuestaScreen .enc-skip{width:100%;padding:10px;background:transparent;border:none;color:rgba(255,255,255,0.4);font-family:inherit;font-size:12px;cursor:pointer;margin-top:.5rem}
 </style>
 </head>
 <body>
@@ -248,6 +261,69 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
     <button class="acceso-btn" onclick="verificarCodigo()">Ingresar</button>
     <div class="acceso-err" id="accesoErr"></div>
     <div class="acceso-foot">¿No tienes un código? Escríbenos por WhatsApp para solicitar acceso a la beta.</div>
+  </div>
+</div>
+
+<div id="encuestaScreen" class="hidden">
+  <div class="enc-card">
+    <div class="enc-title">🙏 Tu opinión nos ayuda a mejorar</div>
+    <div class="enc-sub">Antes de descargar tu informe, cuéntanos cómo te fue (toma 30 segundos)</div>
+
+    <div class="enc-fg">
+      <label>¿Qué tan fácil fue usar la herramienta?</label>
+      <select id="encFacilidad">
+        <option value="">Selecciona una opción</option>
+        <option value="Muy fácil">Muy fácil</option>
+        <option value="Fácil">Fácil</option>
+        <option value="Regular">Regular</option>
+        <option value="Difícil">Difícil</option>
+        <option value="Muy difícil">Muy difícil</option>
+      </select>
+    </div>
+
+    <div class="enc-fg">
+      <label>¿Qué tan claro fue el informe final?</label>
+      <select id="encClaridad">
+        <option value="">Selecciona una opción</option>
+        <option value="Muy claro">Muy claro</option>
+        <option value="Claro">Claro</option>
+        <option value="Regular">Regular</option>
+        <option value="Confuso">Confuso</option>
+        <option value="Muy confuso">Muy confuso</option>
+      </select>
+    </div>
+
+    <div class="enc-fg">
+      <label>¿Qué tan acertado te parece el análisis?</label>
+      <select id="encPrecision">
+        <option value="">Selecciona una opción</option>
+        <option value="Muy acertado">Muy acertado</option>
+        <option value="Acertado">Acertado</option>
+        <option value="Regular">Regular</option>
+        <option value="Poco acertado">Poco acertado</option>
+        <option value="Nada acertado">Nada acertado</option>
+      </select>
+    </div>
+
+    <div class="enc-fg">
+      <label>¿Cuánto pagarías por esta información para tomar una buena decisión de inversión?</label>
+      <select id="encPrecio">
+        <option value="">Selecciona una opción</option>
+        <option value="$30.000">$30.000</option>
+        <option value="$70.000">$70.000</option>
+        <option value="$120.000">$120.000</option>
+        <option value="Otro valor">Otro valor</option>
+        <option value="No pagaría">No pagaría</option>
+      </select>
+    </div>
+
+    <div class="enc-fg">
+      <label>¿Algo que podamos mejorar?</label>
+      <textarea id="encComentario" placeholder="Tu comentario es muy valioso..."></textarea>
+    </div>
+
+    <button class="enc-btn" onclick="enviarEncuesta()">Enviar y ver mi informe</button>
+    <button class="enc-skip" onclick="saltarEncuesta()">Omitir por ahora</button>
   </div>
 </div>
 
@@ -1004,6 +1080,34 @@ function showStep4(){
 function saveWaitlist(){alert('Listo! Te avisamos cuando tu zona esté disponible.');resetAll();}
 
 function trackPDF(){
+  document.getElementById('encuestaScreen').classList.remove('hidden');
+}
+
+function enviarEncuesta(){
+  const facilidad=document.getElementById('encFacilidad').value;
+  const claridad=document.getElementById('encClaridad').value;
+  const precision=document.getElementById('encPrecision').value;
+  const precio=document.getElementById('encPrecio').value;
+  const comentario=document.getElementById('encComentario').value;
+
+  enviarTracking({
+    tipoRegistro:'encuesta',
+    codigo:sessionStorage.getItem('ub_codigo')||'',
+    nombre:state.nombre||'',email:state.email||'',celular:state.celular||'',
+    facilidadUso:facilidad,claridadInforme:claridad,
+    precisionPercibida:precision,precioPagaria:precio,
+    comentario:comentario
+  });
+
+  ejecutarPDF();
+}
+
+function saltarEncuesta(){
+  ejecutarPDF();
+}
+
+function ejecutarPDF(){
+  document.getElementById('encuestaScreen').classList.add('hidden');
   enviarTracking({
     codigo:sessionStorage.getItem('ub_codigo')||'',
     nombre:state.nombre||'',email:state.email||'',celular:state.celular||'',
