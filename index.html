@@ -523,9 +523,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="s4total-box" id="s4Total"></div>
       <div class="s4foot-note">Proyección estimada. Valorización basada en histórico Ciudad del Río 6% anual.<br>No constituye asesoría financiera.</div>
     </div>
-    <a id="waSendBtn" class="wa-send-btn" href="#" target="_blank">📲 Recibir resumen por WhatsApp</a>
+    <a id="waSendBtn" class="wa-send-btn" href="#" target="_blank" onclick="trackWhatsApp()">📲 Recibir resumen por WhatsApp</a>
     <span id="waNum" style="display:none"></span>
-    <button class="btn btn-blue btn-pdf" onclick="window.print()" style="margin-top:8px">⬇ Guardar informe como PDF</button>
+    <button class="btn btn-blue btn-pdf" onclick="trackPDF()" style="margin-top:8px">⬇ Guardar informe como PDF</button>
     <button class="reset-btn" onclick="resetAll()">← Analizar otro inmueble</button>
   </div>
 </div>
@@ -984,10 +984,53 @@ function showStep4(){
   document.getElementById('waNum').textContent=d.celular;
   const msg=encodeURIComponent('Hola '+d.nombre+' - Tu informe UrbanBrokers. Proyecto: '+d.proyecto+'. Veredicto: '+lm[r.veredicto_tipo]+'. Precio justo: '+fmtCOP(r.precio_justo)+'. Oferta: '+fmtCOP(r.oferta_apertura)+'. Retorno año 1: '+retorno+'%. '+r.recomendacion+' - UrbanBrokers');
   document.getElementById('waSendBtn').href='https://wa.me/'+WA_NUM+'?text='+msg;
+
+  // Tracking: llegó a step4 con todos los datos del análisis
+  enviarTracking({
+    codigo:sessionStorage.getItem('ub_codigo')||'',
+    nombre:d.nombre,email:d.email,celular:d.celular,
+    zona:d.subzona,direccion:d.direccion,proyecto:d.proyecto,
+    tipo:d.tipo,precio:d.precio,area:d.area,habitaciones:d.hab,
+    llegoStep4:'Si',llegoPDF:'No',
+    veredicto:r.veredicto_tipo,diffPorcentaje:d.diff,
+    comparablesEncontrados:d.comparables.length,
+    envioWhatsApp:'No',tiempoEnApp:getTiempoTranscurrido(),
+    dispositivoTipo:getDispositivoTipo(),idioma:currentLang
+  });
+
   setStep('step4');
 }
 
 function saveWaitlist(){alert('Listo! Te avisamos cuando tu zona esté disponible.');resetAll();}
+
+function trackPDF(){
+  enviarTracking({
+    codigo:sessionStorage.getItem('ub_codigo')||'',
+    nombre:state.nombre||'',email:state.email||'',celular:state.celular||'',
+    zona:state.subzona||'',direccion:state.direccion||'',proyecto:state.proyecto||'',
+    tipo:state.tipo||'',precio:state.precio||'',area:state.area||'',habitaciones:state.hab||'',
+    llegoStep4:'Si',llegoPDF:'Si',
+    veredicto:state.report?state.report.veredicto_tipo:'',diffPorcentaje:state.diff||'',
+    comparablesEncontrados:state.comparables?state.comparables.length:'',
+    envioWhatsApp:'No',tiempoEnApp:getTiempoTranscurrido(),
+    dispositivoTipo:getDispositivoTipo(),idioma:currentLang
+  });
+  window.print();
+}
+
+function trackWhatsApp(){
+  enviarTracking({
+    codigo:sessionStorage.getItem('ub_codigo')||'',
+    nombre:state.nombre||'',email:state.email||'',celular:state.celular||'',
+    zona:state.subzona||'',direccion:state.direccion||'',proyecto:state.proyecto||'',
+    tipo:state.tipo||'',precio:state.precio||'',area:state.area||'',habitaciones:state.hab||'',
+    llegoStep4:'Si',llegoPDF:'No',
+    veredicto:state.report?state.report.veredicto_tipo:'',diffPorcentaje:state.diff||'',
+    comparablesEncontrados:state.comparables?state.comparables.length:'',
+    envioWhatsApp:'Si',tiempoEnApp:getTiempoTranscurrido(),
+    dispositivoTipo:getDispositivoTipo(),idioma:currentLang
+  });
+}
 
 function resetAll(){
   state={};
@@ -1007,6 +1050,26 @@ function resetAll(){
 
 // PANTALLA DE ACCESO - 50 códigos beta
 const CODIGOS_VALIDOS=['UB001','UB002','UB003','UB004','UB005','UB006','UB007','UB008','UB009','UB010','UB011','UB012','UB013','UB014','UB015','UB016','UB017','UB018','UB019','UB020','UB021','UB022','UB023','UB024','UB025','UB026','UB027','UB028','UB029','UB030','UB031','UB032','UB033','UB034','UB035','UB036','UB037','UB038','UB039','UB040','UB041','UB042','UB043','UB044','UB045','UB046','UB047','UB048','UB049','UB050'];
+const TRACKING_URL='https://script.google.com/macros/s/AKfycbya7fYcFYUyt4Bm1kfyE1rbJVQY4v6vDAdLsY1HlbTscKCSl4uh6i5F5Dtd_96ozxty/exec';
+let appStartTime=Date.now();
+
+function enviarTracking(data){
+  try{
+    fetch(TRACKING_URL,{
+      method:'POST',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(data)
+    }).catch(e=>console.log('Tracking error (no crítico):',e));
+  }catch(e){console.log('Tracking error:',e);}
+}
+
+function getTiempoTranscurrido(){
+  return Math.round((Date.now()-appStartTime)/1000)+'s';
+}
+
+function getDispositivoTipo(){
+  return /Mobi|Android/i.test(navigator.userAgent)?'Móvil':'Escritorio';
+}
 
 function verificarCodigo(){
   const input=document.getElementById('codigoAcceso');
@@ -1014,7 +1077,9 @@ function verificarCodigo(){
   const err=document.getElementById('accesoErr');
   if(CODIGOS_VALIDOS.includes(codigo)){
     sessionStorage.setItem('ub_acceso','ok');
+    sessionStorage.setItem('ub_codigo',codigo);
     document.getElementById('accesoScreen').style.display='none';
+    enviarTracking({codigo:codigo,nombre:'(pendiente)',email:'',celular:'',idioma:currentLang,dispositivoTipo:getDispositivoTipo()});
   }else{
     err.textContent='Código inválido. Verifica e intenta de nuevo.';
     input.style.borderColor='#ff6b6b';
