@@ -702,8 +702,9 @@ function getComparables(lat,lng,area,habs,parq,tipo,amenidades,precioM2,zonaVali
   const esUsado=(tipo==='usado');
   const rango=getRangoArea(area);
 
-  // Validación de barrio real: si Google confirma que NO es Ciudad del Río, no hay análisis
-  if(zonaValida===false)return[];
+  // Validación geográfica por radio (más confiable que el nombre de sublocalidad de Google)
+  const distCentro=distKm(lat,lng,CENTRO_CIUDAD_DEL_RIO.lat,CENTRO_CIUDAD_DEL_RIO.lng);
+  if(distCentro>RADIO_MAX_ABSOLUTO)return[];
 
   function filtrar(opts){
     return PROYECTOS.filter(p=>p.tipo===tipo).map(p=>{
@@ -903,8 +904,9 @@ function initGoogleMaps(){
         document.getElementById('dirHint').textContent='✅ Dirección geoposicionada correctamente';
         document.getElementById('dirHint').className='fg-hint good';
       }else{
-        document.getElementById('dirHint').textContent='⚠️ Esta dirección parece estar fuera de Ciudad del Río'+(barrioGoogle?' ('+barrioGoogle+')':'')+'. El análisis puede no ser preciso.';
-        document.getElementById('dirHint').className='fg-hint err';
+        // No bloqueamos visualmente — el radio geográfico decide en getComparables
+        document.getElementById('dirHint').textContent='✅ Dirección geoposicionada correctamente';
+        document.getElementById('dirHint').className='fg-hint good';
       }
       checkComparables();
     }
