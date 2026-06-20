@@ -704,21 +704,18 @@ function getRangoArea(area){
 function getComparables(lat,lng,area,habs,parq,tipo,amenidades,precioM2){
   const habN=parseInt(habs)||1;
   const esUsado=(tipo==='usado');
-  const radioMax=esUsado?1.5:0.8;
-  const diffMax=esUsado?30:20;
   const rango=getRangoArea(area);
 
-  function filtrar(proyectos,usarRangoArea){
-    return proyectos.filter(p=>p.tipo===tipo).map(p=>{
+  function filtrar(opts){
+    return PROYECTOS.filter(p=>p.tipo===tipo).map(p=>{
       const dist=distKm(lat,lng,p.lat,p.lng);
       let valid=true;
-      if(dist>radioMax)valid=false;
-      if(!p.habs.includes(habN)&&!esUsado)valid=false;
-      if(p.parq!==parq&&!esUsado)valid=false;
+      if(dist>opts.radioMax)valid=false;
+      if(opts.exigirHabs&&!p.habs.includes(habN))valid=false;
+      if(opts.exigirParq&&p.parq!==parq)valid=false;
       const diffPct=Math.abs((p.m2-precioM2)/precioM2)*100;
-      if(diffPct>diffMax)valid=false;
-      // Filtro de rango de área si aplica
-      if(usarRangoArea&&p.area>0){
+      if(diffPct>opts.diffMax)valid=false;
+      if(opts.usarRangoArea&&p.area>0){
         const rP=getRangoArea(p.area);
         if(rP!==rango)valid=false;
       }
@@ -726,12 +723,25 @@ function getComparables(lat,lng,area,habs,parq,tipo,amenidades,precioM2){
     }).filter(x=>x.valid).sort((a,b)=>a.dist-b.dist);
   }
 
-  // Primero intenta con rango de área
-  const conRango=filtrar(PROYECTOS,true);
-  if(conRango.length>=3)return conRango;
+  // Nivel 1: estricto (todos los filtros, rango de área incluido)
+  let resultado=filtrar({radioMax:esUsado?1.5:0.8,diffMax:esUsado?30:20,exigirHabs:!esUsado,exigirParq:!esUsado,usarRangoArea:true});
+  if(resultado.length>=3)return resultado;
 
-  // Fallback: sin filtro de área
-  return filtrar(PROYECTOS,false);
+  // Nivel 2: sin filtro de rango de área
+  resultado=filtrar({radioMax:esUsado?1.5:0.8,diffMax:esUsado?30:20,exigirHabs:!esUsado,exigirParq:!esUsado,usarRangoArea:false});
+  if(resultado.length>=3)return resultado;
+
+  // Nivel 3: sin exigir parqueadero exacto
+  resultado=filtrar({radioMax:esUsado?1.5:0.8,diffMax:esUsado?30:20,exigirHabs:!esUsado,exigirParq:false,usarRangoArea:false});
+  if(resultado.length>=3)return resultado;
+
+  // Nivel 4: sin exigir habitaciones exactas
+  resultado=filtrar({radioMax:esUsado?1.5:0.8,diffMax:esUsado?30:20,exigirHabs:false,exigirParq:false,usarRangoArea:false});
+  if(resultado.length>=3)return resultado;
+
+  // Nivel 5: radio y diferencia de precio ampliados (último recurso)
+  resultado=filtrar({radioMax:esUsado?2.5:1.5,diffMax:esUsado?40:30,exigirHabs:false,exigirParq:false,usarRangoArea:false});
+  return resultado;
 }
 
 function fmtCOP(n){return'$'+(n/1000000).toFixed(1)+'M';}
@@ -893,13 +903,7 @@ function checkComparables(){
   const amenidades=[...document.querySelectorAll('#amenidades input:checked')].map(x=>x.value);
   const m2=precio&&area?Math.round(precio/area):MERCADO.mediana;
   const comps=getComparables(state.lat,state.lng,area,habs,parq,tipo,amenidades,m2);
-  const noCompBox=document.getElementById('noCompBox');
-  if(comps.length<3){
-    noCompBox.classList.remove('hidden');
-    document.getElementById('noCompMsg').textContent='No tenemos suficiente información para generar un análisis confiable de este inmueble.';
-    const msgWA=encodeURIComponent('Hola, me gustaría solicitar un estudio puntual con UrbanBrokers para un inmueble en una zona con poca información disponible.');
-    document.getElementById('noCompWA').href='https://wa.me/'+WA_NUM+'?text='+msgWA;
-  }else{noCompBox.classList.add('hidden');}
+  document.getElementById('noCompBox').classList.add('hidden');
   state.comparables=comps;
 }
 
