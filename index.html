@@ -466,13 +466,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
           <label class="chk"><input type="checkbox" value="Vista ciudad">🌆 Vista ciudad</label>
         </div>
       </div>
-      <div id="noCompBox" class="no-comp-box hidden">
-        <span>⚠️</span>
-        <div>
-          <p id="noCompMsg">No tenemos suficiente información para generar un análisis confiable de este inmueble.</p>
-          <a id="noCompWA" href="#" target="_blank" style="display:inline-block;margin-top:8px;font-size:12px;font-weight:600;color:#0071e3;text-decoration:none">📲 Consulta a UrbanBrokers para un estudio puntual →</a>
-        </div>
-      </div>
       <button class="btn btn-blue" id="btnAnalizar">Analizar →</button>
     </div>
     <button class="reset-btn" onclick="goBackStep1()">← Volver</button>
@@ -903,7 +896,6 @@ function checkComparables(){
   const amenidades=[...document.querySelectorAll('#amenidades input:checked')].map(x=>x.value);
   const m2=precio&&area?Math.round(precio/area):MERCADO.mediana;
   const comps=getComparables(state.lat,state.lng,area,habs,parq,tipo,amenidades,m2);
-  document.getElementById('noCompBox').classList.add('hidden');
   state.comparables=comps;
 }
 
@@ -941,10 +933,11 @@ document.getElementById('btnAnalizar').addEventListener('click',async function()
   state.parq=document.querySelector('#amenidades input[value="Parqueadero"]').checked;
   const comps=getComparables(state.lat,state.lng,area,state.hab,state.parq,state.tipo,state.amenidades,state.m2);
   if(comps.length<3){
-    document.getElementById('noCompBox').classList.remove('hidden');
-    document.getElementById('noCompMsg').textContent='No tenemos suficiente información para generar un análisis confiable de este inmueble.';
-    const msgWA2=encodeURIComponent('Hola, me gustaría solicitar un estudio puntual con UrbanBrokers para un inmueble en una zona con poca información disponible.');
-    document.getElementById('noCompWA').href='https://wa.me/'+WA_NUM+'?text='+msgWA2;
+    const irWA=confirm('No tenemos suficiente información para generar un análisis confiable de este inmueble.\n\n¿Quieres contactar a UrbanBrokers para un estudio puntual?');
+    if(irWA){
+      const msgWA2=encodeURIComponent('Hola, me gustaría solicitar un estudio puntual con UrbanBrokers para un inmueble en una zona con poca información disponible.');
+      window.open('https://wa.me/'+WA_NUM+'?text='+msgWA2,'_blank');
+    }
     return;
   }
   state.comparables=comps;
@@ -1229,7 +1222,6 @@ function resetAll(){
   document.getElementById('coordsInfo').textContent='';
   document.getElementById('dirHint').textContent='Escribe la dirección y selecciona de las sugerencias';
   document.getElementById('dirHint').className='fg-hint';
-  document.getElementById('noCompBox').classList.add('hidden');
   document.querySelectorAll('#amenidades .chk').forEach(el=>{el.classList.remove('sel');el.querySelector('input').checked=false;});
   autocompleteWidget=null;
   setStep('step1');
