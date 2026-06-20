@@ -694,10 +694,16 @@ function getRangoArea(area){
   return'grande';
 }
 
-function getComparables(lat,lng,area,habs,parq,tipo,amenidades,precioM2){
+const CENTRO_CIUDAD_DEL_RIO={lat:6.2200,lng:-75.5715};
+const RADIO_MAX_ABSOLUTO=3; // km - fuera de esto, no hay análisis válido
+
+function getComparables(lat,lng,area,habs,parq,tipo,amenidades,precioM2,zonaValida){
   const habN=parseInt(habs)||1;
   const esUsado=(tipo==='usado');
   const rango=getRangoArea(area);
+
+  // Validación de barrio real: si Google confirma que NO es Ciudad del Río, no hay análisis
+  if(zonaValida===false)return[];
 
   function filtrar(opts){
     return PROYECTOS.filter(p=>p.tipo===tipo).map(p=>{
@@ -870,7 +876,7 @@ function initGoogleMaps(){
     componentRestrictions:{country:'co'},
     bounds:new google.maps.LatLngBounds(new google.maps.LatLng(6.180,-75.600),new google.maps.LatLng(6.250,-75.550)),
     strictBounds:false,
-    fields:['geometry','formatted_address','name']
+    fields:['geometry','formatted_address','name','address_components']
   });
   ac.addListener('place_changed',function(){
     const place=ac.getPlace();
@@ -878,12 +884,40 @@ function initGoogleMaps(){
       state.lat=place.geometry.location.lat();
       state.lng=place.geometry.location.lng();
       document.getElementById('coordsInfo').textContent='📍 '+state.lat.toFixed(5)+', '+state.lng.toFixed(5);
-      document.getElementById('dirHint').textContent='✅ Dirección geoposicionada correctamente';
-      document.getElementById('dirHint').className='fg-hint good';
+
+      // Extraer barrio/sublocalidad de Google Maps
+      let barrioGoogle='';
+      if(place.address_components){
+        place.address_components.forEach(comp=>{
+          if(comp.types.includes('sublocality')||comp.types.includes('sublocality_level_1')||comp.types.includes('neighborhood')){
+            barrioGoogle=comp.long_name;
+          }
+        });
+      }
+      state.barrioDetectado=barrioGoogle;
+
+      const enCiudadDelRio=esCiudadDelRio(barrioGoogle,place.formatted_address||'');
+      state.zonaValida=enCiudadDelRio;
+
+      if(enCiudadDelRio){
+        document.getElementById('dirHint').textContent='✅ Dirección geoposicionada correctamente';
+        document.getElementById('dirHint').className='fg-hint good';
+      }else{
+        document.getElementById('dirHint').textContent='⚠️ Esta dirección parece estar fuera de Ciudad del Río'+(barrioGoogle?' ('+barrioGoogle+')':'')+'. El análisis puede no ser preciso.';
+        document.getElementById('dirHint').className='fg-hint err';
+      }
       checkComparables();
     }
   });
   autocompleteWidget=ac;
+}
+
+// Lista de barrios/sectores que componen o son aledaños a Ciudad del Río
+const BARRIOS_CIUDAD_DEL_RIO=['ciudad del río','ciudad del rio','bavaria','cerca viva','muba','jardines del río','jardines del rio','industriales'];
+
+function esCiudadDelRio(barrioGoogle,direccionCompleta){
+  const texto=(barrioGoogle+' '+direccionCompleta).toLowerCase();
+  return BARRIOS_CIUDAD_DEL_RIO.some(b=>texto.includes(b));
 }
 
 function checkComparables(){
@@ -895,7 +929,7 @@ function checkComparables(){
   const tipo=document.getElementById('tipoInm').value;
   const amenidades=[...document.querySelectorAll('#amenidades input:checked')].map(x=>x.value);
   const m2=precio&&area?Math.round(precio/area):MERCADO.mediana;
-  const comps=getComparables(state.lat,state.lng,area,habs,parq,tipo,amenidades,m2);
+  const comps=getComparables(state.lat,state.lng,area,habs,parq,tipo,amenidades,m2,state.zonaValida);
   state.comparables=comps;
 }
 
@@ -931,7 +965,7 @@ document.getElementById('btnAnalizar').addEventListener('click',async function()
   state.amenidades=[...document.querySelectorAll('#amenidades input:checked')].map(x=>x.value);
   state.m2=Math.round(precio/area);
   state.parq=document.querySelector('#amenidades input[value="Parqueadero"]').checked;
-  const comps=getComparables(state.lat,state.lng,area,state.hab,state.parq,state.tipo,state.amenidades,state.m2);
+  const comps=getComparables(state.lat,state.lng,area,state.hab,state.parq,state.tipo,state.amenidades,state.m2,state.zonaValida);
   if(comps.length<3){
     const irWA=confirm('No tenemos suficiente información para generar un análisis confiable de este inmueble.\n\n¿Quieres contactar a UrbanBrokers para un estudio puntual?');
     if(irWA){
