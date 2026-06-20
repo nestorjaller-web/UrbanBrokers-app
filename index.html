@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UrbanBrokers — Análisis de inmuebles</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='800 50 250 300'%3E%3Cpath d='M915 80 C865 80 825 120 825 170 C825 215 860 250 915 320 C970 250 1005 215 1005 170 C1005 120 965 80 915 80 Z' fill='%230A6CFF'/%3E%3Ccircle cx='915' cy='170' r='40' fill='white'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -257,7 +258,19 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <div id="accesoScreen">
   <div class="acceso-card">
     <div class="acceso-icon">🔐</div>
-    <div class="acceso-logo">Urban<span>Brokers</span></div>
+    <svg class="acceso-logo-svg" width="240" height="69" viewBox="0 0 1400 400" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 6px;display:block">
+      <defs>
+        <linearGradient id="blueAcc" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#0057FF"/>
+          <stop offset="100%" stop-color="#0A6CFF"/>
+        </linearGradient>
+      </defs>
+      <text x="70" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="#ffffff">Urban</text>
+      <text x="610" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="url(#blueAcc)">Br</text>
+      <path d="M915 80 C865 80 825 120 825 170 C825 215 860 250 915 320 C970 250 1005 215 1005 170 C1005 120 965 80 915 80 Z" fill="url(#blueAcc)"/>
+      <circle cx="915" cy="170" r="40" fill="#1a1d24"/>
+      <text x="1015" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="url(#blueAcc)">kers</text>
+    </svg>
     <div class="acceso-tag">Acceso exclusivo · Fase beta</div>
     <input type="text" id="codigoAcceso" placeholder="Ingresa tu código" maxlength="10" autocomplete="off">
     <button class="acceso-btn" onclick="verificarCodigo()">Ingresar</button>
@@ -332,7 +345,19 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <div id="portada">
   <div class="cover-card">
     <div class="cover-icon">🏢</div>
-    <div class="cover-logo">Urban<span>Brokers</span></div>
+    <svg class="cover-logo-svg" width="240" height="69" viewBox="0 0 1400 400" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 6px;display:block">
+      <defs>
+        <linearGradient id="blueCov" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#0057FF"/>
+          <stop offset="100%" stop-color="#0A6CFF"/>
+        </linearGradient>
+      </defs>
+      <text x="70" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="#ffffff">Urban</text>
+      <text x="610" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="url(#blueCov)">Br</text>
+      <path d="M915 80 C865 80 825 120 825 170 C825 215 860 250 915 320 C970 250 1005 215 1005 170 C1005 120 965 80 915 80 Z" fill="url(#blueCov)"/>
+      <circle cx="915" cy="170" r="40" fill="#1a1d24"/>
+      <text x="1015" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="url(#blueCov)">kers</text>
+    </svg>
     <div class="cover-tag" id="cover-tag">Análisis inteligente de inmuebles · Medellín</div>
     <div class="lang-row">
       <button class="lang-btn active" onclick="setLang('es')">🇨🇴 Español</button>
@@ -359,7 +384,19 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 
 <div class="app">
   <div class="brand">
-    <div class="brand-name">Urban<span>Brokers</span></div>
+    <svg class="brand-logo-svg" width="220" height="63" viewBox="0 0 1400 400" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 4px;display:block">
+      <defs>
+        <linearGradient id="blueBrand" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#0057FF"/>
+          <stop offset="100%" stop-color="#0A6CFF"/>
+        </linearGradient>
+      </defs>
+      <text x="70" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="#000000">Urban</text>
+      <text x="610" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="url(#blueBrand)">Br</text>
+      <path d="M915 80 C865 80 825 120 825 170 C825 215 860 250 915 320 C970 250 1005 215 1005 170 C1005 120 965 80 915 80 Z" fill="url(#blueBrand)"/>
+      <circle cx="915" cy="170" r="40" fill="#f5f5f7"/>
+      <text x="1015" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="url(#blueBrand)">kers</text>
+    </svg>
     <div class="brand-tag">Análisis inteligente de inmuebles · Medellín</div>
     <div class="free-pill">✦ Gratis durante junio 2026</div>
   </div>
