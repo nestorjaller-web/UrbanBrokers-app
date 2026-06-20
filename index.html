@@ -74,6 +74,19 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .unlock-list li{font-size:12px;color:rgba(255,255,255,0.7);padding:3px 0;letter-spacing:-0.01em}
 .unlock-list li:before{content:"→ ";color:rgba(255,255,255,0.3)}
 .unlock-price{font-size:11px;color:rgba(255,255,255,0.35);margin-top:8px;letter-spacing:-0.01em}
+.pago-opciones{display:flex;flex-direction:column;gap:.75rem}
+.pago-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:1.25rem;text-align:center}
+.pago-label{font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:6px;font-weight:600}
+.pago-price{font-size:1.6rem;font-weight:700;color:#fff;margin-bottom:4px}
+.pago-old{font-size:1rem;color:rgba(255,255,255,0.35);text-decoration:line-through;font-weight:400}
+.pago-promo{font-size:11px;color:#4ade80;margin-bottom:1rem}
+.pago-divider{text-align:center;font-size:11px;color:rgba(255,255,255,0.3);position:relative}
+.pago-card-codigo{background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:16px;padding:1.1rem}
+.pago-card-codigo input{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-family:inherit;font-size:14px;text-align:center;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px}
+.pago-card-codigo input::placeholder{color:rgba(255,255,255,0.3);letter-spacing:normal;text-transform:none}
+.pago-card-codigo input:focus{outline:none;border-color:#0071e3}
+.btn-codigo{width:100%;padding:11px;border:1px solid rgba(255,255,255,0.2);border-radius:980px;background:transparent;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.btn-codigo:hover{background:rgba(255,255,255,0.08)}
 .wa-box{background:var(--green-light);border-radius:16px;padding:1.25rem;margin-bottom:1rem;display:flex;gap:12px;align-items:flex-start}
 .wa-title{font-size:13px;font-weight:600;color:var(--green);margin-bottom:3px;letter-spacing:-0.01em}
 .wa-sub{font-size:12px;color:var(--gray4);letter-spacing:-0.01em;line-height:1.5}
@@ -197,7 +210,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .s4foot-note{font-size:10px;color:rgba(255,255,255,0.3);text-align:center;line-height:1.5}
 .s4canon-badge{font-size:10px;background:rgba(0,113,227,0.15);color:#0071e3;padding:2px 8px;border-radius:980px;margin-left:6px;font-weight:500}
 @media print{
-  #step1,#step2,#step3,#loader,#zonaNoCubierta,#portada,#accesoScreen,#encuestaScreen,.steps,.wa-send-btn,.reset-btn,.btn-pdf{display:none!important}
+  #step1,#step2,#step3,#loader,#zonaNoCubierta,#portada,#encuestaScreen,.steps,.wa-send-btn,.reset-btn,.btn-pdf{display:none!important}
   #step4{display:flex!important}
   .app{padding:.5rem!important;max-width:100%!important}
   .s4card,.s4card-dark{box-shadow:none!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
@@ -255,30 +268,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 </style>
 </head>
 <body>
-<div id="accesoScreen">
-  <div class="acceso-card">
-    <div class="acceso-icon">🔐</div>
-    <svg class="acceso-logo-svg" width="240" height="69" viewBox="0 0 1400 400" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 6px;display:block">
-      <defs>
-        <linearGradient id="blueAcc" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#0057FF"/>
-          <stop offset="100%" stop-color="#0A6CFF"/>
-        </linearGradient>
-      </defs>
-      <text x="70" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="#ffffff">Urban</text>
-      <text x="610" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="url(#blueAcc)">Br</text>
-      <path d="M915 80 C865 80 825 120 825 170 C825 215 860 250 915 320 C970 250 1005 215 1005 170 C1005 120 965 80 915 80 Z" fill="url(#blueAcc)"/>
-      <circle cx="915" cy="170" r="40" fill="#1a1d24"/>
-      <text x="1015" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="url(#blueAcc)">kers</text>
-    </svg>
-    <div class="acceso-tag">Acceso exclusivo · Fase beta</div>
-    <input type="text" id="codigoAcceso" placeholder="Ingresa tu código" maxlength="10" autocomplete="off">
-    <button class="acceso-btn" onclick="verificarCodigo()">Ingresar</button>
-    <div class="acceso-err" id="accesoErr"></div>
-    <div class="acceso-foot">¿No tienes un código? Escríbenos por WhatsApp para solicitar acceso a la beta.</div>
-  </div>
-</div>
-
 <div id="encuestaScreen" class="hidden">
   <div class="enc-card">
     <div class="enc-title">🙏 Tu opinión nos ayuda a mejorar</div>
@@ -317,18 +306,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
         <option value="Regular">Regular</option>
         <option value="Poco acertado">Poco acertado</option>
         <option value="Nada acertado">Nada acertado</option>
-      </select>
-    </div>
-
-    <div class="enc-fg">
-      <label>¿Cuánto pagarías por esta información para tomar una buena decisión de inversión?</label>
-      <select id="encPrecio">
-        <option value="">Selecciona una opción</option>
-        <option value="$30.000">$30.000</option>
-        <option value="$70.000">$70.000</option>
-        <option value="$120.000">$120.000</option>
-        <option value="Otro valor">Otro valor</option>
-        <option value="No pagaría">No pagaría</option>
       </select>
     </div>
 
@@ -459,12 +436,12 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
         <p><strong>Tip:</strong> Escribe la dirección exacta — Google Maps la ubica automáticamente y encontramos comparables reales en un radio de 500-800 metros.</p>
       </div>
       <div class="fg">
-        <label>Dirección exacta del inmueble</label>
-        <input type="text" id="direccion" placeholder="Ej: Calle 18 # 43G-90, Medellín" autocomplete="off">
+        <label>Dirección del inmueble</label>
+        <input type="text" id="direccion" placeholder="Dirección del inmueble, nombre del edificio" autocomplete="off">
         <div class="fg-hint" id="dirHint">Escribe la dirección y selecciona de las sugerencias de Google Maps</div>
         <div class="map-hint" id="coordsInfo"></div>
       </div>
-      <div class="fg"><label>Nombre del proyecto o edificio</label><input type="text" id="proyecto" placeholder="Ej: Bosque del Río, River Park..."></div>
+      <input type="hidden" id="proyecto" value="">
       <div class="fg">
         <label>¿Proyecto nuevo o apartamento usado?</label>
         <select id="tipoInm"><option value="nuevo">Proyecto nuevo</option><option value="usado">Apartamento usado</option></select>
@@ -491,7 +468,10 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       </div>
       <div id="noCompBox" class="no-comp-box hidden">
         <span>⚠️</span>
-        <p id="noCompMsg">No encontramos suficientes comparables válidos en el área. Se requieren mínimo 3 comparables para generar el informe.</p>
+        <div>
+          <p id="noCompMsg">No tenemos suficiente información para generar un análisis confiable de este inmueble.</p>
+          <a id="noCompWA" href="#" target="_blank" style="display:inline-block;margin-top:8px;font-size:12px;font-weight:600;color:#0071e3;text-decoration:none">📲 Consulta a UrbanBrokers para un estudio puntual →</a>
+        </div>
       </div>
       <button class="btn btn-blue" id="btnAnalizar">Analizar →</button>
     </div>
@@ -511,9 +491,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div id="addrBadge"></div>
       <div id="verdictPill"></div>
       <div class="teaser-box">
-        <div class="teaser-row"><div class="teaser-icon">📊</div><div class="teaser-text" id="t1">El precio está sobre el mercado</div><div class="teaser-lock">🔒</div></div>
-        <div class="teaser-row"><div class="teaser-icon">⚠️</div><div class="teaser-text" id="t2">Identificamos riesgos importantes</div><div class="teaser-lock">🔒</div></div>
-        <div class="teaser-row"><div class="teaser-icon">🏘️</div><div class="teaser-text" id="t3">Comparables válidos encontrados</div><div class="teaser-lock">🔒</div></div>
+        <div class="teaser-row"><div class="teaser-icon">📊</div><div class="teaser-text" id="t1">Cuánto vale realmente este inmueble</div><div class="teaser-lock">🔒</div></div>
+        <div class="teaser-row"><div class="teaser-icon">🏠</div><div class="teaser-text" id="t2">Cuánto puedes ganar arrendándolo</div><div class="teaser-lock">🔒</div></div>
+        <div class="teaser-row"><div class="teaser-icon">📈</div><div class="teaser-text" id="t3">Valorización estimada a 3 años</div><div class="teaser-lock">🔒</div></div>
         <div class="teaser-row"><div class="teaser-icon">💰</div><div class="teaser-text" id="t4">Hay margen de negociación</div><div class="teaser-lock">🔒</div></div>
       </div>
     </div>
@@ -521,15 +501,30 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="ut">Informe completo</div>
       <div class="us">Desbloquea todos los datos y la estrategia</div>
       <ul class="unlock-list">
-        <li>Diferencia exacta vs el mercado en %</li>
-        <li>Comparables válidos con metodología profesional</li>
-        <li>Análisis detallado de cada riesgo</li>
-        <li>Precio justo estimado en COP</li>
-        <li>Estrategia y precio exacto para negociar</li>
-        <li>Resumen enviado por WhatsApp</li>
+        <li>Valor sugerido para negociar la propiedad</li>
+        <li>En cuánto la puedes arrendar</li>
+        <li>Valorización estimada en 3 años</li>
+        <li>Sitios de interés cercanos</li>
+        <li>Retorno total de la inversión en 1 año</li>
+        <li>Calificación de la inversión</li>
+        <li>Reporte detallado en PDF</li>
       </ul>
-      <button class="btn btn-blue" onclick="unlockReport()" style="border-radius:980px">Ver informe completo — Gratis ✦</button>
-      <div class="unlock-price">Gratis junio 2026 · Desde julio $10 USD</div>
+      <div class="pago-opciones">
+        <div class="pago-card">
+          <div class="pago-label">Pago único</div>
+          <div class="pago-price">$49.900 <span class="pago-old">$89.900</span></div>
+          <div class="pago-promo">Precio promocional · junio y julio 2026</div>
+          <button class="btn btn-blue" onclick="mostrarPago()" style="border-radius:980px">Pagar y ver informe</button>
+        </div>
+        <div class="pago-divider"><span>o</span></div>
+        <div class="pago-card-codigo">
+          <div class="pago-label">¿Tienes código promocional?</div>
+          <input type="text" id="codigoAccesoStep3" placeholder="Ingresa tu código" maxlength="10" autocomplete="off">
+          <button class="btn-codigo" onclick="verificarCodigoStep3()">Usar código</button>
+          <div class="acceso-err" id="accesoErrStep3"></div>
+        </div>
+      </div>
+      <div class="unlock-price">Acceso inmediato a tu informe completo</div>
     </div>
     <button class="reset-btn" onclick="goBackStep2()">← Editar datos</button>
   </div>
@@ -593,9 +588,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       </div>
       <div class="s4ingresos" id="s4Ingresos"></div>
       <div class="s4total-box" id="s4Total"></div>
-      <div class="s4foot-note">Proyección estimada. Valorización basada en histórico Ciudad del Río 6% anual.<br>No constituye asesoría financiera.</div>
+      <div class="s4foot-note">Proyección estimada. Valorización basada en histórico Ciudad del Río 6% anual.<br>No constituye asesoría financiera ni avalúo comercial.</div>
     </div>
-    <a id="waSendBtn" class="wa-send-btn" href="#" target="_blank" onclick="trackWhatsApp()">📲 Recibir resumen por WhatsApp</a>
+    <a id="waSendBtn" class="wa-send-btn" href="#" target="_blank" onclick="trackWhatsApp()">📲 ¿Necesitas asesoría adicional? Contáctanos</a>
     <span id="waNum" style="display:none"></span>
     <button class="btn btn-blue btn-pdf" onclick="trackPDF()" style="margin-top:8px">⬇ Guardar informe como PDF</button>
     <button class="reset-btn" onclick="resetAll()">← Analizar otro inmueble</button>
@@ -901,7 +896,9 @@ function checkComparables(){
   const noCompBox=document.getElementById('noCompBox');
   if(comps.length<3){
     noCompBox.classList.remove('hidden');
-    document.getElementById('noCompMsg').textContent='Solo encontramos '+comps.length+' comparable(s) válido(s). Se requieren mínimo 3 para generar el informe.';
+    document.getElementById('noCompMsg').textContent='No tenemos suficiente información para generar un análisis confiable de este inmueble.';
+    const msgWA=encodeURIComponent('Hola, me gustaría solicitar un estudio puntual con UrbanBrokers para un inmueble en una zona con poca información disponible.');
+    document.getElementById('noCompWA').href='https://wa.me/'+WA_NUM+'?text='+msgWA;
   }else{noCompBox.classList.add('hidden');}
   state.comparables=comps;
 }
@@ -929,7 +926,7 @@ document.getElementById('btnAnalizar').addEventListener('click',async function()
   if(!precio||!area){alert('Por favor ingresa precio y área.');return;}
   if(!state.lat||!state.lng){alert('Por favor selecciona la dirección desde las sugerencias de Google Maps.');return;}
   state.precio=precio;state.area=area;
-  state.proyecto=document.getElementById('proyecto').value.trim()||'No especificado';
+  state.proyecto=document.getElementById('direccion').value.trim()||'No especificado';
   state.hab=document.getElementById('hab').value;
   state.ban=document.getElementById('ban').value;
   state.piso=document.getElementById('piso').value;
@@ -941,7 +938,9 @@ document.getElementById('btnAnalizar').addEventListener('click',async function()
   const comps=getComparables(state.lat,state.lng,area,state.hab,state.parq,state.tipo,state.amenidades,state.m2);
   if(comps.length<3){
     document.getElementById('noCompBox').classList.remove('hidden');
-    document.getElementById('noCompMsg').textContent='No hay suficientes comparables ('+comps.length+'/3 requeridos).';
+    document.getElementById('noCompMsg').textContent='No tenemos suficiente información para generar un análisis confiable de este inmueble.';
+    const msgWA2=encodeURIComponent('Hola, me gustaría solicitar un estudio puntual con UrbanBrokers para un inmueble en una zona con poca información disponible.');
+    document.getElementById('noCompWA').href='https://wa.me/'+WA_NUM+'?text='+msgWA2;
     return;
   }
   state.comparables=comps;
@@ -969,8 +968,8 @@ function showStep3(){
   else{pc='vp-fair';pt='⚖️ En rango de mercado';}
   document.getElementById('verdictPill').innerHTML='<div class="verdict-pill '+pc+'">'+pt+'</div>';
   document.getElementById('t1').textContent=d.diff>5?'El precio pedido está por encima del mercado':'El precio está en rango de los comparables';
-  document.getElementById('t2').textContent='Identificamos '+(d.diff>10?3:2)+' riesgos importantes';
-  document.getElementById('t3').textContent=d.comparables.length+' comparables válidos encontrados';
+  document.getElementById('t2').textContent='Descubre el ingreso mensual estimado por arriendo';
+  document.getElementById('t3').textContent='Mira cuánto puede valorizarse en los próximos años';
   document.getElementById('t4').textContent=d.diff>5?'Hay margen de negociación disponible':'El precio es competitivo en la zona';
   setStep('step3');
 }
@@ -1045,15 +1044,15 @@ function showStep4(){
   const totalProyectos=PROYECTOS.filter(p=>p.tipo===d.tipo).length;
   const enRango=PROYECTOS.filter(p=>p.tipo===d.tipo&&p.area>0&&getRangoArea(p.area)===rango).length;
   const pctRango=totalProyectos>0?Math.round(enRango/totalProyectos*100):0;
-  const rangoLabel=rango==='pequeño'?'< 60 m²':rango==='mediano'?'60 - 100 m²':'> 100 m²';
+  const rangoLabel=rango==='pequeño'?'menores a 60 m²':rango==='mediano'?'entre 60 y 100 m²':'mayores a 100 m²';
   const useFallback=d.comparables.length>=3&&PROYECTOS.filter(p=>p.tipo===d.tipo&&p.area>0&&getRangoArea(p.area)===rango).length<3;
   document.getElementById('s4CoverageBox').innerHTML=
     '<div style="display:flex;align-items:center;gap:10px">'+
     '<span style="font-size:24px">📊</span>'+
     '<div>'+
-    '<div style="font-size:12px;font-weight:700;color:#1A1A2E">Cobertura en tu rango: '+rangoLabel+'</div>'+
+    '<div style="font-size:12px;font-weight:700;color:#1A1A2E">Cobertura en tu rango</div>'+
     '<div style="font-size:11px;color:#6b7280;margin-top:2px">'+
-    (enRango>0?enRango+' de '+totalProyectos+' registros ('+pctRango+'%) están en este rango de área':'Sin registros en este rango — análisis con rango extendido')+
+    (enRango>0?'Para áreas '+rangoLabel+', esto representa el '+pctRango+'% de la oferta actual analizada.':'Sin oferta registrada en este rango — análisis con rango extendido')+
     '</div>'+
     (useFallback?'<div style="font-size:10px;color:#f59e0b;margin-top:2px">⚡ Pocos comparables en tu rango exacto — se amplió la búsqueda</div>':'')+
     '</div></div>';
@@ -1129,7 +1128,7 @@ function showStep4(){
   let cel=d.celular.replace(/\D/g,'');
   if(!cel.startsWith('57'))cel='57'+cel;
   document.getElementById('waNum').textContent=d.celular;
-  const msg=encodeURIComponent('Hola '+d.nombre+' - Tu informe UrbanBrokers. Proyecto: '+d.proyecto+'. Veredicto: '+lm[r.veredicto_tipo]+'. Precio justo: '+fmtCOP(r.precio_justo)+'. Oferta: '+fmtCOP(r.oferta_apertura)+'. Retorno año 1: '+retorno+'%. '+r.recomendacion+' - UrbanBrokers');
+  const msg=encodeURIComponent('Hola, me gustaría contratar un servicio puntual de asesoría con UrbanBrokers.');
   document.getElementById('waSendBtn').href='https://wa.me/'+WA_NUM+'?text='+msg;
 
   // Tracking: llegó a step4 con todos los datos del análisis
@@ -1168,7 +1167,6 @@ function enviarEncuesta(){
   const facilidad=document.getElementById('encFacilidad').value;
   const claridad=document.getElementById('encClaridad').value;
   const precision=document.getElementById('encPrecision').value;
-  const precio=document.getElementById('encPrecio').value;
   const comentario=document.getElementById('encComentario').value;
 
   enviarTracking({
@@ -1176,7 +1174,7 @@ function enviarEncuesta(){
     codigo:sessionStorage.getItem('ub_codigo')||'',
     nombre:state.nombre||'',email:state.email||'',celular:state.celular||'',
     facilidadUso:facilidad,claridadInforme:claridad,
-    precisionPercibida:precision,precioPagaria:precio,
+    precisionPercibida:precision,
     comentario:comentario
   });
 
@@ -1256,29 +1254,34 @@ function getDispositivoTipo(){
   return /Mobi|Android/i.test(navigator.userAgent)?'Móvil':'Escritorio';
 }
 
-function verificarCodigo(){
-  const input=document.getElementById('codigoAcceso');
+function verificarCodigoStep3(){
+  const input=document.getElementById('codigoAccesoStep3');
   const codigo=input.value.trim().toUpperCase();
-  const err=document.getElementById('accesoErr');
+  const err=document.getElementById('accesoErrStep3');
   if(CODIGOS_VALIDOS.includes(codigo)){
-    sessionStorage.setItem('ub_acceso','ok');
     sessionStorage.setItem('ub_codigo',codigo);
-    document.getElementById('accesoScreen').style.display='none';
-    enviarTracking({codigo:codigo,nombre:'(pendiente)',email:'',celular:'',idioma:currentLang,dispositivoTipo:getDispositivoTipo()});
+    enviarTracking({codigo:codigo,nombre:state.nombre||'',email:state.email||'',celular:state.celular||'',idioma:currentLang,dispositivoTipo:getDispositivoTipo()});
+    unlockReport();
   }else{
     err.textContent='Código inválido. Verifica e intenta de nuevo.';
     input.style.borderColor='#ff6b6b';
   }
 }
 
-document.getElementById('codigoAcceso').addEventListener('keypress',function(e){
-  if(e.key==='Enter')verificarCodigo();
-});
-
-// Verificar si ya tiene acceso en esta sesión
-if(sessionStorage.getItem('ub_acceso')==='ok'){
-  document.getElementById('accesoScreen').style.display='none';
+function mostrarPago(){
+  alert('La pasarela de pago Wompi se está configurando. Por ahora, contáctanos por WhatsApp para completar tu pago de forma segura.');
+  const msgPago=encodeURIComponent('Hola, quiero pagar el informe completo de UrbanBrokers ($49.900 - precio promocional).');
+  window.open('https://wa.me/'+WA_NUM+'?text='+msgPago,'_blank');
 }
+
+document.addEventListener('DOMContentLoaded',function(){
+  const inpCod=document.getElementById('codigoAccesoStep3');
+  if(inpCod){
+    inpCod.addEventListener('keypress',function(e){
+      if(e.key==='Enter')verificarCodigoStep3();
+    });
+  }
+});
 
 // PORTADA
 const TEXTS={
