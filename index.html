@@ -569,11 +569,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
     </div>
     <div class="s4card-dark">
       <div class="s4sec-label-d">5 · Resumen final — ¿vale la pena comprarlo?</div>
-      <div class="s4semaforo">
-        <div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(239,68,68,0.2)"><span style="font-size:20px;color:#ef4444">✗</span></div><div class="s4sem-lbl" style="color:rgba(255,255,255,0.3)">No<br>comprar</div></div>
-        <div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(251,191,36,0.2)"><span style="font-size:20px;color:#fbbf24">−</span></div><div class="s4sem-lbl" style="color:rgba(255,255,255,0.3)">Pensarlo<br>bien</div></div>
-        <div class="s4sem-col" id="s4SemVerde"><div class="s4sem-circle" style="background:rgba(74,222,128,0.25);box-shadow:0 0 0 4px rgba(255,255,255,0.15)"><span style="font-size:22px;color:#4ade80">✓</span></div><div class="s4sem-lbl" style="color:#4ade80;font-weight:700">¡Buena<br>compra!</div></div>
-      </div>
+      <div class="s4semaforo" id="s4Semaforo"></div>
       <div class="s4veredicto-inner">
         <div class="s4v-icon">🏆</div>
         <div class="s4v-title" id="s4ResTitle">Este inmueble genera dinero</div>
@@ -694,6 +690,26 @@ function getRangoArea(area){
   return'grande';
 }
 
+// Polígono real de Ciudad del Río (dibujado y exportado por el usuario desde Google My Maps)
+const POLIGONO_CIUDAD_DEL_RIO=[[6.2256856,-75.5749834],[6.2149559,-75.5761421],[6.2146573,-75.5747902],[6.2151479,-75.5729663],[6.2168971,-75.5717862],[6.2247044,-75.5712712],[6.225387,-75.5724728],[6.2256003,-75.5742323],[6.2256856,-75.5749834]];
+
+// Algoritmo Ray Casting: determina si un punto (lat,lng) está dentro de un polígono
+function puntoEnPoligono(lat,lng,poligono){
+  let dentro=false;
+  const n=poligono.length;
+  let j=n-1;
+  for(let i=0;i<n;i++){
+    const lati=poligono[i][0],lngi=poligono[i][1];
+    const latj=poligono[j][0],lngj=poligono[j][1];
+    if((lngi>lng)!==(lngj>lng)){
+      const latInterseccion=lati+(lng-lngi)/(lngj-lngi)*(latj-lati);
+      if(lat<latInterseccion)dentro=!dentro;
+    }
+    j=i;
+  }
+  return dentro;
+}
+
 const CENTRO_CIUDAD_DEL_RIO={lat:6.2200,lng:-75.5715};
 const RADIO_MAX_ABSOLUTO=3; // km - fuera de esto, no hay análisis válido
 
@@ -702,9 +718,8 @@ function getComparables(lat,lng,area,habs,parq,tipo,amenidades,precioM2,zonaVali
   const esUsado=(tipo==='usado');
   const rango=getRangoArea(area);
 
-  // Validación geográfica por radio (más confiable que el nombre de sublocalidad de Google)
-  const distCentro=distKm(lat,lng,CENTRO_CIUDAD_DEL_RIO.lat,CENTRO_CIUDAD_DEL_RIO.lng);
-  if(distCentro>RADIO_MAX_ABSOLUTO)return[];
+  // Validación geográfica precisa con el polígono real de Ciudad del Río
+  if(!puntoEnPoligono(lat,lng,POLIGONO_CIUDAD_DEL_RIO))return[];
 
   function filtrar(opts){
     return PROYECTOS.filter(p=>p.tipo===tipo).map(p=>{
@@ -1001,7 +1016,17 @@ function showStep3(){
   else{pc='vp-fair';pt='⚖️ En rango de mercado';}
   document.getElementById('verdictPill').innerHTML='<div class="verdict-pill '+pc+'">'+pt+'</div>';
   document.getElementById('t1').textContent=d.diff>5?'El precio pedido está por encima del mercado':'El precio está en rango de los comparables';
-  document.getElementById('t2').textContent='Descubre el ingreso mensual estimado por arriendo';
+
+  // Calcular rentabilidad de renta tradicional para calificación cualitativa
+  const canonInfo=getCanonMercado(d.hab,d.area,d.tipo,'tradicional');
+  const canonEst=canonInfo?canonInfo.canon:Math.round(d.ref*d.area*0.004);
+  const rentabilidadAnualPct=(canonEst*12/d.precio)*100;
+  let calRentabilidad;
+  if(rentabilidadAnualPct<3)calRentabilidad='Regular';
+  else if(rentabilidadAnualPct<=5)calRentabilidad='Buena';
+  else calRentabilidad='Excelente';
+  document.getElementById('t2').textContent='Rentabilidad de arriendo: '+calRentabilidad;
+
   document.getElementById('t3').textContent='Mira cuánto puede valorizarse en los próximos años';
   document.getElementById('t4').textContent=d.diff>5?'Hay margen de negociación disponible':'El precio es competitivo en la zona';
   setStep('step3');
@@ -1012,7 +1037,7 @@ async function unlockReport(){
   document.getElementById('ldText').textContent='Generando tu informe completo con IA...';
   const d=state;
   const compInfo=d.comparables.slice(0,5).map(c=>c.p.n+' ('+c.dist.toFixed(2)+'km, '+fmtCOP(c.p.m2)+'/m2)').join(', ');
-  const prompt='Eres un analista inmobiliario experto en Medellin Colombia.\n\nINMUEBLE:\n- Proyecto: '+d.proyecto+'\n- Tipo: '+(d.tipo==='nuevo'?'Proyecto nuevo':'Apartamento usado')+'\n- Area: '+d.area+'m2 | Hab: '+d.hab+' | Banos: '+d.ban+' | Piso: '+(d.piso||'ND')+'\n- Precio: $'+d.precio.toLocaleString('es-CO')+' COP ('+fmtCOP(d.m2)+'/m2)\n\nCOMPARABLES ('+d.comparables.length+'):\n'+compInfo+'\n\nREFERENCIA: '+fmtCOP(d.ref)+'/m2 | Diferencia: '+(d.diff>0?'+':'')+d.diff+'%\n\nResponde SOLO JSON:\n{"veredicto_tipo":"buena_oferta|precio_justo|sobrevalorado","justificacion":"2 oraciones","precio_justo":numero,"margen_negociacion":numero,"oferta_apertura":numero,"precio_maximo":numero,"comparables":[{"nombre":"texto","precio_m2":numero,"distancia":"texto","motivo_aceptado":"texto"}],"riesgos":[{"nivel":"alto|medio|bajo","titulo":"max 30 chars","descripcion":"max 80 chars"}],"recomendacion":"2-3 oraciones"}';
+  const prompt='Eres un analista inmobiliario experto en Medellin Colombia.\n\nINMUEBLE:\n- Proyecto: '+d.proyecto+'\n- Tipo: '+(d.tipo==='nuevo'?'Proyecto nuevo':'Apartamento usado')+'\n- Area: '+d.area+'m2 | Hab: '+d.hab+' | Banos: '+d.ban+' | Piso: '+(d.piso||'ND')+'\n- Precio: $'+d.precio.toLocaleString('es-CO')+' COP ('+fmtCOP(d.m2)+'/m2)\n\nCOMPARABLES ('+d.comparables.length+'):\n'+compInfo+'\n\nREFERENCIA: '+fmtCOP(d.ref)+'/m2 | Diferencia: '+(d.diff>0?'+':'')+d.diff+'%\n\nIMPORTANTE: en la "justificacion" NUNCA menciones el numero exacto de comparables utilizados (no digas "X comparables" ni numeros de cantidad), solo habla del promedio del mercado.\n\nResponde SOLO JSON:\n{"veredicto_tipo":"buena_oferta|precio_justo|sobrevalorado","justificacion":"2 oraciones, sin mencionar cantidad de comparables","precio_justo":numero,"margen_negociacion":numero,"oferta_apertura":numero,"precio_maximo":numero,"comparables":[{"nombre":"texto","precio_m2":numero,"distancia":"texto","motivo_aceptado":"texto"}],"riesgos":[{"nivel":"alto|medio|bajo","titulo":"max 30 chars","descripcion":"max 80 chars"}],"recomendacion":"2-3 oraciones"}';
   try{
     const res=await fetch('https://urbanbrokers-proxy.urbanbrokers-lab.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
@@ -1022,7 +1047,7 @@ async function unlockReport(){
     const comps3=d.comparables.slice(0,3);
     state.report={
       veredicto_tipo:d.diff>5?'sobrevalorado':d.diff<-5?'buena_oferta':'precio_justo',
-      justificacion:'El precio de '+fmtCOP(d.m2)+'/m2 está '+(d.diff>0?d.diff+'% sobre':''+Math.abs(d.diff)+'% bajo')+' el promedio de '+d.comparables.length+' comparables ('+fmtCOP(d.ref)+'/m2). '+(d.diff>5?'Hay margen de negociación.':'El precio es competitivo.'),
+      justificacion:'El precio de '+fmtCOP(d.m2)+'/m2 está '+(d.diff>0?d.diff+'% sobre':''+Math.abs(d.diff)+'% bajo')+' el promedio del mercado ('+fmtCOP(d.ref)+'/m2). '+(d.diff>5?'Hay margen de negociación.':'El precio es competitivo.'),
       precio_justo:Math.round(d.ref*d.area),
       margen_negociacion:Math.max(5,Math.round(d.diff*0.6)),
       oferta_apertura:Math.round(d.ref*d.area*0.92),
@@ -1146,6 +1171,18 @@ function showStep4(){
   // Punto 5: Resumen
   const totalAnio1=netoAnual+(val1-d.precio);
   const retorno=((totalAnio1/d.precio)*100).toFixed(1);
+
+  // Semáforo de 2 niveles según retorno total
+  if(parseFloat(retorno)>=10){
+    document.getElementById('s4Semaforo').innerHTML=
+      '<div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(251,191,36,0.2)"><span style="font-size:20px;color:#fbbf24">−</span></div><div class="s4sem-lbl" style="color:rgba(255,255,255,0.3)">Retorno<br>moderado</div></div>'+
+      '<div class="s4sem-col" id="s4SemVerde"><div class="s4sem-circle" style="background:rgba(74,222,128,0.25);box-shadow:0 0 0 4px rgba(255,255,255,0.15)"><span style="font-size:22px;color:#4ade80">✓</span></div><div class="s4sem-lbl" style="color:#4ade80;font-weight:700">Retorno<br>atractivo</div></div>';
+  }else{
+    document.getElementById('s4Semaforo').innerHTML=
+      '<div class="s4sem-col" id="s4SemAmarillo"><div class="s4sem-circle" style="background:rgba(251,191,36,0.25);box-shadow:0 0 0 4px rgba(255,255,255,0.15)"><span style="font-size:22px;color:#fbbf24">−</span></div><div class="s4sem-lbl" style="color:#fbbf24;font-weight:700">Retorno<br>moderado</div></div>'+
+      '<div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(74,222,128,0.2)"><span style="font-size:20px;color:#4ade80">✓</span></div><div class="s4sem-lbl" style="color:rgba(255,255,255,0.3)">Retorno<br>atractivo</div></div>';
+  }
+
   document.getElementById('s4ResSub').textContent='Si negocias bien el precio, en un año este inmueble te habrá generado '+fmtCOP(totalAnio1)+' entre arriendo y valorización.';
   document.getElementById('s4Ingresos').innerHTML=
     '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(0,113,227,0.15)"><span style="font-size:18px">🏠</span></div><div class="s4ing-info"><div class="s4ing-label">Lo que ganas arrendando (año 1)</div><div class="s4ing-name">Ingreso neto por rentas</div></div><div class="s4ing-val">+'+fmtFull(netoAnual)+'</div></div>'+
