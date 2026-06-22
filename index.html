@@ -419,10 +419,12 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   <div id="zonaNoCubierta" class="hidden">
     <div class="zona-card">
       <div style="font-size:2.5rem;margin-bottom:1rem">📍</div>
-      <div style="font-size:1.1rem;font-weight:700;color:var(--black);letter-spacing:-0.02em;margin-bottom:8px">Aún no cubrimos esa zona</div>
-      <div style="font-size:13px;color:var(--gray3);line-height:1.6;margin-bottom:1.25rem">UrbanBrokers está en piloto en <strong style="color:var(--black)">El Poblado · Ciudad del Río</strong> durante junio 2026. Próximamente más zonas.</div>
+      <div style="font-size:1.1rem;font-weight:700;color:var(--black);letter-spacing:-0.02em;margin-bottom:8px">Por ahora cubrimos Ciudad del Río</div>
+      <div style="font-size:13px;color:var(--gray3);line-height:1.6;margin-bottom:1.25rem">Nuestra base de datos actual está enfocada en <strong style="color:var(--black)">Ciudad del Río, El Poblado</strong>. Si tu inmueble está en otra zona, podemos hacer un análisis individual y personalizado para ti.</div>
+      <a id="zonaWaBtn" href="#" target="_blank" class="btn btn-blue" style="display:block;text-decoration:none;text-align:center;margin-bottom:1rem">📲 Solicitar análisis personalizado</a>
+      <div style="font-size:11px;color:var(--gray3);margin-bottom:.75rem">o déjanos tu correo para avisarte cuando cubramos tu zona</div>
       <div class="fg"><label>Tu correo para avisarte</label><input type="email" id="emailWait" placeholder="tu@email.com"></div>
-      <button class="btn btn-blue" onclick="saveWaitlist()">Avisarme cuando esté disponible</button>
+      <button class="btn-codigo" onclick="saveWaitlist()" style="width:100%">Avisarme cuando esté disponible</button>
     </div>
     <button class="reset-btn" onclick="resetAll()">← Volver</button>
   </div>
@@ -597,6 +599,7 @@ const ARRIENDOS_URL='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq
 let PROYECTOS=[];
 let ARRIENDOS=[];
 let state={};
+let proyectosListos=false;
 
 async function cargarProyectos(){
   try{
@@ -654,6 +657,7 @@ async function cargarProyectos(){
     console.error('Error cargando arriendos (se usará fórmula):',e);
     ARRIENDOS=[];
   }
+  proyectosListos=true;
 }
 
 function getCanonMercado(habs,area,tipo,modalidad){
@@ -856,7 +860,13 @@ function onZona(){
   const v=document.getElementById('zona').value;
   const sg=document.getElementById('subzonaGroup');
   if(v==='poblado'){sg.classList.remove('hidden');}
-  else if(v==='otro'){sg.classList.add('hidden');document.getElementById('step1').classList.add('hidden');document.getElementById('zonaNoCubierta').classList.remove('hidden');}
+  else if(v==='otro'){
+    sg.classList.add('hidden');
+    document.getElementById('step1').classList.add('hidden');
+    document.getElementById('zonaNoCubierta').classList.remove('hidden');
+    const msgZona=encodeURIComponent('Hola, mi inmueble está fuera de Ciudad del Río. Me gustaría solicitar un análisis personalizado con UrbanBrokers.');
+    document.getElementById('zonaWaBtn').href='https://wa.me/'+WA_NUM+'?text='+msgZona;
+  }
   else{sg.classList.add('hidden');}
 }
 
@@ -972,6 +982,22 @@ document.getElementById('btnAnalizar').addEventListener('click',async function()
   const area=parseFloat(document.getElementById('area').value);
   if(!precio||!area){alert('Por favor ingresa precio y área.');return;}
   if(!state.lat||!state.lng){alert('Por favor selecciona la dirección desde las sugerencias de Google Maps.');return;}
+
+  // Si los datos del Sheet aún no han cargado, esperar brevemente (evita falsos negativos por race condition)
+  if(!proyectosListos){
+    const btn=this;
+    const textoOriginal=btn.textContent;
+    btn.textContent='Cargando datos...';
+    btn.disabled=true;
+    let intentos=0;
+    while(!proyectosListos&&intentos<40){
+      await new Promise(r=>setTimeout(r,250));
+      intentos++;
+    }
+    btn.textContent=textoOriginal;
+    btn.disabled=false;
+  }
+
   state.precio=precio;state.area=area;
   state.proyecto=document.getElementById('direccion').value.trim()||'No especificado';
   state.hab=document.getElementById('hab').value;
