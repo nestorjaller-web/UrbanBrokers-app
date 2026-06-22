@@ -298,18 +298,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
     </div>
 
     <div class="enc-fg">
-      <label>¿Qué tan acertado te parece el análisis?</label>
-      <select id="encPrecision">
-        <option value="">Selecciona una opción</option>
-        <option value="Muy acertado">Muy acertado</option>
-        <option value="Acertado">Acertado</option>
-        <option value="Regular">Regular</option>
-        <option value="Poco acertado">Poco acertado</option>
-        <option value="Nada acertado">Nada acertado</option>
-      </select>
-    </div>
-
-    <div class="enc-fg">
       <label>¿Algo que podamos mejorar?</label>
       <textarea id="encComentario" placeholder="Tu comentario es muy valioso..."></textarea>
     </div>
@@ -561,9 +549,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
         <div class="s4leg"><div class="s4leg-d" style="background:#ff6200"></div>Tu inmueble</div>
         <div class="s4leg"><div class="s4leg-d" style="background:#e53935"></div>Salud</div>
         <div class="s4leg"><div class="s4leg-d" style="background:#0071e3"></div>Educación</div>
-        <div class="s4leg"><div class="s4leg-d" style="background:#f59e0b"></div>Comercio</div>
+        <div class="s4leg"><div class="s4leg-d" style="background:#f59e0b"></div>Supermercado</div>
         <div class="s4leg"><div class="s4leg-d" style="background:#059669"></div>Restaurantes</div>
         <div class="s4leg"><div class="s4leg-d" style="background:#7c3aed"></div>Transporte</div>
+        <div class="s4leg"><div class="s4leg-d" style="background:#dc2626"></div>Gimnasio</div>
+        <div class="s4leg"><div class="s4leg-d" style="background:#92400e"></div>Café</div>
       </div>
       <div class="s4poi-list" id="s4PoiList">
         <div style="text-align:center;padding:1rem;color:#6b7280;font-size:12px">Buscando lugares cercanos...</div>
@@ -768,11 +758,13 @@ function fmtFull(n){return'$'+Math.round(n).toLocaleString('es-CO');}
 
 // ===== PUNTO 4: Lugares cercanos reales con Google Places =====
 const CATEGORIAS_POI=[
-  {tipo:'hospital',label:'Salud',icon:'🏥',color:'#e53935',bg:'#fde8e8'},
-  {tipo:'school',label:'Educación',icon:'🎓',color:'#0071e3',bg:'#e6f0fd'},
-  {tipo:'supermarket',label:'Comercio',icon:'🛒',color:'#f59e0b',bg:'#fef3c7'},
-  {tipo:'restaurant',label:'Restaurantes',icon:'🍽️',color:'#059669',bg:'#d1fae5'},
-  {tipo:'transit_station',label:'Transporte',icon:'🚇',color:'#7c3aed',bg:'#ede9fe'}
+  {tipo:'hospital',label:'Salud',icon:'🏥',color:'#e53935',bg:'#fde8e8',porRating:false},
+  {tipo:'school',label:'Educación',icon:'🎓',color:'#0071e3',bg:'#e6f0fd',porRating:false},
+  {tipo:'supermarket',label:'Supermercado',icon:'🛒',color:'#f59e0b',bg:'#fef3c7',porRating:false},
+  {tipo:'restaurant',label:'Restaurantes',icon:'🍽️',color:'#059669',bg:'#d1fae5',porRating:true},
+  {tipo:'transit_station',label:'Transporte',icon:'🚇',color:'#7c3aed',bg:'#ede9fe',porRating:false},
+  {tipo:'gym',label:'Gimnasio',icon:'🏋️',color:'#dc2626',bg:'#fee2e2',porRating:false},
+  {tipo:'cafe',label:'Café',icon:'☕',color:'#92400e',bg:'#fef3c7',porRating:true}
 ];
 
 function calcMinutosCaminando(km){return Math.round(km*12.5);}
@@ -787,12 +779,10 @@ async function buscarLugaresCercanos(lat,lng){
   const map=new google.maps.Map(document.getElementById('s4MapDiv'),{
     center:{lat:lat,lng:lng},zoom:14,disableDefaultUI:true,zoomControl:true
   });
-  // Marcador del inmueble
   new google.maps.Marker({
     position:{lat:lat,lng:lng},map:map,
     icon:{path:google.maps.SymbolPath.CIRCLE,scale:10,fillColor:'#ff6200',fillOpacity:1,strokeColor:'#1A1A2E',strokeWeight:3}
   });
-  // Círculo radio 2km
   new google.maps.Circle({
     center:{lat:lat,lng:lng},radius:2000,map:map,
     fillColor:'#0071e3',fillOpacity:0.07,strokeColor:'#0071e3',strokeOpacity:0.6,strokeWeight:1
@@ -805,23 +795,38 @@ async function buscarLugaresCercanos(lat,lng){
     try{
       const lugar=await new Promise((resolve)=>{
         service.nearbySearch({
-          location:{lat:lat,lng:lng},radius:2000,type:cat.tipo
+          location:{lat:lat,lng:lng},radius:2000,type:cat.tipo,
+          rankBy:cat.porRating?google.maps.places.RankBy.PROMINENCE:undefined
         },(results,status)=>{
           if(status===google.maps.places.PlacesServiceStatus.OK&&results&&results.length>0){
-            resolve(results[0]);
+            // Para restaurantes y cafés: elegir el de mejor rating dentro de 2km
+            if(cat.porRating){
+              const filtrados=results.filter(r=>{
+                if(!r.geometry)return false;
+                const d=distKm(lat,lng,r.geometry.location.lat(),r.geometry.location.lng());
+                return d<=2;
+              });
+              filtrados.sort((a,b)=>(b.rating||0)-(a.rating||0));
+              resolve(filtrados.length>0?filtrados[0]:null);
+            }else{
+              resolve(results[0]);
+            }
           }else{resolve(null);}
         });
       });
-      if(lugar){
+      // Solo agregar si el lugar existe Y está dentro del radio de 2km
+      if(lugar&&lugar.geometry){
         const plat=lugar.geometry.location.lat();
         const plng=lugar.geometry.location.lng();
         const dist=distKm(lat,lng,plat,plng);
-        resultados.push({cat:cat,nombre:lugar.name,dist:dist,lat:plat,lng:plng});
-        new google.maps.Marker({
-          position:{lat:plat,lng:plng},map:map,
-          icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:cat.color,fillOpacity:1,strokeColor:'#fff',strokeWeight:2},
-          label:{text:cat.icon,fontSize:'11px'}
-        });
+        if(dist<=2){
+          resultados.push({cat:cat,nombre:lugar.name,dist:dist,lat:plat,lng:plng,rating:lugar.rating||null});
+          new google.maps.Marker({
+            position:{lat:plat,lng:plng},map:map,
+            icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:cat.color,fillOpacity:1,strokeColor:'#fff',strokeWeight:2},
+            label:{text:cat.icon,fontSize:'11px'}
+          });
+        }
       }
     }catch(e){console.log('Error buscando '+cat.tipo,e);}
   }
@@ -1263,7 +1268,6 @@ function trackPDF(){
 function enviarEncuesta(){
   const facilidad=document.getElementById('encFacilidad').value;
   const claridad=document.getElementById('encClaridad').value;
-  const precision=document.getElementById('encPrecision').value;
   const comentario=document.getElementById('encComentario').value;
 
   enviarTracking({
@@ -1271,7 +1275,6 @@ function enviarEncuesta(){
     codigo:sessionStorage.getItem('ub_codigo')||'',
     nombre:state.nombre||'',email:state.email||'',celular:state.celular||'',
     facilidadUso:facilidad,claridadInforme:claridad,
-    precisionPercibida:precision,
     comentario:comentario
   });
 
