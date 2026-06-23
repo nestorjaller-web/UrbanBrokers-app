@@ -67,7 +67,7 @@
 </div>
 
 <div class="controls">
-  <button class="btn btn-primary" id="btnCargar" onclick="iniciarBacktest()">▶ Iniciar backtesting (50 propiedades)</button>
+  <button class="btn btn-primary" id="btnCargar" onclick="iniciarBacktest()">▶ Iniciar backtesting (usados depurados)</button>
   <button class="btn btn-secondary" id="btnExportar" onclick="exportarCSV()" disabled>⬇ Exportar CSV</button>
 </div>
 
@@ -292,8 +292,9 @@ async function iniciarBacktest(){
     todosLosDatos=propiedades;
     document.getElementById('progressFill').style.width='30%';
 
-    // Seleccionar 50 aleatorias
-    const shuffled=[...propiedades].sort(()=>Math.random()-0.5);
+    // Seleccionar 50 aleatorias — solo usados (datos depurados)
+    const soloUsados=propiedades.filter(p=>p.tipo==='usado');
+    const shuffled=[...soloUsados].sort(()=>Math.random()-0.5);
     const muestra=shuffled.slice(0,Math.min(50,shuffled.length));
     
     resultadosGlobales=[];
