@@ -243,10 +243,11 @@ async function cargarSheet(){
   
   return rows.map((r,i)=>{
     const c=r.c||[];
+    const area=c[8]&&c[8].v?Number(c[8].v):0;
     const precio=c[9]&&c[9].v?Number(c[9].v):0;
-    const area=c[10]&&c[10].v?Number(c[10].v):0;
-    const hab=c[11]&&c[11].v?Number(c[11].v):1;
-    const mercado=c[12]&&c[12].v?c[12].v.toString().toLowerCase().trim():'nuevo';
+    const m2real=c[10]&&c[10].v?Number(c[10].v):0;
+    const hab=c[5]&&c[5].v?Number(c[5].v):1;
+    const mercado=c[15]&&c[15].v?c[15].v.toString().toLowerCase().trim():'nuevo';
     const tipo=mercado==='usado'?'usado':'nuevo';
     return{
       id:i,
@@ -255,7 +256,7 @@ async function cargarSheet(){
       area:area,
       hab:hab,
       precio:precio,
-      m2:area>0&&precio>0?Math.round(precio/area):0
+      m2:m2real>0?m2real:(area>0&&precio>0?Math.round(precio/area):0)
     };
   }).filter(p=>p.m2>0&&p.area>0&&p.precio>0);
 }
@@ -270,7 +271,7 @@ async function cargarArriendos(){
   return rows.map(r=>{
     const c=r.c||[];
     return{
-      hab:c[3]&&c[3].v?Number(c[3].v):1,
+      hab:c[5]&&c[5].v?Number(c[5].v):1,
       area:c[8]&&c[8].v?Number(c[8].v):0,
       canon:c[9]&&c[9].v?Number(c[9].v):0,
       modalidad:c[16]&&c[16].v?c[16].v.toString().toLowerCase().trim():'tradicional'
