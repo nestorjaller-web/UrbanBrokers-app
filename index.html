@@ -497,7 +497,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
           <div class="pago-label">Pago único</div>
           <div class="pago-price">$49.900 <span class="pago-old">$89.900</span></div>
           <div class="pago-promo">Precio promocional · junio y julio 2026</div>
-          <button class="btn btn-blue" onclick="mostrarPago()" style="border-radius:980px">Pagar y ver informe</button>
+          <div id="wompiContainer" style="display:flex;justify-content:center;margin-top:.75rem"></div>
         </div>
         <div class="pago-divider"><span>o</span></div>
         <div class="pago-card-codigo">
@@ -1061,6 +1061,7 @@ function showStep3(){
   document.getElementById('t3').textContent='Mira cuánto puede valorizarse en los próximos años';
   document.getElementById('t4').textContent=d.diff>5?'Hay margen de negociación disponible':'El precio es competitivo en la zona';
   setStep('step3');
+  inicializarWompi();
 }
 
 async function unlockReport(){
@@ -1368,9 +1369,80 @@ function verificarCodigoStep3(){
 }
 
 function mostrarPago(){
-  alert('La pasarela de pago Wompi se está configurando. Por ahora, contáctanos por WhatsApp para completar tu pago de forma segura.');
   const msgPago=encodeURIComponent('Hola, quiero pagar el informe completo de UrbanBrokers ($49.900 - precio promocional).');
   window.open('https://wa.me/'+WA_NUM+'?text='+msgPago,'_blank');
+}
+
+function inicializarWompi(){
+  const container=document.getElementById('wompiContainer');
+  if(!container)return;
+  container.innerHTML='';
+
+  // Generar referencia única por transacción
+  const ref='UB-'+Date.now()+'-'+Math.random().toString(36).substr(2,6).toUpperCase();
+  sessionStorage.setItem('wompi_ref',ref);
+
+  const form=document.createElement('form');
+  form.action='https://checkout.wompi.co/p/';
+  form.method='GET';
+  form.target='_blank';
+
+  const campos={
+    'public-key':'pub_prod_7BAWYNCj45XMPgbln4wUd6cDSc7cTY3B',
+    'currency':'COP',
+    'amount-in-cents':'4990000',
+    'reference':ref,
+    'redirect-url':'https://urbanbrokers.app',
+    'customer-data:email':state.email||'',
+    'customer-data:full-name':state.nombre||'',
+    'customer-data:phone-number':(state.celular||'').replace(/\D/g,'')
+  };
+
+  Object.entries(campos).forEach(([name,value])=>{
+    const input=document.createElement('input');
+    input.type='hidden';
+    input.name=name;
+    input.value=value;
+    form.appendChild(input);
+  });
+
+  const btn=document.createElement('button');
+  btn.type='submit';
+  btn.className='btn btn-blue';
+  btn.style.borderRadius='980px';
+  btn.style.width='100%';
+  btn.style.padding='14px';
+  btn.style.fontSize='15px';
+  btn.style.fontWeight='600';
+  btn.style.border='none';
+  btn.style.cursor='pointer';
+  btn.textContent='💳 Pagar con Wompi';
+
+  form.appendChild(btn);
+  container.appendChild(form);
+
+  // Verificar pago cada 5 segundos cuando vuelve a la app
+  window.addEventListener('focus',verificarPagoWompi);
+}
+
+async function verificarPagoWompi(){
+  const ref=sessionStorage.getItem('wompi_ref');
+  if(!ref)return;
+  try{
+    const res=await fetch('https://production.wompi.co/v1/transactions?reference='+ref,{
+      headers:{'Authorization':'Bearer pub_prod_7BAWYNCj45XMPgbln4wUd6cDSc7cTY3B'}
+    });
+    const data=await res.json();
+    if(data.data&&data.data.length>0){
+      const tx=data.data[0];
+      if(tx.status==='APPROVED'){
+        window.removeEventListener('focus',verificarPagoWompi);
+        sessionStorage.setItem('ub_pago','ok');
+        sessionStorage.setItem('ub_codigo','WOMPI-'+ref);
+        unlockReport();
+      }
+    }
+  }catch(e){console.log('Verificando pago...');}
 }
 
 document.addEventListener('DOMContentLoaded',function(){
@@ -1381,14 +1453,16 @@ document.addEventListener('DOMContentLoaded',function(){
     });
   }
 });
-
-// PORTADA
 const TEXTS={
   es:{tag:'Análisis inteligente de inmuebles · Medellín',m1t:'Análisis Compra / Venta',m1s:'¿El precio es justo? ¿Cuánto negociar?',m2t:'Análisis Renta Tradicional',m2s:'Rentabilidad, canon ideal y proyección',m3t:'Análisis Renta Corta',m3s:'Airbnb / Booking — ocupación y ROI',footer:'✦ Gratis durante junio 2026 · Desde julio $10 USD'},
   en:{tag:'Smart real estate analysis · Medellín',m1t:'Buy / Sell Analysis',m1s:'Is the price fair? How much to negotiate?',m2t:'Traditional Rental Analysis',m2s:'Profitability, ideal rent and projection',m3t:'Short-term Rental Analysis',m3s:'Airbnb / Booking — occupancy and ROI',footer:'✦ Free during June 2026 · From July $10 USD'}
 };
 let currentLang='es';
 function setLang(lang){
+  if(lang==='en'){
+    alert('🌎 English version coming soon!\n\nWant early access? Contact us on WhatsApp.');
+    return;
+  }
   currentLang=lang;
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
   document.querySelector('.lang-btn[onclick="setLang(\''+lang+'\')"]').classList.add('active');
