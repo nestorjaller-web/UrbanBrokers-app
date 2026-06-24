@@ -1373,15 +1373,30 @@ function mostrarPago(){
   window.open('https://wa.me/'+WA_NUM+'?text='+msgPago,'_blank');
 }
 
-function inicializarWompi(){
+async function inicializarWompi(){
   const container=document.getElementById('wompiContainer');
   if(!container)return;
-  container.innerHTML='';
+  container.innerHTML='<div style="text-align:center;padding:10px;color:rgba(255,255,255,0.4);font-size:12px">Preparando pago...</div>';
 
-  // Generar referencia única por transacción
+  // Generar referencia única
   const ref='UB-'+Date.now()+'-'+Math.random().toString(36).substr(2,6).toUpperCase();
   sessionStorage.setItem('wompi_ref',ref);
 
+  // Obtener firma de integridad del Worker
+  let signature='';
+  try{
+    const res=await fetch('https://urbanbrokers-proxy.urbanbrokers-lab.workers.dev/wompi-signature',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ref:ref})
+    });
+    const data=await res.json();
+    signature=data.signature||'';
+  }catch(e){
+    console.error('Error obteniendo firma Wompi:',e);
+  }
+
+  container.innerHTML='';
   const form=document.createElement('form');
   form.action='https://checkout.wompi.co/p/';
   form.method='GET';
@@ -1392,6 +1407,7 @@ function inicializarWompi(){
     'currency':'COP',
     'amount-in-cents':'4990000',
     'reference':ref,
+    'signature:integrity':signature,
     'redirect-url':'https://urbanbrokers.app',
     'customer-data:email':state.email||'',
     'customer-data:full-name':state.nombre||'',
@@ -1409,19 +1425,11 @@ function inicializarWompi(){
   const btn=document.createElement('button');
   btn.type='submit';
   btn.className='btn btn-blue';
-  btn.style.borderRadius='980px';
-  btn.style.width='100%';
-  btn.style.padding='14px';
-  btn.style.fontSize='15px';
-  btn.style.fontWeight='600';
-  btn.style.border='none';
-  btn.style.cursor='pointer';
+  btn.style.cssText='border-radius:980px;width:100%;padding:14px;font-size:15px;font-weight:600;border:none;cursor:pointer;font-family:inherit';
   btn.textContent='💳 Pagar con Wompi';
-
   form.appendChild(btn);
   container.appendChild(form);
 
-  // Verificar pago cada 5 segundos cuando vuelve a la app
   window.addEventListener('focus',verificarPagoWompi);
 }
 
