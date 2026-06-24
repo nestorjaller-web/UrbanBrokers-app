@@ -1094,6 +1094,45 @@ async function unlockReport(){
     };
   }
   showStep4();
+
+  // Si pagó con Wompi, generar link del informe y enviar por WhatsApp
+  if(sessionStorage.getItem('ub_pago')==='ok'){
+    setTimeout(()=>enviarLinkPorWhatsApp(),2000);
+  }
+}
+
+function generarLinkInforme(){
+  const datos={
+    nombre:state.nombre,
+    email:state.email,
+    celular:state.celular,
+    direccion:state.direccion,
+    tipo:state.tipo,
+    precio:state.precio,
+    area:state.area,
+    hab:state.hab,
+    ban:state.ban,
+    piso:state.piso,
+    lat:state.lat,
+    lng:state.lng,
+    ref:state.ref,
+    diff:state.diff,
+    m2:state.m2,
+    report:state.report
+  };
+  const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(datos))));
+  return'https://urbanbrokers.app?informe='+encoded;
+}
+
+function enviarLinkPorWhatsApp(){
+  const link=generarLinkInforme();
+  const msg=encodeURIComponent(
+    'Hola '+state.nombre+', aquí está tu informe completo de UrbanBrokers 🏠\n\n'+
+    '📍 '+state.direccion+'\n\n'+
+    '👉 '+link+'\n\n'+
+    'Guarda este link — puedes consultarlo cuando quieras. ¡Gracias por confiar en UrbanBrokers!'
+  );
+  window.open('https://wa.me/'+WA_NUM+'?text='+msg,'_blank');
 }
 
 function showStep4(){
@@ -1437,20 +1476,19 @@ async function verificarPagoWompi(){
   const ref=sessionStorage.getItem('wompi_ref');
   if(!ref)return;
   try{
-    const res=await fetch('https://production.wompi.co/v1/transactions?reference='+ref,{
-      headers:{'Authorization':'Bearer pub_prod_7BAWYNCj45XMPgbln4wUd6cDSc7cTY3B'}
+    const res=await fetch('https://urbanbrokers-proxy.urbanbrokers-lab.workers.dev/wompi-verify',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ref:ref})
     });
     const data=await res.json();
-    if(data.data&&data.data.length>0){
-      const tx=data.data[0];
-      if(tx.status==='APPROVED'){
-        window.removeEventListener('focus',verificarPagoWompi);
-        sessionStorage.setItem('ub_pago','ok');
-        sessionStorage.setItem('ub_codigo','WOMPI-'+ref);
-        unlockReport();
-      }
+    if(data.approved){
+      window.removeEventListener('focus',verificarPagoWompi);
+      sessionStorage.setItem('ub_pago','ok');
+      sessionStorage.setItem('ub_codigo','WOMPI-'+ref);
+      unlockReport();
     }
-  }catch(e){console.log('Verificando pago...');}
+  }catch(e){console.log('Verificando pago...',e);}
 }
 
 document.addEventListener('DOMContentLoaded',function(){
@@ -1491,7 +1529,68 @@ function showComingSoon(){
   alert(currentLang==='es'?'Próximamente disponible 🚀':'Coming soon 🚀');
 }
 
+// Detectar retorno desde Wompi
+async function verificarRetornoWompi(){
+  const params=new URLSearchParams(window.location.search);
+  const informeParam=params.get('informe');
+
+  // Si viene con datos del informe codificados, cargar directo al Step 4
+  if(informeParam){
+    try{
+      const datos=JSON.parse(decodeURIComponent(escape(atob(informeParam))));
+      Object.assign(state,datos);
+      window.history.replaceState({},'',window.location.pathname);
+      // Esperar a que carguen los datos
+      let intentos=0;
+      while(!proyectosListos&&intentos<40){
+        await new Promise(r=>setTimeout(r,250));
+        intentos++;
+      }
+      document.getElementById('portada').style.display='none';
+      showStep4();
+      return;
+    }catch(e){console.log('Error cargando informe desde link:',e);}
+  }
+
+  const transaccionId=params.get('id');
+  const status=params.get('status');
+  if(!transaccionId)return;
+  window.history.replaceState({},'',window.location.pathname);
+  if(status==='APPROVED'){
+    sessionStorage.setItem('ub_pago','ok');
+    sessionStorage.setItem('ub_codigo','WOMPI-'+transaccionId);
+    let intentos=0;
+    while(!proyectosListos&&intentos<40){
+      await new Promise(r=>setTimeout(r,250));
+      intentos++;
+    }
+    unlockReport();
+    return;
+  }
+  const ref=sessionStorage.getItem('wompi_ref');
+  if(!ref)return;
+  try{
+    const res=await fetch('https://urbanbrokers-proxy.urbanbrokers-lab.workers.dev/wompi-verify',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ref:ref})
+    });
+    const data=await res.json();
+    if(data.approved){
+      sessionStorage.setItem('ub_pago','ok');
+      sessionStorage.setItem('ub_codigo','WOMPI-'+ref);
+      let intentos=0;
+      while(!proyectosListos&&intentos<40){
+        await new Promise(r=>setTimeout(r,250));
+        intentos++;
+      }
+      unlockReport();
+    }
+  }catch(e){console.log('Error verificando retorno Wompi:',e);}
+}
+
 cargarProyectos();
+verificarRetornoWompi();
 setStep('step1');
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAheBS8Ha9yB4LVA9PSd7i0sa_WvA-fHfI&libraries=places&language=es&region=CO&loading=async"></script>
