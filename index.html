@@ -495,7 +495,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="pago-opciones">
         <div class="pago-card">
           <div class="pago-label">Pago único</div>
-          <div class="pago-price">$49.900 <span class="pago-old">$89.900</span></div>
+          <div class="pago-price">$5.000 <span class="pago-old">$49.900</span></div>
           <div class="pago-promo">Precio promocional · junio y julio 2026</div>
           <div id="wompiContainer" style="display:flex;justify-content:center;margin-top:.75rem"></div>
         </div>
@@ -1417,23 +1417,19 @@ async function inicializarWompi(){
   if(!container)return;
   container.innerHTML='<div style="text-align:center;padding:10px;color:rgba(255,255,255,0.4);font-size:12px">Preparando pago...</div>';
 
-  // Generar referencia única
   const ref='UB-'+Date.now()+'-'+Math.random().toString(36).substr(2,6).toUpperCase();
   sessionStorage.setItem('wompi_ref',ref);
 
-  // Obtener firma de integridad del Worker
-  let signature='';
-  try{
-    const res=await fetch('https://urbanbrokers-proxy.urbanbrokers-lab.workers.dev/wompi-signature',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ref:ref})
-    });
-    const data=await res.json();
-    signature=data.signature||'';
-  }catch(e){
-    console.error('Error obteniendo firma Wompi:',e);
-  }
+  // Guardar state completo para restaurar después del pago
+  sessionStorage.setItem('wompi_state',JSON.stringify(state));
+
+  const res=await fetch('https://urbanbrokers-proxy.urbanbrokers-lab.workers.dev/wompi-signature',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({ref:ref})
+  });
+  const data=await res.json();
+  const signature=data.signature||'';
 
   container.innerHTML='';
   const form=document.createElement('form');
@@ -1444,7 +1440,7 @@ async function inicializarWompi(){
   const campos={
     'public-key':'pub_prod_7BAWYNCj45XMPgbln4wUd6cDSc7cTY3B',
     'currency':'COP',
-    'amount-in-cents':'4990000',
+    'amount-in-cents':'500000',
     'reference':ref,
     'signature:integrity':signature,
     'redirect-url':'https://urbanbrokers.app',
@@ -1486,6 +1482,20 @@ async function verificarPagoWompi(){
       window.removeEventListener('focus',verificarPagoWompi);
       sessionStorage.setItem('ub_pago','ok');
       sessionStorage.setItem('ub_codigo','WOMPI-'+ref);
+
+      // Restaurar state guardado antes del pago
+      const stateGuardado=sessionStorage.getItem('wompi_state');
+      if(stateGuardado){
+        const estadoAnterior=JSON.parse(stateGuardado);
+        Object.assign(state,estadoAnterior);
+      }
+
+      // Esperar a que carguen los datos
+      let intentos=0;
+      while(!proyectosListos&&intentos<40){
+        await new Promise(r=>setTimeout(r,250));
+        intentos++;
+      }
       unlockReport();
     }
   }catch(e){console.log('Verificando pago...',e);}
