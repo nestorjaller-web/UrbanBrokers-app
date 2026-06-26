@@ -4,21 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UrbanBrokers — Análisis de inmuebles</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='800 50 250 300'%3E%3Cpath d='M915 80 C865 80 825 120 825 170 C825 215 860 250 915 320 C970 250 1005 215 1005 170 C1005 120 965 80 915 80 Z' fill='%230A6CFF'/%3E%3Ccircle cx='915' cy='170' r='40' fill='white'/%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --black:#1d1d1f;--gray1:#f5f5f7;--gray2:#e8e8ed;--gray3:#6e6e73;--gray4:#424245;
-  --white:#fff;--blue:#0071e3;--green:#1d8348;--green-light:#d5f5e3;
-  --orange:#ff6200;--orange-light:#fff0e6;--red:#ff3b30;
-}
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:#f5f5f7;color:var(--black);-webkit-font-smoothing:antialiased}
+:root{--black:#1d1d1f;--gray1:#f5f5f7;--gray2:#e8e8ed;--gray3:#6e6e73;--gray4:#424245;--white:#fff;--blue:#0071e3;--green:#1d8348;--green-light:#d5f5e3;--orange:#ff6200;--orange-light:#fff0e6;--red:#ff3b30;}
+body{font-family:'Inter',-apple-system,sans-serif;background:#f5f5f7;color:var(--black);-webkit-font-smoothing:antialiased}
 .app{max-width:480px;margin:0 auto;padding:1.5rem 1rem 3rem}
 .brand{text-align:center;margin-bottom:2rem;padding-top:.5rem}
-.brand-name{font-size:1.6rem;font-weight:700;color:var(--black);letter-spacing:-0.04em}
-.brand-name span{color:var(--blue)}
-.brand-tag{font-size:11px;color:var(--gray3);margin-top:3px;letter-spacing:-0.01em}
+.brand-tag{font-size:11px;color:var(--gray3);margin-top:3px}
 .free-pill{display:inline-block;background:var(--green);color:#fff;font-size:10px;font-weight:600;padding:3px 12px;border-radius:980px;margin-top:8px}
 .steps{display:flex;align-items:center;margin-bottom:2rem}
 .step{flex:1;text-align:center;position:relative}
@@ -31,12 +24,12 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .step:last-child .step-line{display:none}
 .card{background:var(--white);border-radius:20px;padding:1.5rem;margin-bottom:1rem;box-shadow:0 1px 8px rgba(0,0,0,0.06)}
 .card-title{font-size:15px;font-weight:600;color:var(--black);letter-spacing:-0.02em;margin-bottom:4px}
-.card-sub{font-size:12px;color:var(--gray3);margin-bottom:1rem;letter-spacing:-0.01em}
+.card-sub{font-size:12px;color:var(--gray3);margin-bottom:1rem}
 .fg{margin-bottom:.85rem}
 .fg label{display:block;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray3);margin-bottom:5px}
 .fg input,.fg select{width:100%;padding:10px 14px;border:1px solid var(--gray2);border-radius:12px;font-family:inherit;font-size:14px;color:var(--black);background:var(--gray1);transition:border-color .15s}
 .fg input:focus,.fg select:focus{outline:none;border-color:var(--blue);background:var(--white)}
-.fg-hint{font-size:10px;color:var(--gray3);margin-top:4px;letter-spacing:-0.01em;line-height:1.4}
+.fg-hint{font-size:10px;color:var(--gray3);margin-top:4px;line-height:1.4}
 .fg-hint.good{color:var(--green)}
 .fg-hint.err{color:var(--red)}
 .fg-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -46,8 +39,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .chk input{display:none}
 .chk.sel{background:var(--blue);color:#fff;border-color:var(--blue)}
 .precision-box{background:var(--green-light);border-radius:12px;padding:10px 14px;margin-bottom:.85rem;display:flex;gap:8px;align-items:flex-start}
-.precision-box p{font-size:12px;color:var(--green);line-height:1.5;letter-spacing:-0.01em}
-.btn{width:100%;padding:14px;border:none;border-radius:980px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:-0.01em;transition:opacity .15s;margin-top:4px}
+.precision-box p{font-size:12px;color:var(--green);line-height:1.5}
+.btn{width:100%;padding:14px;border:none;border-radius:980px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .15s;margin-top:4px}
 .btn-blue{background:var(--blue);color:#fff}
 .btn-blue:hover{opacity:.88}
 .hidden{display:none}
@@ -56,58 +49,37 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .ld:nth-child(2){animation-delay:.2s}
 .ld:nth-child(3){animation-delay:.4s}
 @keyframes ld{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}}
-.ldText{font-size:13px;color:var(--gray3);margin-top:12px;letter-spacing:-0.01em}
+.ldText{font-size:13px;color:var(--gray3);margin-top:12px}
 .teaser-box{background:var(--gray1);border-radius:16px;padding:1.25rem;margin-bottom:1rem}
 .teaser-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--gray2)}
 .teaser-row:last-child{border-bottom:none}
 .teaser-icon{font-size:1.1rem;flex-shrink:0}
-.teaser-text{font-size:13px;font-weight:500;letter-spacing:-0.01em;flex:1}
+.teaser-text{font-size:13px;font-weight:500;flex:1}
 .teaser-lock{font-size:14px;color:var(--gray3);flex-shrink:0}
 .verdict-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:980px;font-size:13px;font-weight:600;margin-bottom:1rem}
 .vp-over{background:var(--orange-light);color:var(--orange)}
 .vp-good{background:var(--green-light);color:var(--green)}
 .vp-fair{background:var(--gray1);color:var(--gray4)}
 .unlock-card{background:var(--black);border-radius:20px;padding:1.5rem;text-align:center;margin-bottom:1rem}
-.unlock-card .ut{font-size:1.1rem;font-weight:700;color:#fff;letter-spacing:-0.02em;margin-bottom:6px}
-.unlock-card .us{font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:1rem;letter-spacing:-0.01em}
+.unlock-card .ut{font-size:1.1rem;font-weight:700;color:#fff;margin-bottom:6px}
+.unlock-card .us{font-size:12px;color:rgba(255,255,255,0.55);margin-bottom:1rem}
 .unlock-list{list-style:none;text-align:left;display:inline-block;margin-bottom:1.25rem}
-.unlock-list li{font-size:12px;color:rgba(255,255,255,0.7);padding:3px 0;letter-spacing:-0.01em}
+.unlock-list li{font-size:12px;color:rgba(255,255,255,0.7);padding:3px 0}
 .unlock-list li:before{content:"→ ";color:rgba(255,255,255,0.3)}
-.unlock-price{font-size:11px;color:rgba(255,255,255,0.35);margin-top:8px;letter-spacing:-0.01em}
+.unlock-price{font-size:11px;color:rgba(255,255,255,0.35);margin-top:8px}
 .pago-opciones{display:flex;flex-direction:column;gap:.75rem}
 .pago-card{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:1.25rem;text-align:center}
 .pago-label{font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:6px;font-weight:600}
 .pago-price{font-size:1.6rem;font-weight:700;color:#fff;margin-bottom:4px}
 .pago-old{font-size:1rem;color:rgba(255,255,255,0.35);text-decoration:line-through;font-weight:400}
 .pago-promo{font-size:11px;color:#4ade80;margin-bottom:1rem}
-.pago-divider{text-align:center;font-size:11px;color:rgba(255,255,255,0.3);position:relative}
+.pago-divider{text-align:center;font-size:11px;color:rgba(255,255,255,0.3)}
 .pago-card-codigo{background:rgba(255,255,255,0.04);border:1px dashed rgba(255,255,255,0.15);border-radius:16px;padding:1.1rem}
 .pago-card-codigo input{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-family:inherit;font-size:14px;text-align:center;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px}
 .pago-card-codigo input::placeholder{color:rgba(255,255,255,0.3);letter-spacing:normal;text-transform:none}
 .pago-card-codigo input:focus{outline:none;border-color:#0071e3}
 .btn-codigo{width:100%;padding:11px;border:1px solid rgba(255,255,255,0.2);border-radius:980px;background:transparent;color:#fff;font-family:inherit;font-size:13px;font-weight:600;cursor:pointer}
 .btn-codigo:hover{background:rgba(255,255,255,0.08)}
-.wa-box{background:var(--green-light);border-radius:16px;padding:1.25rem;margin-bottom:1rem;display:flex;gap:12px;align-items:flex-start}
-.wa-title{font-size:13px;font-weight:600;color:var(--green);margin-bottom:3px;letter-spacing:-0.01em}
-.wa-sub{font-size:12px;color:var(--gray4);letter-spacing:-0.01em;line-height:1.5}
-.rs-title{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray3);margin-bottom:.6rem}
-.risk-row{display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:.5px solid var(--gray2)}
-.risk-row:last-child{border-bottom:none}
-.rchip{font-size:9px;font-weight:700;text-transform:uppercase;padding:2px 8px;border-radius:980px;white-space:nowrap;flex-shrink:0}
-.rc-a{background:#ffebea;color:var(--red)}
-.rc-m{background:var(--orange-light);color:var(--orange)}
-.rc-b{background:var(--green-light);color:var(--green)}
-.risk-text .rt{font-size:12px;font-weight:600;margin-bottom:1px;letter-spacing:-0.01em}
-.risk-text .rd{font-size:11px;color:var(--gray3);line-height:1.5;letter-spacing:-0.01em}
-.comp-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:.5px solid var(--gray2);font-size:12px}
-.comp-row:last-child{border-bottom:none}
-.cn{font-weight:500;letter-spacing:-0.01em}
-.cp{font-weight:700;letter-spacing:-0.01em}
-.cd{font-size:10px;color:var(--gray3)}
-.price-box{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:1rem}
-.pb2{background:var(--gray1);border-radius:14px;padding:12px;text-align:center}
-.pb2 .pl{font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--gray3);margin-bottom:4px}
-.pb2 .pv{font-size:1rem;font-weight:700;letter-spacing:-0.02em}
 .wa-send-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;background:#25D366;color:#fff;border:none;border-radius:980px;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer;margin-top:.5rem;text-decoration:none}
 .reset-btn{width:100%;padding:10px;background:transparent;border:1px solid var(--gray2);border-radius:980px;font-family:inherit;font-size:13px;color:var(--gray3);cursor:pointer;margin-top:.5rem}
 .addr-badge{display:inline-flex;align-items:center;gap:5px;background:var(--green-light);color:var(--green);font-size:10px;font-weight:600;padding:3px 10px;border-radius:980px;margin-bottom:.5rem}
@@ -115,36 +87,28 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .pac-container{z-index:9999;border-radius:12px;border:1px solid var(--gray2);box-shadow:0 4px 20px rgba(0,0,0,0.12);font-family:'Inter',sans-serif}
 .pac-item{padding:8px 14px;font-size:13px;cursor:pointer}
 .pac-item:hover{background:var(--gray1)}
-.map-hint{font-size:11px;color:var(--blue);margin-top:4px;letter-spacing:-0.01em}
-.no-comp-box{background:#ffebea;border-radius:12px;padding:12px 14px;margin-top:.5rem;display:flex;gap:8px;align-items:flex-start}
-.no-comp-box p{font-size:12px;color:#C62828;line-height:1.5}
-/* ===== STEP 4 NUEVO DISEÑO ===== */
-:root{--s4-orange:#ff6200;--s4-accent:#0071e3;--s4-blue:#0F3460;--s4-navy:#16213E;--s4-g1:#f0f2f5;--s4-g2:#d1d5db;--s4-g3:#6b7280;}
+.map-hint{font-size:11px;color:var(--blue);margin-top:4px}
+/* STEP 4 */
+:root{--s4-orange:#ff6200;--s4-accent:#0071e3;--s4-navy:#16213E;--s4-g1:#f0f2f5;--s4-g2:#d1d5db;--s4-g3:#6b7280;}
 #step4{display:flex;flex-direction:column;gap:1rem}
 #step4.hidden{display:none!important}
 .s4card{background:#fff;border:0.5px solid var(--s4-g2);border-radius:16px;padding:1.25rem}
 .s4card-dark{background:var(--s4-navy);border-radius:16px;padding:1.25rem}
-.s4sec-label{font-size:13px;font-weight:700;color:#1A1A2E;margin-bottom:1rem;letter-spacing:-0.01em}
-.s4sec-label-d{font-size:13px;font-weight:700;color:#fff;margin-bottom:1.25rem;letter-spacing:-0.01em}
+.s4sec-label{font-size:13px;font-weight:700;color:#1A1A2E;margin-bottom:1rem}
+.s4sec-label-d{font-size:13px;font-weight:700;color:#fff;margin-bottom:1.25rem}
 .s4veredicto-inner{text-align:center;padding:1.25rem;background:rgba(255,255,255,0.05);border-radius:14px;border:0.5px solid rgba(255,255,255,0.08);margin-bottom:1rem}
 .s4v-icon{font-size:32px;margin-bottom:8px}
 .s4v-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:6px}
 .s4v-sub{font-size:12px;color:rgba(255,255,255,0.5);line-height:1.5}
 .s4chart-area{display:flex;align-items:flex-end;justify-content:space-around;height:180px;padding:0 4px;margin-bottom:4px}
 .s4bar-col{display:flex;flex-direction:column;align-items:center;flex:1;height:100%}
-.s4bar-rect{width:82%;border-radius:8px 8px 0 0;display:flex;align-items:flex-start;justify-content:center;padding-top:8px}
-.s4bar-price{font-size:11px;font-weight:500;color:#fff;white-space:nowrap}
+.s4bar-rect{width:82%;border-radius:8px 8px 0 0;display:flex;flex-direction:column;align-items:center;padding-top:8px}
 .s4axis{width:100%;height:2px;background:var(--s4-g2)}
 .s4bar-name{font-size:11px;font-weight:700;color:#1A1A2E;margin-top:6px;text-align:center}
 .s4bar-desc{font-size:10px;color:var(--s4-g3);text-align:center;margin-top:2px;line-height:1.3}
 .s4diff-box{margin-top:1rem;background:#fff4ee;border:0.5px solid #ffd0b5;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:10px}
 .s4diff-text{font-size:13px;color:#1A1A2E;line-height:1.5}
 .s4diff-text strong{color:var(--s4-orange)}
-.s4legend4{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:1rem}
-.s4leg-item{display:flex;align-items:flex-start;gap:8px;background:var(--s4-g1);border-radius:12px;padding:10px}
-.s4leg-dot{width:12px;height:12px;border-radius:3px;flex-shrink:0;margin-top:2px}
-.s4leg-title{font-size:12px;font-weight:700;color:#1A1A2E;margin-bottom:2px}
-.s4leg-sub{font-size:11px;color:var(--s4-g3);line-height:1.4}
 .s4cascade{display:flex;flex-direction:column;gap:6px;margin-bottom:1.25rem}
 .s4row{display:flex;align-items:center;gap:10px;background:#fff;border:0.5px solid var(--s4-g2);border-radius:12px;padding:12px 14px}
 .s4row-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -154,7 +118,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .s4row-val{font-size:15px;font-weight:700;white-space:nowrap}
 .s4arrow{text-align:center;color:var(--s4-g2);font-size:18px;margin:-2px 0}
 .s4net-row{background:#e8f8ef;border:0.5px solid #a7e3be;border-radius:12px;padding:14px;display:flex;align-items:center;gap:10px;margin-bottom:1.25rem}
-.s4net-icon{width:40px;height:40px;border-radius:12px;background:#c8f0d8;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .s4net-val{font-size:18px;font-weight:700;color:#1a5c38;white-space:nowrap}
 .s4rent-box{background:#fff;border:0.5px solid var(--s4-g2);border-radius:12px;padding:14px}
 .s4rent-title{font-size:11px;color:var(--s4-g3);margin-bottom:10px}
@@ -178,7 +141,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .s4note-text{font-size:11px;color:var(--s4-g3);line-height:1.5}
 .s4map-wrap{position:relative;width:100%;height:220px;border-radius:14px;overflow:hidden;margin-bottom:1rem;background:#e8eef4}
 #s4MapDiv{width:100%;height:100%;border-radius:14px}
-.s4map-svg{width:100%;height:100%}
 .s4map-legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1rem}
 .s4leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--s4-g3)}
 .s4leg-d{width:10px;height:10px;border-radius:50%;flex-shrink:0}
@@ -209,6 +171,18 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 .s4total-sub{font-size:11px;color:rgba(255,255,255,0.4)}
 .s4foot-note{font-size:10px;color:rgba(255,255,255,0.3);text-align:center;line-height:1.5}
 .s4canon-badge{font-size:10px;background:rgba(0,113,227,0.15);color:#0071e3;padding:2px 8px;border-radius:980px;margin-left:6px;font-weight:500}
+/* HOMOLOGACIÓN TABLE */
+.homo-table{width:100%;border-collapse:collapse;font-size:11px;margin-top:8px}
+.homo-table th{background:#f0f2f5;color:#6b7280;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;padding:6px 8px;text-align:left;font-size:10px}
+.homo-table td{padding:6px 8px;border-bottom:0.5px solid #e5e7eb;color:#1A1A2E;vertical-align:middle}
+.homo-table tr:last-child td{border-bottom:none}
+.homo-delta-pos{color:#059669;font-weight:700}
+.homo-delta-neg{color:#dc2626;font-weight:700}
+.homo-delta-neu{color:#6b7280;font-weight:700}
+.homo-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:980px}
+.homo-badge-pos{background:#dcfce7;color:#1a5c38}
+.homo-badge-neg{background:#fee2e2;color:#dc2626}
+.homo-badge-neu{background:#f0f2f5;color:#6b7280}
 @media print{
   #step1,#step2,#step3,#loader,#zonaNoCubierta,#portada,#encuestaScreen,.steps,.wa-send-btn,.reset-btn,.btn-pdf{display:none!important}
   #step4{display:flex!important}
@@ -216,42 +190,22 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   .s4card,.s4card-dark{box-shadow:none!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
   .s4card-dark{background:var(--s4-navy)!important}
   body{background:#f5f5f7!important}
-  .brand{display:block!important;margin-bottom:1rem!important}
-  .free-pill{display:none!important}
 }
-/* PORTADA */
 #portada{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#0f1115;display:flex;align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto}
 #portada .cover-card{background:#1a1d24;border-radius:20px;padding:2rem 1.75rem;max-width:380px;width:100%;text-align:center;border:0.5px solid rgba(255,255,255,0.08)}
 #portada .cover-icon{font-size:2rem;margin-bottom:1rem}
-#portada .cover-logo{font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:6px;letter-spacing:-0.03em}
-#portada .cover-logo span{color:#0071e3}
-#portada .cover-tag{font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:1.5rem;letter-spacing:-0.01em}
+#portada .cover-tag{font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:1.5rem}
 #portada .lang-row{display:flex;justify-content:center;gap:8px;margin-bottom:1.5rem}
 #portada .lang-btn{padding:6px 18px;border-radius:980px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.6);font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s}
 #portada .lang-btn.active{background:#fff;color:#1a1d24;border-color:#fff}
-#portada .module-btn{width:100%;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px;text-align:left;display:flex;align-items:center;gap:12px;transition:all .2s;letter-spacing:-0.01em}
+#portada .module-btn{width:100%;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.04);color:#fff;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px;text-align:left;display:flex;align-items:center;gap:12px;transition:all .2s}
 #portada .module-btn:hover{background:rgba(255,255,255,0.08);border-color:rgba(255,255,255,0.2)}
 #portada .module-btn.disabled{opacity:.4;cursor:not-allowed}
 #portada .module-btn .mb-icon{font-size:1.4rem;flex-shrink:0}
 #portada .module-btn .mb-text .mb-title{font-size:14px;font-weight:600}
 #portada .module-btn .mb-text .mb-sub{font-size:11px;color:rgba(255,255,255,0.45);font-weight:400;margin-top:2px}
 #portada .module-btn .mb-arrow{margin-left:auto;opacity:.5;font-size:16px}
-#portada .cover-footer{font-size:10px;color:rgba(255,255,255,0.3);margin-top:1.25rem;letter-spacing:-0.01em;line-height:1.5}
-/* PANTALLA DE ACCESO */
-#accesoScreen{position:fixed;top:0;left:0;width:100%;height:100%;z-index:10000;background:#0f1115;display:flex;align-items:center;justify-content:center;padding:1.5rem}
-#accesoScreen .acceso-card{background:#1a1d24;border-radius:20px;padding:2rem 1.75rem;max-width:380px;width:100%;text-align:center;border:0.5px solid rgba(255,255,255,0.08)}
-#accesoScreen .acceso-logo{font-size:1.4rem;font-weight:700;color:#fff;margin-bottom:6px;letter-spacing:-0.03em}
-#accesoScreen .acceso-logo span{color:#0071e3}
-#accesoScreen .acceso-tag{font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:1.5rem;letter-spacing:-0.01em}
-#accesoScreen .acceso-icon{font-size:2rem;margin-bottom:1rem}
-#accesoScreen input{width:100%;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.06);color:#fff;font-family:inherit;font-size:16px;text-align:center;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px}
-#accesoScreen input::placeholder{color:rgba(255,255,255,0.3);letter-spacing:normal;text-transform:none}
-#accesoScreen input:focus{outline:none;border-color:#0071e3}
-#accesoScreen .acceso-btn{width:100%;padding:14px;border:none;border-radius:980px;background:#0071e3;color:#fff;font-family:inherit;font-size:15px;font-weight:600;cursor:pointer}
-#accesoScreen .acceso-btn:hover{opacity:.9}
-#accesoScreen .acceso-err{font-size:12px;color:#ff6b6b;margin-top:10px;min-height:16px}
-#accesoScreen .acceso-foot{font-size:10px;color:rgba(255,255,255,0.3);margin-top:1.5rem;line-height:1.5}
-/* ENCUESTA BETA */
+#portada .cover-footer{font-size:10px;color:rgba(255,255,255,0.3);margin-top:1.25rem;line-height:1.5}
 #encuestaScreen{position:fixed;top:0;left:0;width:100%;height:100%;z-index:10001;background:rgba(15,17,21,0.92);display:flex;align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto}
 #encuestaScreen.hidden{display:none!important}
 #encuestaScreen .enc-card{background:#1a1d24;border-radius:20px;padding:1.75rem;max-width:400px;width:100%;border:0.5px solid rgba(255,255,255,0.08);max-height:90vh;overflow-y:auto}
@@ -270,38 +224,14 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <body>
 <div id="encuestaScreen" class="hidden">
   <div class="enc-card">
-    <div class="enc-title">🙏 Tu opinión nos ayuda a mejorar</div>
+    <div class="enc-title">Tu opinión nos ayuda a mejorar</div>
     <div class="enc-sub">Antes de descargar tu informe, cuéntanos cómo te fue (toma 30 segundos)</div>
-
-    <div class="enc-fg">
-      <label>¿Qué tan fácil fue usar la herramienta?</label>
-      <select id="encFacilidad">
-        <option value="">Selecciona una opción</option>
-        <option value="Muy fácil">Muy fácil</option>
-        <option value="Fácil">Fácil</option>
-        <option value="Regular">Regular</option>
-        <option value="Difícil">Difícil</option>
-        <option value="Muy difícil">Muy difícil</option>
-      </select>
-    </div>
-
-    <div class="enc-fg">
-      <label>¿Qué tan claro fue el informe final?</label>
-      <select id="encClaridad">
-        <option value="">Selecciona una opción</option>
-        <option value="Muy claro">Muy claro</option>
-        <option value="Claro">Claro</option>
-        <option value="Regular">Regular</option>
-        <option value="Confuso">Confuso</option>
-        <option value="Muy confuso">Muy confuso</option>
-      </select>
-    </div>
-
-    <div class="enc-fg">
-      <label>¿Algo que podamos mejorar?</label>
-      <textarea id="encComentario" placeholder="Tu comentario es muy valioso..."></textarea>
-    </div>
-
+    <div class="enc-fg"><label>Qué tan fácil fue usar la herramienta?</label>
+      <select id="encFacilidad"><option value="">Selecciona</option><option>Muy fácil</option><option>Fácil</option><option>Regular</option><option>Difícil</option><option>Muy difícil</option></select></div>
+    <div class="enc-fg"><label>Qué tan claro fue el informe?</label>
+      <select id="encClaridad"><option value="">Selecciona</option><option>Muy claro</option><option>Claro</option><option>Regular</option><option>Confuso</option><option>Muy confuso</option></select></div>
+    <div class="enc-fg"><label>Algo que podamos mejorar?</label>
+      <textarea id="encComentario" placeholder="Tu comentario es muy valioso..."></textarea></div>
     <button class="enc-btn" onclick="enviarEncuesta()">Enviar y ver mi informe</button>
     <button class="enc-skip" onclick="saltarEncuesta()">Omitir por ahora</button>
   </div>
@@ -310,13 +240,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 <div id="portada">
   <div class="cover-card">
     <div class="cover-icon">🏢</div>
-    <svg class="cover-logo-svg" width="240" height="69" viewBox="0 0 1400 400" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 6px;display:block">
-      <defs>
-        <linearGradient id="blueCov" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#0057FF"/>
-          <stop offset="100%" stop-color="#0A6CFF"/>
-        </linearGradient>
-      </defs>
+    <svg width="240" height="69" viewBox="0 0 1400 400" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 6px;display:block">
+      <defs><linearGradient id="blueCov" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0057FF"/><stop offset="100%" stop-color="#0A6CFF"/></linearGradient></defs>
       <text x="70" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="#ffffff">Urban</text>
       <text x="610" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="url(#blueCov)">Br</text>
       <path d="M915 80 C865 80 825 120 825 170 C825 215 860 250 915 320 C970 250 1005 215 1005 170 C1005 120 965 80 915 80 Z" fill="url(#blueCov)"/>
@@ -349,13 +274,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 
 <div class="app">
   <div class="brand">
-    <svg class="brand-logo-svg" width="220" height="63" viewBox="0 0 1400 400" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 4px;display:block">
-      <defs>
-        <linearGradient id="blueBrand" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#0057FF"/>
-          <stop offset="100%" stop-color="#0A6CFF"/>
-        </linearGradient>
-      </defs>
+    <svg width="220" height="63" viewBox="0 0 1400 400" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 4px;display:block">
+      <defs><linearGradient id="blueBrand" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0057FF"/><stop offset="100%" stop-color="#0A6CFF"/></linearGradient></defs>
       <text x="70" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="#000000">Urban</text>
       <text x="610" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="url(#blueBrand)">Br</text>
       <path d="M915 80 C865 80 825 120 825 170 C825 215 860 250 915 320 C970 250 1005 215 1005 170 C1005 120 965 80 915 80 Z" fill="url(#blueBrand)"/>
@@ -378,11 +298,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="card-sub">Necesitamos tus datos para enviarte el informe por WhatsApp</div>
       <div class="fg"><label>Nombre completo</label><input type="text" id="nombre" placeholder="Juan Pérez"></div>
       <div class="fg"><label>Correo electrónico</label><input type="email" id="email" placeholder="juan@email.com"></div>
-      <div class="fg">
-        <label>Celular WhatsApp</label>
-        <input type="tel" id="celular" placeholder="3108250451">
-        <div class="fg-hint">📲 El informe completo te llegará a este número por WhatsApp</div>
-      </div>
+      <div class="fg"><label>Celular WhatsApp</label><input type="tel" id="celular" placeholder="3108250451"><div class="fg-hint">📲 El informe completo te llegará a este número por WhatsApp</div></div>
       <div class="fg">
         <label>Zona</label>
         <select id="zona" onchange="onZona()">
@@ -407,11 +323,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
   <div id="zonaNoCubierta" class="hidden">
     <div class="zona-card">
       <div style="font-size:2.5rem;margin-bottom:1rem">📍</div>
-      <div style="font-size:1.1rem;font-weight:700;color:var(--black);letter-spacing:-0.02em;margin-bottom:8px">Por ahora cubrimos Ciudad del Río</div>
-      <div style="font-size:13px;color:var(--gray3);line-height:1.6;margin-bottom:1.25rem">Nuestra base de datos actual está enfocada en <strong style="color:var(--black)">Ciudad del Río, El Poblado</strong>. Si tu inmueble está en otra zona, podemos hacer un análisis individual y personalizado para ti.</div>
+      <div style="font-size:1.1rem;font-weight:700;color:var(--black);margin-bottom:8px">Por ahora cubrimos Ciudad del Río</div>
+      <div style="font-size:13px;color:var(--gray3);line-height:1.6;margin-bottom:1.25rem">Nuestra base de datos está enfocada en <strong style="color:var(--black)">Ciudad del Río, El Poblado</strong>.</div>
       <a id="zonaWaBtn" href="#" target="_blank" class="btn btn-blue" style="display:block;text-decoration:none;text-align:center;margin-bottom:1rem">📲 Solicitar análisis personalizado</a>
       <div style="font-size:11px;color:var(--gray3);margin-bottom:.75rem">o déjanos tu correo para avisarte cuando cubramos tu zona</div>
-      <div class="fg"><label>Tu correo para avisarte</label><input type="email" id="emailWait" placeholder="tu@email.com"></div>
+      <div class="fg"><label>Tu correo</label><input type="email" id="emailWait" placeholder="tu@email.com"></div>
       <button class="btn-codigo" onclick="saveWaitlist()" style="width:100%">Avisarme cuando esté disponible</button>
     </div>
     <button class="reset-btn" onclick="resetAll()">← Volver</button>
@@ -421,10 +337,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
     <div class="card">
       <div class="card-title">Datos del inmueble</div>
       <div class="card-sub">Entre más datos nos des, más preciso será el análisis</div>
-      <div class="precision-box">
-        <span>🎯</span>
-        <p><strong>Tip:</strong> Escribe la dirección exacta — Google Maps la ubica automáticamente y encontramos comparables reales en un radio de 500-800 metros.</p>
-      </div>
+      <div class="precision-box"><span>🎯</span><p><strong>Tip:</strong> Escribe la dirección exacta — Google Maps la ubica automáticamente y encontramos comparables reales en un radio de 500-800 metros.</p></div>
       <div class="fg">
         <label>Dirección del inmueble</label>
         <input type="text" id="direccion" placeholder="Dirección del inmueble, nombre del edificio" autocomplete="off">
@@ -432,10 +345,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
         <div class="map-hint" id="coordsInfo"></div>
       </div>
       <input type="hidden" id="proyecto" value="">
-      <div class="fg">
-        <label>¿Proyecto nuevo o apartamento usado?</label>
-        <select id="tipoInm"><option value="nuevo">Proyecto nuevo</option><option value="usado">Apartamento usado</option></select>
-      </div>
+      <div class="fg"><label>¿Proyecto nuevo o apartamento usado?</label><select id="tipoInm"><option value="nuevo">Proyecto nuevo</option><option value="usado">Apartamento usado</option></select></div>
       <div class="fg-row">
         <div class="fg"><label>Precio pedido (COP)</label><input type="text" id="precio" placeholder="600.000.000"></div>
         <div class="fg"><label>Área (m²)</label><input type="number" id="area" placeholder="55"></div>
@@ -446,13 +356,36 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
         <div class="fg"><label>Piso</label><input type="number" id="piso" placeholder="20"></div>
       </div>
       <div class="fg">
-        <label>Amenidades incluidas</label>
+        <label>Número de parqueaderos</label>
+        <select id="numParqueaderos">
+          <option value="0">0 — Sin parqueadero</option>
+          <option value="1" selected>1 parqueadero</option>
+          <option value="2">2 parqueaderos</option>
+          <option value="3">3 parqueaderos</option>
+          <option value="4">Más de 3</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Edad del inmueble</label>
+        <select id="edadInmueble">
+          <option value="0-2">0 – 2 años (nuevo / en construcción)</option>
+          <option value="3-10" selected>3 – 10 años</option>
+          <option value="11-20">11 – 20 años</option>
+          <option value="21-35">21 – 35 años</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Nivel de amenidades</label>
+        <select id="nivelAmenidades">
+          <option value="Básico">Básico — vigilancia, citófono</option>
+          <option value="Estándar" selected>Estándar — gimnasio, salón comunal</option>
+          <option value="Fullhouse">Fullhouse — piscina, spa, coworking, concierge</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label>Extras destacados</label>
         <div class="checks" id="amenidades">
-          <label class="chk"><input type="checkbox" value="Parqueadero">🚗 Parqueadero</label>
           <label class="chk"><input type="checkbox" value="Balcón">🌿 Balcón</label>
-          <label class="chk"><input type="checkbox" value="Gimnasio">💪 Gimnasio</label>
-          <label class="chk"><input type="checkbox" value="Piscina">🏊 Piscina</label>
-          <label class="chk"><input type="checkbox" value="Vigilancia">🔒 Vigilancia</label>
           <label class="chk"><input type="checkbox" value="Vista ciudad">🌆 Vista ciudad</label>
         </div>
       </div>
@@ -504,7 +437,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
           <div class="pago-label">¿Tienes código promocional?</div>
           <input type="text" id="codigoAccesoStep3" placeholder="Ingresa tu código" maxlength="10" autocomplete="off">
           <button class="btn-codigo" onclick="verificarCodigoStep3()">Usar código</button>
-          <div class="acceso-err" id="accesoErrStep3"></div>
+          <div id="accesoErrStep3" style="font-size:12px;color:#ff6b6b;margin-top:8px;min-height:16px"></div>
         </div>
       </div>
       <div class="unlock-price">Acceso inmediato a tu informe completo</div>
@@ -516,7 +449,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
     <div class="s4card-dark">
       <div class="s4sec-label-d">Veredicto</div>
       <div id="addrBadgeFull" style="margin-bottom:.75rem"></div>
-      <div class="s4veredicto-inner" id="s4VerdictBox">
+      <div class="s4veredicto-inner">
         <div class="s4v-icon" id="s4VIcon">⚖️</div>
         <div class="s4v-title" id="s4VTitle">—</div>
         <div class="s4v-sub" id="s4VJust">—</div>
@@ -526,7 +459,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       <div class="s4sec-label">1 · ¿Cuánto vale realmente este inmueble?</div>
       <div class="s4chart-area" id="s4Bars"></div>
       <div class="s4diff-box" id="s4DiffBox"></div>
-      <div class="s4legend4" id="s4Legend"></div>
+      <div id="s4HomoDetail"></div>
       <div style="background:#f0f2f5;border-radius:12px;padding:12px 14px;margin-top:1rem" id="s4CoverageBox"></div>
     </div>
     <div class="s4card">
@@ -542,9 +475,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
     </div>
     <div class="s4card">
       <div class="s4sec-label">4 · ¿Qué hay cerca de tu inmueble?</div>
-      <div class="s4map-wrap" id="s4MapWrap" style="background:#e8eef4;display:flex;align-items:center;justify-content:center">
-        <div id="s4MapDiv" style="width:100%;height:100%"></div>
-      </div>
+      <div class="s4map-wrap"><div id="s4MapDiv"></div></div>
       <div class="s4map-legend">
         <div class="s4leg"><div class="s4leg-d" style="background:#ff6200"></div>Tu inmueble</div>
         <div class="s4leg"><div class="s4leg-d" style="background:#e53935"></div>Salud</div>
@@ -555,9 +486,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
         <div class="s4leg"><div class="s4leg-d" style="background:#dc2626"></div>Gimnasio</div>
         <div class="s4leg"><div class="s4leg-d" style="background:#92400e"></div>Café</div>
       </div>
-      <div class="s4poi-list" id="s4PoiList">
-        <div style="text-align:center;padding:1rem;color:#6b7280;font-size:12px">Buscando lugares cercanos...</div>
-      </div>
+      <div class="s4poi-list" id="s4PoiList"><div style="text-align:center;padding:1rem;color:#6b7280;font-size:12px">Buscando lugares cercanos...</div></div>
     </div>
     <div class="s4card-dark">
       <div class="s4sec-label-d">5 · Resumen final — ¿vale la pena comprarlo?</div>
@@ -569,7 +498,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
       </div>
       <div class="s4ingresos" id="s4Ingresos"></div>
       <div class="s4total-box" id="s4Total"></div>
-      <div class="s4foot-note">Proyección estimada. Valorización basada en histórico Ciudad del Río 6% anual.<br>No constituye asesoría financiera ni avalúo comercial.</div>
+      <div class="s4foot-note">Proyección estimada. No constituye asesoría financiera ni avalúo comercial.</div>
     </div>
     <a id="waSendBtn" class="wa-send-btn" href="#" target="_blank" onclick="trackWhatsApp()">📲 ¿Necesitas asesoría adicional? Contáctanos</a>
     <span id="waNum" style="display:none"></span>
@@ -579,377 +508,327 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;background:
 </div>
 
 <script>
-const MERCADO={promedio:9323272,mediana:10068576,jardines:13959167,cercaViva:12594916,bavaria:8067906};
+// ══════════════════════════════════════════════════════
+// CONSTANTES
+// ══════════════════════════════════════════════════════
 const WA_NUM='573108250451';
-const GMAPS_KEY='AIzaSyAheBS8Ha9yB4LVA9PSd7i0sa_WvA-fHfI';
 const SHEET_ID='1CBszkSAEg8lVJntJ-BGFeI2mlcqyvQqUVJclY5VR0qM';
 const SHEET_URL='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=datos';
 const ARRIENDOS_URL='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?tqx=out:json&sheet=arriendos';
+const TRACKING_URL='https://script.google.com/macros/s/AKfycbya7fYcFYUyt4Bm1kfyE1rbJVQY4v6vDAdLsY1HlbTscKCSl4uh6i5F5Dtd_96ozxty/exec';
+const CODIGOS_VALIDOS=['UB001','UB002','UB003','UB004','UB005','UB006','UB007','UB008','UB009','UB010','UB011','UB012','UB013','UB014','UB015','UB016','UB017','UB018','UB019','UB020','UB021','UB022','UB023','UB024','UB025','UB026','UB027','UB028','UB029','UB030','UB031','UB032','UB033','UB034','UB035','UB036','UB037','UB038','UB039','UB040','UB041','UB042','UB043','UB044','UB045','UB046','UB047','UB048','UB049','UB050'];
 
-let PROYECTOS=[];
-let ARRIENDOS=[];
-let state={};
-let proyectosListos=false;
+let PROYECTOS=[],ARRIENDOS=[],state={},proyectosListos=false,autocompleteWidget=null,appStartTime=Date.now(),currentLang='es';
 
+// ══════════════════════════════════════════════════════
+// MOTOR DE HOMOLOGACIÓN DE COMPARABLES
+// Reglas: Área · Edad · Parqueaderos · Amenidades
+// Fórmula: PrecioAjustado = PrecioBase × (1 + ΔNeto)
+// ══════════════════════════════════════════════════════
+
+/** Clúster de área: 0 (< 45m²) … 4 (> 141m²) */
+function getClusterArea(a){
+  if(a<45)return 0; if(a<=65)return 1; if(a<=90)return 2; if(a<=140)return 3; return 4;
+}
+const LABELS_AREA=['< 45 m²','45–65 m²','66–90 m²','91–140 m²','> 141 m²'];
+
+/** Clúster de edad: 0 (0-2 años) … 3 (21-35 años) */
+function getClusterEdad(s){
+  if(s==='0-2')return 0; if(s==='3-10')return 1; if(s==='11-20')return 2; return 3;
+}
+
+/** Nivel numérico de amenidades: Básico=0 · Estándar=1 · Fullhouse=2 */
+function nivelAmen(s){ if(s==='Fullhouse')return 2; if(s==='Estándar')return 1; return 0; }
+
+/** Normaliza parqueaderos con cap en 4 */
+function normP(n){ return Math.min(parseInt(n)||0,4); }
+
+/**
+ * calcularFactorAjuste — núcleo del motor.
+ * Recibe: objetivo={area,edadStr,parq,amenidades} y comp={area,edadStr,parq,amenidades,m2,nombre}
+ * Devuelve: {deltaNeto, deltaArea, deltaEdad, deltaParq, deltaAmen, m2Ajustado, m2Original, nombre}
+ */
+function calcularFactorAjuste(obj,comp){
+  let dA=0,dE=0,dP=0,dAm=0;
+
+  // ── 1. ÁREA (+6% por clúster más grande / -7% por clúster más pequeño) ──
+  const cOA=getClusterArea(obj.area), cCA=getClusterArea(comp.area), diffA=cCA-cOA;
+  if(diffA>0) dA= 0.06*diffA;
+  if(diffA<0) dA=-0.07*Math.abs(diffA);
+
+  // ── 2. EDAD (base = 3-10 años) ──
+  const cOE=getClusterEdad(obj.edadStr), cCE=getClusterEdad(comp.edadStr);
+  if(cCE===0&&cOE>0)        dE=-0.04*(cOE-cCE); // más nuevo que obj → -4%/rango
+  else if(cCE===2&&cOE<2)   dE=0.06;              // 11-20 vs más joven → +6%
+  else if(cCE===3&&cOE<3)   dE=0.13;              // 21-35 vs más joven → +13%
+
+  // ── 3. PARQUEADEROS (excepción: obj < 45m² → deltas ÷2) ──
+  const pO=normP(obj.parq), pC=normP(comp.parq), diffP=pC-pO;
+  const fp=(cOA===0)?0.5:1.0;
+  if(diffP===-1)  dP= 0.08*fp;
+  else if(diffP===1)  dP=-0.08*fp;
+  else if(diffP>=2)   dP=-0.13*fp;
+
+  // ── 4. AMENIDADES ──
+  const nO=nivelAmen(obj.amenidades), nC=nivelAmen(comp.amenidades);
+  if(nC===2&&nO===0)      dAm=-0.11;
+  else if(nC===2&&nO===1) dAm=-0.05;
+  else if(nC===1&&nO===0) dAm=-0.05;
+  else if(nC===0&&nO===2) dAm= 0.11;
+  else if(nC===0&&nO===1) dAm= 0.05;
+
+  // ── DELTA NETO (cap ±40%) ──
+  const dn=Math.max(-0.40,Math.min(0.40,dA+dE+dP+dAm));
+  return{deltaNeto:dn,deltaArea:dA,deltaEdad:dE,deltaParq:dP,deltaAmen:dAm,
+         m2Ajustado:Math.round(comp.m2*(1+dn)),m2Original:comp.m2,nombre:comp.nombre||comp.n||'Comparable'};
+}
+
+/**
+ * calcularRefHomologada — agrega los ajustes de todos los comparables.
+ * Devuelve: {refHomologada, ajustes[], promedioSimple}
+ */
+function calcularRefHomologada(comps,obj){
+  if(!comps||!comps.length)return{refHomologada:0,ajustes:[],promedioSimple:0};
+  const top=comps.slice(0,6);
+  const ajustes=top.map(c=>calcularFactorAjuste(obj,{
+    area:c.p.area||obj.area, edadStr:c.p.edadStr||'3-10',
+    parq:c.p.parqNum!==undefined?c.p.parqNum:(c.p.parq?1:0),
+    amenidades:c.p.amenLevel||'Estándar', m2:c.p.m2, nombre:c.p.n
+  }));
+  const promedioSimple=Math.round(top.reduce((a,c)=>a+c.p.m2,0)/top.length);
+  const refHomologada=Math.round(ajustes.reduce((a,aj)=>a+aj.m2Ajustado,0)/ajustes.length);
+  return{refHomologada,ajustes,promedioSimple};
+}
+
+// ══════════════════════════════════════════════════════
+// CARGA DE DATOS SHEETS
+// ══════════════════════════════════════════════════════
 async function cargarProyectos(){
   try{
-    const res=await fetch(SHEET_URL);
-    const txt=await res.text();
+    const res=await fetch(SHEET_URL),txt=await res.text();
     const json=JSON.parse(txt.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
-    const rows=json.table.rows;
-    PROYECTOS=rows.slice(1).map(r=>{
-      const c=r.c;
-      if(!c||!c[9]||!c[8])return null;
-      const precio=c[9].v||0;
-      const area=c[8].v||0;
-      if(area===0)return null;
+    PROYECTOS=json.table.rows.slice(1).map(r=>{
+      const c=r.c; if(!c||!c[9]||!c[8])return null;
+      const precio=c[9].v||0,area=c[8].v||0; if(!area)return null;
       const m2=Math.round(precio/area);
-      const subzona=(c[2]&&c[2].v?c[2].v:'').toLowerCase();
+      const sub=(c[2]&&c[2].v?c[2].v:'').toLowerCase();
       let sz='bavaria';
-      if(subzona.includes('jardines'))sz='jardines';
-      else if(subzona.includes('cerca')||subzona.includes('muba'))sz='cercaViva';
-      const habs_val=c[5]&&c[5].v?parseInt(c[5].v):2;
+      if(sub.includes('jardines'))sz='jardines';
+      else if(sub.includes('cerca')||sub.includes('muba'))sz='cercaViva';
       const garajes=c[7]&&c[7].v?parseFloat(c[7].v):0;
       const mercado=c[15]&&c[15].v?c[15].v.toLowerCase().trim():'nuevo';
-      return{n:c[1]&&c[1].v?c[1].v:'Sin nombre',lat:6.2200,lng:-75.5715,m2:m2,area:area,sz:sz,habs:[habs_val],parq:garajes>0,tipo:mercado,amen:['Gimnasio','Vigilancia']};
+      const edadRaw=c[3]&&c[3].v?parseInt(c[3].v):null;
+      let edadStr='3-10';
+      if(edadRaw!==null){if(edadRaw<=2)edadStr='0-2';else if(edadRaw<=10)edadStr='3-10';else if(edadRaw<=20)edadStr='11-20';else edadStr='21-35';}
+      let amenLevel='Estándar';
+      if(c[16]&&c[16].v){const av=c[16].v.toLowerCase();if(av.includes('full')||av.includes('lujo'))amenLevel='Fullhouse';else if(av.includes('básico')||av.includes('basico'))amenLevel='Básico';}
+      return{n:c[1]&&c[1].v?c[1].v:'Sin nombre',lat:6.2200,lng:-75.5715,m2,area,sz,
+             habs:[c[5]&&c[5].v?parseInt(c[5].v):2],parq:garajes>0,parqNum:Math.min(Math.round(garajes),4),
+             tipo:mercado,edadStr,amenLevel,amen:['Gimnasio','Vigilancia']};
     }).filter(p=>p&&p.m2>0);
-    console.log('Ventas cargadas: '+PROYECTOS.length);
+    console.log('Ventas:',PROYECTOS.length);
   }catch(e){
-    console.error('Error cargando ventas:',e);
+    console.warn('Sheets fallback'); 
     PROYECTOS=[
-      {n:"Bosque del Rio",lat:6.2173,lng:-75.5748,m2:8067906,sz:"bavaria",habs:[1,2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia","Piscina"]},
-      {n:"Reserva del Rio",lat:6.2180,lng:-75.5745,m2:9200000,sz:"bavaria",habs:[1,2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia","Piscina"]},
-      {n:"River Park",lat:6.2205,lng:-75.5718,m2:12594916,sz:"cercaViva",habs:[1,2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia","Piscina"]},
-      {n:"Linz y Graz del Rio",lat:6.2200,lng:-75.5722,m2:12200000,sz:"cercaViva",habs:[2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia"]},
-      {n:"Ventto del Rio",lat:6.2230,lng:-75.5700,m2:13959167,sz:"jardines",habs:[1,2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia","Piscina"]},
-      {n:"Arrayan del Rio",lat:6.2235,lng:-75.5702,m2:13200000,sz:"jardines",habs:[1,2,3],parq:true,tipo:"nuevo",amen:["Gimnasio","Vigilancia","Piscina"]}
+      {n:"Bosque del Rio",lat:6.2173,lng:-75.5748,m2:8067906,area:60,sz:"bavaria",habs:[1,2,3],parq:true,parqNum:1,tipo:"nuevo",edadStr:"3-10",amenLevel:"Estándar"},
+      {n:"Reserva del Rio",lat:6.2180,lng:-75.5745,m2:9200000,area:70,sz:"bavaria",habs:[1,2,3],parq:true,parqNum:1,tipo:"nuevo",edadStr:"3-10",amenLevel:"Estándar"},
+      {n:"River Park",lat:6.2205,lng:-75.5718,m2:12594916,area:80,sz:"cercaViva",habs:[1,2,3],parq:true,parqNum:2,tipo:"nuevo",edadStr:"0-2",amenLevel:"Fullhouse"},
+      {n:"Linz y Graz del Rio",lat:6.2200,lng:-75.5722,m2:12200000,area:85,sz:"cercaViva",habs:[2,3],parq:true,parqNum:1,tipo:"nuevo",edadStr:"3-10",amenLevel:"Estándar"},
+      {n:"Ventto del Rio",lat:6.2230,lng:-75.5700,m2:13959167,area:90,sz:"jardines",habs:[1,2,3],parq:true,parqNum:2,tipo:"nuevo",edadStr:"0-2",amenLevel:"Fullhouse"},
+      {n:"Arrayan del Rio",lat:6.2235,lng:-75.5702,m2:13200000,area:95,sz:"jardines",habs:[1,2,3],parq:true,parqNum:1,tipo:"nuevo",edadStr:"3-10",amenLevel:"Estándar"}
     ];
   }
-  // Cargar arriendos en paralelo
   try{
-    const res2=await fetch(ARRIENDOS_URL);
-    const txt2=await res2.text();
+    const res2=await fetch(ARRIENDOS_URL),txt2=await res2.text();
     const json2=JSON.parse(txt2.match(/google\.visualization\.Query\.setResponse\(([\s\S]*)\)/)[1]);
-    const rows2=json2.table.rows;
-    ARRIENDOS=rows2.slice(1).map(r=>{
-      const c=r.c;
-      if(!c||!c[9])return null; // col J = Canon COP
-      const canon=c[9].v||0;
-      if(canon===0)return null;
-      const habs_val=c[5]&&c[5].v?parseInt(c[5].v):2;
-      const area=c[8]&&c[8].v?parseFloat(c[8].v):0;
-      const modalidad=c[16]&&c[16].v?c[16].v.toLowerCase().trim():'tradicional';
-      const mercado=c[12]&&c[12].v?c[12].v.toLowerCase().trim():'nuevo';
-      return{n:c[1]&&c[1].v?c[1].v:'Sin nombre',canon:canon,habs:habs_val,area:area,modalidad:modalidad,mercado:mercado};
+    ARRIENDOS=json2.table.rows.slice(1).map(r=>{
+      const c=r.c; if(!c||!c[9])return null;
+      const canon=c[9].v||0; if(!canon)return null;
+      return{canon,habs:c[5]&&c[5].v?parseInt(c[5].v):2,area:c[8]&&c[8].v?parseFloat(c[8].v):0,
+             modalidad:c[16]&&c[16].v?c[16].v.toLowerCase().trim():'tradicional'};
     }).filter(a=>a&&a.canon>0);
-    console.log('Arriendos cargados: '+ARRIENDOS.length);
-  }catch(e){
-    console.error('Error cargando arriendos (se usará fórmula):',e);
-    ARRIENDOS=[];
-  }
+    console.log('Arriendos:',ARRIENDOS.length);
+  }catch(e){ARRIENDOS=[];}
   proyectosListos=true;
 }
 
+// ══════════════════════════════════════════════════════
+// LÓGICA COMPARABLES
+// ══════════════════════════════════════════════════════
 function getCanonMercado(habs,area,tipo,modalidad){
-  modalidad=modalidad||'tradicional';
-  const habN=parseInt(habs)||2;
-  // Filtrar arriendos por habitaciones, mercado y modalidad
-  let matches=ARRIENDOS.filter(a=>{
-    const habMatch=Math.abs(a.habs-habN)<=1;
-    const modMatch=a.modalidad===modalidad;
-    return habMatch&&modMatch;
-  });
-  // Si hay matches con area similar (±20%), refinar
-  if(area>0&&matches.length>=3){
-    const byArea=matches.filter(a=>a.area>0&&Math.abs(a.area-area)/area<=0.2);
-    if(byArea.length>=3)matches=byArea;
-  }
-  if(matches.length===0){
-    // Fallback: fórmula genérica 0.4% del precio justo
-    return null;
-  }
-  const sum=matches.reduce((a,m)=>a+m.canon,0);
-  return{canon:Math.round(sum/matches.length),fuente:'mercado ('+matches.length+' arriendos)',modalidad:modalidad};
+  const habN=parseInt(habs)||2; modalidad=modalidad||'tradicional';
+  let m=ARRIENDOS.filter(a=>Math.abs(a.habs-habN)<=1&&a.modalidad===modalidad);
+  if(area>0&&m.length>=3){const ba=m.filter(a=>a.area>0&&Math.abs(a.area-area)/area<=0.2);if(ba.length>=3)m=ba;}
+  if(!m.length)return null;
+  return{canon:Math.round(m.reduce((a,x)=>a+x.canon,0)/m.length),fuente:'mercado ('+m.length+' arriendos)',modalidad};
 }
 
-function distKm(lat1,lng1,lat2,lng2){
-  const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLng=(lng2-lng1)*Math.PI/180;
-  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+function distKm(la1,ln1,la2,ln2){
+  const R=6371,dL=(la2-la1)*Math.PI/180,dN=(ln2-ln1)*Math.PI/180;
+  const a=Math.sin(dL/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dN/2)**2;
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
 
-function getRangoArea(area){
-  if(area<60)return'pequeño';
-  if(area<=100)return'mediano';
-  return'grande';
-}
+function getRangoArea(a){if(a<60)return'pequeño';if(a<=100)return'mediano';return'grande';}
 
-// Polígono real de Ciudad del Río (dibujado y exportado por el usuario desde Google My Maps)
-const POLIGONO_CIUDAD_DEL_RIO=[[6.2256856,-75.5749834],[6.2149559,-75.5761421],[6.2146573,-75.5747902],[6.2151479,-75.5729663],[6.2168971,-75.5717862],[6.2247044,-75.5712712],[6.225387,-75.5724728],[6.2256003,-75.5742323],[6.2256856,-75.5749834]];
+const POLY_CDR=[[6.2256856,-75.5749834],[6.2149559,-75.5761421],[6.2146573,-75.5747902],[6.2151479,-75.5729663],[6.2168971,-75.5717862],[6.2247044,-75.5712712],[6.225387,-75.5724728],[6.2256003,-75.5742323],[6.2256856,-75.5749834]];
 
-// Algoritmo Ray Casting: determina si un punto (lat,lng) está dentro de un polígono
-function puntoEnPoligono(lat,lng,poligono){
-  let dentro=false;
-  const n=poligono.length;
-  let j=n-1;
+function puntoEnPoly(lat,lng,poly){
+  let d=false;const n=poly.length;let j=n-1;
   for(let i=0;i<n;i++){
-    const lati=poligono[i][0],lngi=poligono[i][1];
-    const latj=poligono[j][0],lngj=poligono[j][1];
-    if((lngi>lng)!==(lngj>lng)){
-      const latInterseccion=lati+(lng-lngi)/(lngj-lngi)*(latj-lati);
-      if(lat<latInterseccion)dentro=!dentro;
-    }
+    const[li,ni]=poly[i],[lj,nj]=poly[j];
+    if((ni>lng)!==(nj>lng)&&lat<li+(lng-ni)/(nj-ni)*(lj-li))d=!d;
     j=i;
-  }
-  return dentro;
+  }return d;
 }
 
-const CENTRO_CIUDAD_DEL_RIO={lat:6.2200,lng:-75.5715};
-const RADIO_MAX_ABSOLUTO=3; // km - fuera de esto, no hay análisis válido
-
-function getComparables(lat,lng,area,habs,parq,tipo,amenidades,precioM2,zonaValida){
-  const habN=parseInt(habs)||1;
-  const esUsado=(tipo==='usado');
-  const rango=getRangoArea(area);
-
-  // Validación geográfica precisa con el polígono real de Ciudad del Río
-  if(!puntoEnPoligono(lat,lng,POLIGONO_CIUDAD_DEL_RIO))return[];
-
-  function filtrar(opts){
+function getComparables(lat,lng,area,habs,parq,tipo,am,precioM2){
+  const habN=parseInt(habs)||1,esU=(tipo==='usado'),rango=getRangoArea(area);
+  if(!puntoEnPoly(lat,lng,POLY_CDR))return[];
+  function fil(o){
     return PROYECTOS.filter(p=>p.tipo===tipo).map(p=>{
       const dist=distKm(lat,lng,p.lat,p.lng);
-      let valid=true;
-      if(dist>opts.radioMax)valid=false;
-      if(opts.exigirHabs&&!p.habs.includes(habN))valid=false;
-      if(opts.exigirParq&&p.parq!==parq)valid=false;
-      const diffPct=Math.abs((p.m2-precioM2)/precioM2)*100;
-      if(diffPct>opts.diffMax)valid=false;
-      if(opts.usarRangoArea&&p.area>0){
-        const rP=getRangoArea(p.area);
-        if(rP!==rango)valid=false;
-      }
-      return{p,dist,valid};
+      let v=dist<=o.radio;
+      if(o.habs&&!p.habs.includes(habN))v=false;
+      if(o.parq&&p.parq!==parq)v=false;
+      if(Math.abs((p.m2-precioM2)/precioM2)*100>o.diff)v=false;
+      if(o.rango&&p.area>0&&getRangoArea(p.area)!==rango)v=false;
+      return{p,dist,valid:v};
     }).filter(x=>x.valid).sort((a,b)=>a.dist-b.dist);
   }
-
-  // Nivel 1: estricto (todos los filtros, rango de área incluido)
-  let resultado=filtrar({radioMax:esUsado?1.5:0.8,diffMax:esUsado?30:20,exigirHabs:!esUsado,exigirParq:!esUsado,usarRangoArea:true});
-  if(resultado.length>=3)return resultado;
-
-  // Nivel 2: sin filtro de rango de área
-  resultado=filtrar({radioMax:esUsado?1.5:0.8,diffMax:esUsado?30:20,exigirHabs:!esUsado,exigirParq:!esUsado,usarRangoArea:false});
-  if(resultado.length>=3)return resultado;
-
-  // Nivel 3: sin exigir parqueadero exacto
-  resultado=filtrar({radioMax:esUsado?1.5:0.8,diffMax:esUsado?30:20,exigirHabs:!esUsado,exigirParq:false,usarRangoArea:false});
-  if(resultado.length>=3)return resultado;
-
-  // Nivel 4: sin exigir habitaciones exactas
-  resultado=filtrar({radioMax:esUsado?1.5:0.8,diffMax:esUsado?30:20,exigirHabs:false,exigirParq:false,usarRangoArea:false});
-  if(resultado.length>=3)return resultado;
-
-  // Nivel 5: radio y diferencia de precio ampliados (último recurso)
-  resultado=filtrar({radioMax:esUsado?2.5:1.5,diffMax:esUsado?40:30,exigirHabs:false,exigirParq:false,usarRangoArea:false});
-  return resultado;
+  let r;
+  r=fil({radio:esU?1.5:0.8,diff:esU?30:20,habs:!esU,parq:!esU,rango:true}); if(r.length>=3)return r;
+  r=fil({radio:esU?1.5:0.8,diff:esU?30:20,habs:!esU,parq:!esU,rango:false}); if(r.length>=3)return r;
+  r=fil({radio:esU?1.5:0.8,diff:esU?30:20,habs:!esU,parq:false,rango:false}); if(r.length>=3)return r;
+  r=fil({radio:esU?1.5:0.8,diff:esU?30:20,habs:false,parq:false,rango:false}); if(r.length>=3)return r;
+  return fil({radio:esU?2.5:1.5,diff:esU?40:30,habs:false,parq:false,rango:false});
 }
 
+// ══════════════════════════════════════════════════════
+// UTILIDADES
+// ══════════════════════════════════════════════════════
 function fmtCOP(n){return'$'+(n/1000000).toFixed(1)+'M';}
 function fmtFull(n){return'$'+Math.round(n).toLocaleString('es-CO');}
+function getTiempo(){return Math.round((Date.now()-appStartTime)/1000)+'s';}
+function getDevice(){return/Mobi|Android/i.test(navigator.userAgent)?'Móvil':'Escritorio';}
 
-// ===== PUNTO 4: Lugares cercanos reales con Google Places =====
-const CATEGORIAS_POI=[
-  {tipo:'hospital',label:'Salud',icon:'🏥',color:'#e53935',bg:'#fde8e8',porRating:false},
-  {tipo:'school',label:'Educación',icon:'🎓',color:'#0071e3',bg:'#e6f0fd',porRating:false},
-  {tipo:'supermarket',label:'Supermercado',icon:'🛒',color:'#f59e0b',bg:'#fef3c7',porRating:false},
-  {tipo:'restaurant',label:'Restaurantes',icon:'🍽️',color:'#059669',bg:'#d1fae5',porRating:true},
-  {tipo:'transit_station',label:'Transporte',icon:'🚇',color:'#7c3aed',bg:'#ede9fe',porRating:false},
-  {tipo:'gym',label:'Gimnasio',icon:'🏋️',color:'#dc2626',bg:'#fee2e2',porRating:false},
-  {tipo:'cafe',label:'Café',icon:'☕',color:'#92400e',bg:'#fef3c7',porRating:true}
-];
-
-function calcMinutosCaminando(km){return Math.round(km*12.5);}
-function getBadgeDistancia(km){
-  if(km<=0.5)return{txt:'Muy cerca',cls:'s4pb-g'};
-  if(km<=1.2)return{txt:'Cerca',cls:'s4pb-g'};
-  if(km<=2)return{txt:'Moderado',cls:'s4pb-y'};
-  return{txt:'Lejano',cls:'s4pb-y'};
+function enviarTracking(data){
+  try{fetch(TRACKING_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(data)}).catch(()=>{});}catch(e){}
 }
 
-async function buscarLugaresCercanos(lat,lng){
-  const map=new google.maps.Map(document.getElementById('s4MapDiv'),{
-    center:{lat:lat,lng:lng},zoom:14,disableDefaultUI:true,zoomControl:true
-  });
-  new google.maps.Marker({
-    position:{lat:lat,lng:lng},map:map,
-    icon:{path:google.maps.SymbolPath.CIRCLE,scale:10,fillColor:'#ff6200',fillOpacity:1,strokeColor:'#1A1A2E',strokeWeight:3}
-  });
-  new google.maps.Circle({
-    center:{lat:lat,lng:lng},radius:2000,map:map,
-    fillColor:'#0071e3',fillOpacity:0.07,strokeColor:'#0071e3',strokeOpacity:0.6,strokeWeight:1
-  });
+// ══════════════════════════════════════════════════════
+// GOOGLE PLACES
+// ══════════════════════════════════════════════════════
+const POIS=[
+  {tipo:'hospital',label:'Salud',icon:'🏥',color:'#e53935',bg:'#fde8e8',rating:false},
+  {tipo:'school',label:'Educación',icon:'🎓',color:'#0071e3',bg:'#e6f0fd',rating:false},
+  {tipo:'supermarket',label:'Supermercado',icon:'🛒',color:'#f59e0b',bg:'#fef3c7',rating:false},
+  {tipo:'restaurant',label:'Restaurantes',icon:'🍽️',color:'#059669',bg:'#d1fae5',rating:true},
+  {tipo:'transit_station',label:'Transporte',icon:'🚇',color:'#7c3aed',bg:'#ede9fe',rating:false},
+  {tipo:'gym',label:'Gimnasio',icon:'🏋️',color:'#dc2626',bg:'#fee2e2',rating:false},
+  {tipo:'cafe',label:'Café',icon:'☕',color:'#92400e',bg:'#fef3c7',rating:true}
+];
+function mins(km){return Math.round(km*12.5);}
+function badge(km){if(km<=0.5)return{t:'Muy cerca',c:'s4pb-g'};if(km<=1.2)return{t:'Cerca',c:'s4pb-g'};if(km<=2)return{t:'Moderado',c:'s4pb-y'};return{t:'Lejano',c:'s4pb-y'};}
 
-  const service=new google.maps.places.PlacesService(map);
-  const resultados=[];
-
-  for(const cat of CATEGORIAS_POI){
+async function buscarPOIs(lat,lng){
+  const map=new google.maps.Map(document.getElementById('s4MapDiv'),{center:{lat,lng},zoom:14,disableDefaultUI:true,zoomControl:true});
+  new google.maps.Marker({position:{lat,lng},map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:10,fillColor:'#ff6200',fillOpacity:1,strokeColor:'#1A1A2E',strokeWeight:3}});
+  new google.maps.Circle({center:{lat,lng},radius:2000,map,fillColor:'#0071e3',fillOpacity:0.07,strokeColor:'#0071e3',strokeOpacity:0.6,strokeWeight:1});
+  const svc=new google.maps.places.PlacesService(map);
+  const res=[];
+  for(const cat of POIS){
     try{
-      const lugar=await new Promise((resolve)=>{
-        service.nearbySearch({
-          location:{lat:lat,lng:lng},radius:2000,type:cat.tipo,
-          rankBy:cat.porRating?google.maps.places.RankBy.PROMINENCE:undefined
-        },(results,status)=>{
-          if(status===google.maps.places.PlacesServiceStatus.OK&&results&&results.length>0){
-            // Para restaurantes y cafés: elegir el de mejor rating dentro de 2km
-            if(cat.porRating){
-              const filtrados=results.filter(r=>{
-                if(!r.geometry)return false;
-                const d=distKm(lat,lng,r.geometry.location.lat(),r.geometry.location.lng());
-                return d<=2;
-              });
-              filtrados.sort((a,b)=>(b.rating||0)-(a.rating||0));
-              resolve(filtrados.length>0?filtrados[0]:null);
-            }else{
-              resolve(results[0]);
-            }
-          }else{resolve(null);}
+      const lugar=await new Promise(ok=>{
+        svc.nearbySearch({location:{lat,lng},radius:2000,type:cat.tipo,rankBy:cat.rating?google.maps.places.RankBy.PROMINENCE:undefined},(results,status)=>{
+          if(status===google.maps.places.PlacesServiceStatus.OK&&results?.length){
+            if(cat.rating){const f=results.filter(r=>r.geometry&&distKm(lat,lng,r.geometry.location.lat(),r.geometry.location.lng())<=2).sort((a,b)=>(b.rating||0)-(a.rating||0));ok(f[0]||null);}
+            else ok(results[0]);
+          }else ok(null);
         });
       });
-      // Solo agregar si el lugar existe Y está dentro del radio de 2km
-      if(lugar&&lugar.geometry){
-        const plat=lugar.geometry.location.lat();
-        const plng=lugar.geometry.location.lng();
-        const dist=distKm(lat,lng,plat,plng);
-        if(dist<=2){
-          resultados.push({cat:cat,nombre:lugar.name,dist:dist,lat:plat,lng:plng,rating:lugar.rating||null});
-          new google.maps.Marker({
-            position:{lat:plat,lng:plng},map:map,
-            icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:cat.color,fillOpacity:1,strokeColor:'#fff',strokeWeight:2},
-            label:{text:cat.icon,fontSize:'11px'}
-          });
+      if(lugar?.geometry){
+        const pl=lugar.geometry.location.lat(),pn=lugar.geometry.location.lng(),d=distKm(lat,lng,pl,pn);
+        if(d<=2){
+          res.push({cat,nombre:lugar.name,dist:d,lat:pl,lng:pn});
+          new google.maps.Marker({position:{lat:pl,lng:pn},map,icon:{path:google.maps.SymbolPath.CIRCLE,scale:9,fillColor:cat.color,fillOpacity:1,strokeColor:'#fff',strokeWeight:2},label:{text:cat.icon,fontSize:'11px'}});
         }
       }
-    }catch(e){console.log('Error buscando '+cat.tipo,e);}
+    }catch(e){}
   }
-  return resultados;
+  return res;
 }
 
-function renderPoiList(resultados){
-  const cont=document.getElementById('s4PoiList');
-  if(resultados.length===0){
-    cont.innerHTML='<div style="text-align:center;padding:1rem;color:#6b7280;font-size:12px">No encontramos lugares cercanos registrados en Google Maps.</div>';
-    return;
-  }
-  cont.innerHTML=resultados.map(r=>{
-    const badge=getBadgeDistancia(r.dist);
-    const mins=calcMinutosCaminando(r.dist);
-    return'<div class="s4poi-row"><div class="s4poi-icon-wrap" style="background:'+r.cat.bg+'">'+r.cat.icon+'</div><div class="s4poi-info"><div class="s4poi-name">'+r.nombre+'</div><div class="s4poi-cat">'+r.cat.label+' · '+r.dist.toFixed(1)+' km · ~'+mins+' min caminando</div></div><div class="s4poi-badge '+badge.cls+'">'+badge.txt+'</div></div>';
-  }).join('');
+function renderPOIs(res){
+  const el=document.getElementById('s4PoiList');
+  if(!res.length){el.innerHTML='<div style="text-align:center;padding:1rem;color:#6b7280;font-size:12px">No encontramos lugares cercanos.</div>';return;}
+  el.innerHTML=res.map(r=>{const b=badge(r.dist);return`<div class="s4poi-row"><div class="s4poi-icon-wrap" style="background:${r.cat.bg}">${r.cat.icon}</div><div class="s4poi-info"><div class="s4poi-name">${r.nombre}</div><div class="s4poi-cat">${r.cat.label} · ${r.dist.toFixed(1)} km · ~${mins(r.dist)} min caminando</div></div><div class="s4poi-badge ${b.c}">${b.t}</div></div>`;}).join('');
 }
 
+// ══════════════════════════════════════════════════════
+// NAVEGACIÓN DE PASOS
+// ══════════════════════════════════════════════════════
 function setStep(n){
   ['step1','step2','step3','step4','loader','zonaNoCubierta'].forEach(id=>document.getElementById(id).classList.add('hidden'));
   if(n)document.getElementById(n).classList.remove('hidden');
-  const m={step1:1,step2:2,step3:3,step4:4};
-  const cur=m[n]||0;
+  const m={step1:1,step2:2,step3:3,step4:4};const cur=m[n]||0;
   for(let i=1;i<=4;i++){
-    const dot=document.getElementById('sd'+i);
-    const lbl=document.getElementById('sl'+i);
+    const dot=document.getElementById('sd'+i),lbl=document.getElementById('sl'+i);
     dot.classList.remove('active','done');lbl.classList.remove('active');
     if(i<cur){dot.classList.add('done');dot.innerHTML='✓';}
     else if(i===cur){dot.classList.add('active');dot.innerHTML=i;lbl.classList.add('active');}
-    else{dot.innerHTML=i;}
+    else dot.innerHTML=i;
   }
 }
 
 function onZona(){
-  const v=document.getElementById('zona').value;
-  const sg=document.getElementById('subzonaGroup');
-  if(v==='poblado'){sg.classList.remove('hidden');}
+  const v=document.getElementById('zona').value,sg=document.getElementById('subzonaGroup');
+  if(v==='poblado')sg.classList.remove('hidden');
   else if(v==='otro'){
     sg.classList.add('hidden');
     document.getElementById('step1').classList.add('hidden');
     document.getElementById('zonaNoCubierta').classList.remove('hidden');
-    const msgZona=encodeURIComponent('Hola, mi inmueble está fuera de Ciudad del Río. Me gustaría solicitar un análisis personalizado con UrbanBrokers.');
-    document.getElementById('zonaWaBtn').href='https://wa.me/'+WA_NUM+'?text='+msgZona;
-  }
-  else{sg.classList.add('hidden');}
+    document.getElementById('zonaWaBtn').href='https://wa.me/'+WA_NUM+'?text='+encodeURIComponent('Hola, mi inmueble está fuera de Ciudad del Río. Me gustaría solicitar un análisis personalizado con UrbanBrokers.');
+  }else sg.classList.add('hidden');
 }
 
 function onSubzona(){
-  const v=document.getElementById('subzonaS1').value;
-  const hint=document.getElementById('subzonaHint');
-  if(v==='otro_sub'){hint.textContent='Próximamente cobertura en otras sub-zonas de El Poblado';hint.className='fg-hint err';}
-  else if(v==='ciudad_del_rio'){hint.textContent='✅ Ciudad del Río está cubierta en este piloto';hint.className='fg-hint good';}
-  else{hint.textContent='';hint.className='fg-hint';}
+  const v=document.getElementById('subzonaS1').value,h=document.getElementById('subzonaHint');
+  if(v==='otro_sub'){h.textContent='Próximamente cobertura en otras sub-zonas de El Poblado';h.className='fg-hint err';}
+  else if(v==='ciudad_del_rio'){h.textContent='✅ Ciudad del Río está cubierta en este piloto';h.className='fg-hint good';}
+  else{h.textContent='';h.className='fg-hint';}
 }
 
 document.getElementById('btnStep1').addEventListener('click',function(){
-  const n=document.getElementById('nombre').value.trim();
-  const e=document.getElementById('email').value.trim();
-  const c=document.getElementById('celular').value.trim();
-  const z=document.getElementById('zona').value;
-  const sz=document.getElementById('subzonaS1').value;
+  const n=document.getElementById('nombre').value.trim(),e=document.getElementById('email').value.trim(),c=document.getElementById('celular').value.trim(),z=document.getElementById('zona').value,sz=document.getElementById('subzonaS1').value;
   if(!n||!e||!c||!z){alert('Por favor completa todos los campos.');return;}
   if(z==='poblado'&&sz!=='ciudad_del_rio'){alert('Por ahora solo cubrimos Ciudad del Río.');return;}
   state.nombre=n;state.email=e;state.celular=c;state.zona=z;state.subzona=sz;
-  initGoogleMaps();
-  setStep('step2');
+  initGMaps();setStep('step2');
 });
 
 function goBackStep1(){setStep('step1');}
 function goBackStep2(){setStep('step2');}
 
-let autocompleteWidget=null;
-function initGoogleMaps(){
+function initGMaps(){
   if(autocompleteWidget)return;
   const input=document.getElementById('direccion');
-  const ac=new google.maps.places.Autocomplete(input,{
-    componentRestrictions:{country:'co'},
-    bounds:new google.maps.LatLngBounds(new google.maps.LatLng(6.180,-75.600),new google.maps.LatLng(6.250,-75.550)),
-    strictBounds:false,
-    fields:['geometry','formatted_address','name','address_components']
-  });
+  const ac=new google.maps.places.Autocomplete(input,{componentRestrictions:{country:'co'},bounds:new google.maps.LatLngBounds(new google.maps.LatLng(6.180,-75.600),new google.maps.LatLng(6.250,-75.550)),strictBounds:false,fields:['geometry','formatted_address','name','address_components']});
   ac.addListener('place_changed',function(){
-    const place=ac.getPlace();
-    if(place&&place.geometry&&place.geometry.location){
-      state.lat=place.geometry.location.lat();
-      state.lng=place.geometry.location.lng();
+    const pl=ac.getPlace();
+    if(pl?.geometry?.location){
+      state.lat=pl.geometry.location.lat();state.lng=pl.geometry.location.lng();
       document.getElementById('coordsInfo').textContent='📍 '+state.lat.toFixed(5)+', '+state.lng.toFixed(5);
-
-      // Extraer barrio/sublocalidad de Google Maps
-      let barrioGoogle='';
-      if(place.address_components){
-        place.address_components.forEach(comp=>{
-          if(comp.types.includes('sublocality')||comp.types.includes('sublocality_level_1')||comp.types.includes('neighborhood')){
-            barrioGoogle=comp.long_name;
-          }
-        });
-      }
-      state.barrioDetectado=barrioGoogle;
-
-      const enCiudadDelRio=esCiudadDelRio(barrioGoogle,place.formatted_address||'');
-      state.zonaValida=enCiudadDelRio;
-
-      if(enCiudadDelRio){
-        document.getElementById('dirHint').textContent='✅ Dirección geoposicionada correctamente';
-        document.getElementById('dirHint').className='fg-hint good';
-      }else{
-        // No bloqueamos visualmente — el radio geográfico decide en getComparables
-        document.getElementById('dirHint').textContent='✅ Dirección geoposicionada correctamente';
-        document.getElementById('dirHint').className='fg-hint good';
-      }
+      let barrio='';
+      pl.address_components?.forEach(comp=>{if(comp.types.includes('sublocality')||comp.types.includes('neighborhood'))barrio=comp.long_name;});
+      state.barrioDetectado=barrio;
+      state.zonaValida=['ciudad del río','ciudad del rio','bavaria','cerca viva','muba','jardines del río','jardines del rio','industriales'].some(b=>(barrio+' '+(pl.formatted_address||'')).toLowerCase().includes(b));
+      document.getElementById('dirHint').textContent='✅ Dirección geoposicionada correctamente';
+      document.getElementById('dirHint').className='fg-hint good';
       checkComparables();
     }
   });
   autocompleteWidget=ac;
-}
-
-// Lista de barrios/sectores que componen o son aledaños a Ciudad del Río
-const BARRIOS_CIUDAD_DEL_RIO=['ciudad del río','ciudad del rio','bavaria','cerca viva','muba','jardines del río','jardines del rio','industriales'];
-
-function esCiudadDelRio(barrioGoogle,direccionCompleta){
-  const texto=(barrioGoogle+' '+direccionCompleta).toLowerCase();
-  return BARRIOS_CIUDAD_DEL_RIO.some(b=>texto.includes(b));
 }
 
 function checkComparables(){
@@ -957,29 +836,19 @@ function checkComparables(){
   const precio=parseInt(document.getElementById('precio').value.replace(/\D/g,''));
   const area=parseFloat(document.getElementById('area').value);
   const habs=document.getElementById('hab').value;
-  const parq=document.querySelector('#amenidades input[value="Parqueadero"]').checked;
+  const parq=parseInt(document.getElementById('numParqueaderos').value)||0;
   const tipo=document.getElementById('tipoInm').value;
-  const amenidades=[...document.querySelectorAll('#amenidades input:checked')].map(x=>x.value);
-  const m2=precio&&area?Math.round(precio/area):MERCADO.mediana;
-  const comps=getComparables(state.lat,state.lng,area,habs,parq,tipo,amenidades,m2,state.zonaValida);
-  state.comparables=comps;
+  const am=[...document.querySelectorAll('#amenidades input:checked')].map(x=>x.value);
+  const m2=precio&&area?Math.round(precio/area):10000000;
+  state.comparables=getComparables(state.lat,state.lng,area,habs,parq>0,tipo,am,m2);
 }
 
-document.querySelectorAll('#amenidades input').forEach(inp=>{
-  inp.addEventListener('change',function(){this.closest('.chk').classList.toggle('sel',this.checked);checkComparables();});
-});
-['hab','tipoInm','precio','area'].forEach(id=>{
+['hab','tipoInm','precio','area','numParqueaderos','edadInmueble','nivelAmenidades'].forEach(id=>{
   const el=document.getElementById(id);
   if(el){el.addEventListener('change',checkComparables);el.addEventListener('input',checkComparables);}
 });
 document.querySelectorAll('#amenidades .chk').forEach(el=>{
-  el.addEventListener('click',function(e){
-    e.preventDefault();
-    const inp=this.querySelector('input');
-    inp.checked=!inp.checked;
-    this.classList.toggle('sel',inp.checked);
-    checkComparables();
-  });
+  el.addEventListener('click',function(e){e.preventDefault();const inp=this.querySelector('input');inp.checked=!inp.checked;this.classList.toggle('sel',inp.checked);checkComparables();});
 });
 
 document.getElementById('btnAnalizar').addEventListener('click',async function(){
@@ -987,55 +856,47 @@ document.getElementById('btnAnalizar').addEventListener('click',async function()
   const area=parseFloat(document.getElementById('area').value);
   if(!precio||!area){alert('Por favor ingresa precio y área.');return;}
   if(!state.lat||!state.lng){alert('Por favor selecciona la dirección desde las sugerencias de Google Maps.');return;}
-
-  // Si los datos del Sheet aún no han cargado, esperar brevemente (evita falsos negativos por race condition)
   if(!proyectosListos){
-    const btn=this;
-    const textoOriginal=btn.textContent;
-    btn.textContent='Cargando datos...';
-    btn.disabled=true;
-    let intentos=0;
-    while(!proyectosListos&&intentos<40){
-      await new Promise(r=>setTimeout(r,250));
-      intentos++;
-    }
-    btn.textContent=textoOriginal;
-    btn.disabled=false;
+    const btn=this,orig=btn.textContent;btn.textContent='Cargando datos...';btn.disabled=true;
+    let i=0;while(!proyectosListos&&i<40){await new Promise(r=>setTimeout(r,250));i++;}
+    btn.textContent=orig;btn.disabled=false;
   }
-
   state.precio=precio;state.area=area;
   state.proyecto=document.getElementById('direccion').value.trim()||'No especificado';
-  state.hab=document.getElementById('hab').value;
-  state.ban=document.getElementById('ban').value;
-  state.piso=document.getElementById('piso').value;
-  state.tipo=document.getElementById('tipoInm').value;
-  state.direccion=document.getElementById('direccion').value.trim();
+  state.hab=document.getElementById('hab').value;state.ban=document.getElementById('ban').value;state.piso=document.getElementById('piso').value;
+  state.tipo=document.getElementById('tipoInm').value;state.direccion=document.getElementById('direccion').value.trim();
   state.amenidades=[...document.querySelectorAll('#amenidades input:checked')].map(x=>x.value);
-  state.m2=Math.round(precio/area);
-  state.parq=document.querySelector('#amenidades input[value="Parqueadero"]').checked;
-  const comps=getComparables(state.lat,state.lng,area,state.hab,state.parq,state.tipo,state.amenidades,state.m2,state.zonaValida);
+  state.numParqueaderos=parseInt(document.getElementById('numParqueaderos').value)||0;
+  state.edadStr=document.getElementById('edadInmueble').value;
+  state.nivelAmenidades=document.getElementById('nivelAmenidades').value;
+  state.m2=Math.round(precio/area);state.parq=state.numParqueaderos>0;
+
+  const comps=getComparables(state.lat,state.lng,area,state.hab,state.parq,state.tipo,state.amenidades,state.m2);
   if(comps.length<3){
-    const irWA=confirm('No tenemos suficiente información para generar un análisis confiable de este inmueble.\n\n¿Quieres contactar a UrbanBrokers para un estudio puntual?');
-    if(irWA){
-      const msgWA2=encodeURIComponent('Hola, me gustaría solicitar un estudio puntual con UrbanBrokers para un inmueble en una zona con poca información disponible.');
-      window.open('https://wa.me/'+WA_NUM+'?text='+msgWA2,'_blank');
-    }
+    if(confirm('No tenemos suficientes comparables para analizar este inmueble.\n\n¿Quieres contactar a UrbanBrokers?'))
+      window.open('https://wa.me/'+WA_NUM+'?text='+encodeURIComponent('Hola, me gustaría solicitar un análisis puntual con UrbanBrokers.'),'_blank');
     return;
   }
   state.comparables=comps;
-  const sumM2=comps.reduce((a,c)=>a+c.p.m2,0);
-  state.ref=Math.round(sumM2/comps.length);
-  state.refLabel='Ciudad del Río ('+comps.length+' comparables)';
+
+  // ── HOMOLOGACIÓN ─────────────────────────────────────
+  const obj={area:state.area,edadStr:state.edadStr,parq:state.numParqueaderos,amenidades:state.nivelAmenidades};
+  const{refHomologada,ajustes,promedioSimple}=calcularRefHomologada(comps,obj);
+  state.ref=refHomologada;state.refSimple=promedioSimple;state.ajustes=ajustes;
+  state.refLabel='Ciudad del Río · homologado ('+comps.length+' comparables)';
   state.diff=parseFloat(((state.m2-state.ref)/state.ref*100).toFixed(1));
+  // ─────────────────────────────────────────────────────
+
   setStep('loader');
-  const msgs=['Consultando datos del mercado...','Aplicando reglas de valoración...','Calculando valor por m²...','Preparando el informe...'];
-  let mi=0;
-  const iv=setInterval(()=>{document.getElementById('ldText').textContent=msgs[++mi%msgs.length];},900);
-  await new Promise(r=>setTimeout(r,2800));
-  clearInterval(iv);
+  const msgs=['Consultando datos del mercado...','Homologando comparables...','Aplicando factores de ajuste...','Preparando el informe...'];
+  let mi=0;const iv=setInterval(()=>{document.getElementById('ldText').textContent=msgs[++mi%msgs.length];},900);
+  await new Promise(r=>setTimeout(r,2800));clearInterval(iv);
   showStep3();
 });
 
+// ══════════════════════════════════════════════════════
+// STEP 3 — VISTA PREVIA
+// ══════════════════════════════════════════════════════
 function showStep3(){
   const d=state;
   document.getElementById('s3title').textContent='Análisis preliminar — '+d.proyecto;
@@ -1046,187 +907,155 @@ function showStep3(){
   else if(d.diff<-5){pc='vp-good';pt='🟢 Por debajo del mercado';}
   else{pc='vp-fair';pt='⚖️ En rango de mercado';}
   document.getElementById('verdictPill').innerHTML='<div class="verdict-pill '+pc+'">'+pt+'</div>';
-  document.getElementById('t1').textContent=d.diff>5?'El precio pedido está por encima del mercado':'El precio está en rango de los comparables';
-
-  // Calcular rentabilidad de renta tradicional para calificación cualitativa
-  const canonInfo=getCanonMercado(d.hab,d.area,d.tipo,'tradicional');
-  const canonEst=canonInfo?canonInfo.canon:Math.round(d.ref*d.area*0.004);
-  const rentabilidadAnualPct=(canonEst*12/d.precio)*100;
-  let calRentabilidad;
-  if(rentabilidadAnualPct<3)calRentabilidad='Regular';
-  else if(rentabilidadAnualPct<=5)calRentabilidad='Buena';
-  else calRentabilidad='Excelente';
-  document.getElementById('t2').textContent='Rentabilidad de arriendo: '+calRentabilidad;
-
+  const canonI=getCanonMercado(d.hab,d.area,d.tipo,'tradicional');
+  const canonE=canonI?canonI.canon:Math.round(d.ref*d.area*0.004);
+  const rPct=(canonE*12/d.precio)*100;
+  let calR=rPct<3?'Regular':rPct<=5?'Buena':'Excelente';
+  document.getElementById('t1').textContent=d.diff>5?'El precio pedido está por encima del mercado homologado':'El precio está en rango del mercado homologado';
+  document.getElementById('t2').textContent='Rentabilidad de arriendo estimada: '+calR;
   document.getElementById('t3').textContent='Mira cuánto puede valorizarse en los próximos años';
   document.getElementById('t4').textContent=d.diff>5?'Hay margen de negociación disponible':'El precio es competitivo en la zona';
   setStep('step3');
   inicializarWompi();
 }
 
+// ══════════════════════════════════════════════════════
+// UNLOCK REPORT
+// ══════════════════════════════════════════════════════
 async function unlockReport(){
-  setStep('loader');
-  document.getElementById('ldText').textContent='Generando tu informe completo con IA...';
+  setStep('loader');document.getElementById('ldText').textContent='Generando tu informe completo con IA...';
   const d=state;
-  const compInfo=d.comparables.slice(0,5).map(c=>c.p.n+' ('+c.dist.toFixed(2)+'km, '+fmtCOP(c.p.m2)+'/m2)').join(', ');
-  const prompt='Eres un analista inmobiliario experto en Medellin Colombia.\n\nINMUEBLE:\n- Proyecto: '+d.proyecto+'\n- Tipo: '+(d.tipo==='nuevo'?'Proyecto nuevo':'Apartamento usado')+'\n- Area: '+d.area+'m2 | Hab: '+d.hab+' | Banos: '+d.ban+' | Piso: '+(d.piso||'ND')+'\n- Precio: $'+d.precio.toLocaleString('es-CO')+' COP ('+fmtCOP(d.m2)+'/m2)\n\nCOMPARABLES ('+d.comparables.length+'):\n'+compInfo+'\n\nREFERENCIA: '+fmtCOP(d.ref)+'/m2 | Diferencia: '+(d.diff>0?'+':'')+d.diff+'%\n\nIMPORTANTE: en la "justificacion" NUNCA menciones el numero exacto de comparables utilizados (no digas "X comparables" ni numeros de cantidad), solo habla del promedio del mercado.\n\nResponde SOLO JSON:\n{"veredicto_tipo":"buena_oferta|precio_justo|sobrevalorado","justificacion":"2 oraciones, sin mencionar cantidad de comparables","precio_justo":numero,"margen_negociacion":numero,"oferta_apertura":numero,"precio_maximo":numero,"comparables":[{"nombre":"texto","precio_m2":numero,"distancia":"texto","motivo_aceptado":"texto"}],"riesgos":[{"nivel":"alto|medio|bajo","titulo":"max 30 chars","descripcion":"max 80 chars"}],"recomendacion":"2-3 oraciones"}';
+  const compInfo=d.comparables.slice(0,5).map(c=>{
+    const aj=d.ajustes?.find(a=>a.nombre===c.p.n);
+    return c.p.n+' ('+c.dist.toFixed(2)+'km · base:'+fmtCOP(c.p.m2)+' → ajust:'+fmtCOP(aj?.m2Ajustado||c.p.m2)+')';
+  }).join(', ');
+  const prompt='Eres analista inmobiliario experto en Medellín Colombia.\n\nINMUEBLE:\n- Dirección: '+d.proyecto+'\n- Tipo: '+(d.tipo==='nuevo'?'Proyecto nuevo':'Usado')+'\n- Área: '+d.area+'m² | Hab: '+d.hab+' | Baños: '+d.ban+' | Piso: '+(d.piso||'ND')+'\n- Precio: $'+d.precio.toLocaleString('es-CO')+' COP ('+fmtCOP(d.m2)+'/m²)\n- Parqueaderos: '+d.numParqueaderos+' | Edad: '+d.edadStr+' años | Amenidades: '+d.nivelAmenidades+'\n\nCOMPARABLES HOMOLOGADOS:\n'+compInfo+'\n\nREF HOMOLOGADA: '+fmtCOP(d.ref)+'/m² (simple: '+fmtCOP(d.refSimple)+'/m²) | Diferencia vs pedido: '+(d.diff>0?'+':'')+d.diff+'%\n\nNUNCA menciones el número exacto de comparables en la justificación.\n\nResponde SOLO JSON:\n{"veredicto_tipo":"buena_oferta|precio_justo|sobrevalorado","justificacion":"2 oraciones","precio_justo":numero,"margen_negociacion":numero,"oferta_apertura":numero,"precio_maximo":numero,"comparables":[{"nombre":"txt","precio_m2":num,"distancia":"txt","motivo_aceptado":"txt"}],"riesgos":[{"nivel":"alto|medio|bajo","titulo":"max 30 chars","descripcion":"max 80 chars"}],"recomendacion":"2-3 oraciones"}';
   try{
     const res=await fetch('https://urbanbrokers-proxy.urbanbrokers-lab.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
     const raw=data.content.map(i=>i.text||'').join('').trim().replace(/```json|```/g,'').trim();
     state.report=JSON.parse(raw);
   }catch(e){
-    const comps3=d.comparables.slice(0,3);
+    const c3=d.comparables.slice(0,3);
     state.report={
       veredicto_tipo:d.diff>5?'sobrevalorado':d.diff<-5?'buena_oferta':'precio_justo',
-      justificacion:'El precio de '+fmtCOP(d.m2)+'/m2 está '+(d.diff>0?d.diff+'% sobre':''+Math.abs(d.diff)+'% bajo')+' el promedio del mercado ('+fmtCOP(d.ref)+'/m2). '+(d.diff>5?'Hay margen de negociación.':'El precio es competitivo.'),
-      precio_justo:Math.round(d.ref*d.area),
-      margen_negociacion:Math.max(5,Math.round(d.diff*0.6)),
-      oferta_apertura:Math.round(d.ref*d.area*0.92),
-      precio_maximo:Math.round(d.ref*d.area*1.02),
-      comparables:comps3.map(c=>({nombre:c.p.n,precio_m2:c.p.m2,distancia:c.dist.toFixed(2)+'km',motivo_aceptado:'Comparable válido'})),
-      riesgos:[
-        {nivel:'alto',titulo:'Precio sobre comparables',descripcion:'El precio supera el promedio de proyectos comparables.'},
-        {nivel:'medio',titulo:'Liquidez del mercado',descripcion:'Analiza la liquidez si planeas revender en menos de 3 años.'},
-        {nivel:'bajo',titulo:'Ubicacion Ciudad del Rio',descripcion:'Zona con alta demanda y valorización sostenida.'}
-      ],
-      recomendacion:'Inicia con '+fmtFull(Math.round(d.ref*d.area*0.92))+' argumentando los comparables del sector. No pagues más de '+fmtFull(Math.round(d.ref*d.area*1.02))+'.'
+      justificacion:'El precio de '+fmtCOP(d.m2)+'/m² está '+(d.diff>0?d.diff+'% sobre':Math.abs(d.diff)+'% bajo')+' el mercado homologado ('+fmtCOP(d.ref)+'/m²). '+(d.diff>5?'Hay margen de negociación.':'El precio es competitivo.'),
+      precio_justo:Math.round(d.ref*d.area),margen_negociacion:Math.max(5,Math.round(d.diff*0.6)),
+      oferta_apertura:Math.round(d.ref*d.area*0.92),precio_maximo:Math.round(d.ref*d.area*1.02),
+      comparables:c3.map(c=>({nombre:c.p.n,precio_m2:c.p.m2,distancia:c.dist.toFixed(2)+'km',motivo_aceptado:'Comparable válido'})),
+      riesgos:[{nivel:'alto',titulo:'Precio sobre comparables',descripcion:'El precio supera el mercado homologado.'},{nivel:'medio',titulo:'Liquidez del mercado',descripcion:'Analiza la liquidez si planeas revender antes de 3 años.'},{nivel:'bajo',titulo:'Ubicación Ciudad del Río',descripcion:'Zona con alta demanda y valorización sostenida.'}],
+      recomendacion:'Inicia con '+fmtFull(Math.round(d.ref*d.area*0.92))+' argumentando comparables del sector. No pagues más de '+fmtFull(Math.round(d.ref*d.area*1.02))+'.'
     };
   }
   showStep4();
-
-  // Si pagó con Wompi, generar link del informe y enviar por WhatsApp
-  if(sessionStorage.getItem('ub_pago')==='ok'){
-    setTimeout(()=>enviarLinkPorWhatsApp(),2000);
-  }
+  if(sessionStorage.getItem('ub_pago')==='ok')setTimeout(()=>enviarLinkWA(),2000);
 }
 
-function generarLinkInforme(){
-  const datos={
-    nombre:state.nombre,
-    email:state.email,
-    celular:state.celular,
-    direccion:state.direccion,
-    tipo:state.tipo,
-    precio:state.precio,
-    area:state.area,
-    hab:state.hab,
-    ban:state.ban,
-    piso:state.piso,
-    lat:state.lat,
-    lng:state.lng,
-    ref:state.ref,
-    diff:state.diff,
-    m2:state.m2,
-    report:state.report
-  };
-  const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(datos))));
-  return'https://urbanbrokers.app?informe='+encoded;
+// ══════════════════════════════════════════════════════
+// RENDER TABLA DE HOMOLOGACIÓN (visible en Step 4)
+// ══════════════════════════════════════════════════════
+function renderHomoDetalle(ajustes,refSimple,refHomo){
+  if(!ajustes?.length)return'';
+  const filas=ajustes.map(aj=>{
+    const pct=Math.round(aj.deltaNeto*100);
+    const cls=pct>0?'homo-delta-pos':pct<0?'homo-delta-neg':'homo-delta-neu';
+    const bcls=pct>0?'homo-badge homo-badge-pos':pct<0?'homo-badge homo-badge-neg':'homo-badge homo-badge-neu';
+    const parc=[];
+    if(aj.deltaArea)parc.push('Área '+(aj.deltaArea>0?'+':'')+Math.round(aj.deltaArea*100)+'%');
+    if(aj.deltaEdad)parc.push('Edad '+(aj.deltaEdad>0?'+':'')+Math.round(aj.deltaEdad*100)+'%');
+    if(aj.deltaParq)parc.push('Parq '+(aj.deltaParq>0?'+':'')+Math.round(aj.deltaParq*100)+'%');
+    if(aj.deltaAmen)parc.push('Amen '+(aj.deltaAmen>0?'+':'')+Math.round(aj.deltaAmen*100)+'%');
+    return`<tr><td style="max-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${aj.nombre}">${aj.nombre}</td><td>${fmtCOP(aj.m2Original)}/m²</td><td><span class="${bcls}">${pct>0?'+':''}${pct}%</span></td><td style="color:#0071e3;font-weight:700">${fmtCOP(aj.m2Ajustado)}/m²</td></tr>`;
+  }).join('');
+  const diff=refHomo-refSimple,diffCls=diff>0?'homo-delta-pos':diff<0?'homo-delta-neg':'homo-delta-neu';
+  return`<div style="margin-top:1rem">
+    <div style="font-size:11px;font-weight:700;color:#1A1A2E;margin-bottom:6px">🔬 Detalle de homologación de comparables</div>
+    <div style="overflow-x:auto"><table class="homo-table">
+      <thead><tr><th>Comparable</th><th>$/m² base</th><th>Δ Neto</th><th>$/m² ajustado</th></tr></thead>
+      <tbody>${filas}</tbody>
+    </table></div>
+    <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+      <div style="flex:1;background:#f0f2f5;border-radius:10px;padding:10px;text-align:center"><div style="font-size:10px;color:#6b7280;margin-bottom:3px">Promedio simple</div><div style="font-size:14px;font-weight:700;color:#6b7280">${fmtCOP(refSimple)}/m²</div></div>
+      <div style="flex:1;background:#e6f0fd;border-radius:10px;padding:10px;text-align:center"><div style="font-size:10px;color:#0057cc;margin-bottom:3px">Precio homologado</div><div style="font-size:14px;font-weight:700;color:#0071e3">${fmtCOP(refHomo)}/m²</div></div>
+      <div style="flex:1;background:${diff>0?'#e8f8ef':'#fff0e6'};border-radius:10px;padding:10px;text-align:center"><div style="font-size:10px;color:#6b7280;margin-bottom:3px">Diferencia</div><div style="font-size:14px;font-weight:700" class="${diffCls}">${diff>0?'+':''}${fmtCOP(Math.abs(diff))}/m²</div></div>
+    </div>
+    <div style="font-size:10px;color:#9ca3af;margin-top:8px;line-height:1.5">Δ Neto = ajuste por Área + Edad + Parqueaderos + Amenidades. Positivo: el comparable vale menos que el objetivo; su precio sube para comparar en igualdad de condiciones.</div>
+  </div>`;
 }
 
-function enviarLinkPorWhatsApp(){
-  const link=generarLinkInforme();
-  const msg=encodeURIComponent(
-    'Hola '+state.nombre+', aquí está tu informe completo de UrbanBrokers 🏠\n\n'+
-    '📍 '+state.direccion+'\n\n'+
-    '👉 '+link+'\n\n'+
-    'Guarda este link — puedes consultarlo cuando quieras. ¡Gracias por confiar en UrbanBrokers!'
-  );
-  window.open('https://wa.me/'+WA_NUM+'?text='+msg,'_blank');
-}
-
+// ══════════════════════════════════════════════════════
+// STEP 4 — INFORME COMPLETO
+// ══════════════════════════════════════════════════════
 function showStep4(){
-  const r=state.report;
-  const d=state;
+  const r=state.report,d=state;
   const lm={buena_oferta:'✅ Buena oferta',precio_justo:'⚖️ Precio justo',sobrevalorado:'⚠️ Sobrevalorado'};
-  const iconMap={buena_oferta:'✅',precio_justo:'⚖️',sobrevalorado:'⚠️'};
+  const im={buena_oferta:'✅',precio_justo:'⚖️',sobrevalorado:'⚠️'};
 
   document.getElementById('addrBadgeFull').innerHTML='<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.1);color:#fff;font-size:11px;font-weight:500;padding:3px 10px;border-radius:980px;">📍 '+d.direccion+'</div>';
-  document.getElementById('s4VIcon').textContent=iconMap[r.veredicto_tipo]||'⚖️';
+  document.getElementById('s4VIcon').textContent=im[r.veredicto_tipo]||'⚖️';
   document.getElementById('s4VTitle').textContent=lm[r.veredicto_tipo]||'—';
   document.getElementById('s4VJust').textContent=r.justificacion||'—';
 
-  // Punto 1: Barras con valor redondeado y "Millones"
-  function fmtBar(n){
-    const m=Math.round(n/1000000);
-    return'<span style="font-size:13px;font-weight:700;color:#fff">$'+m+'</span><span style="font-size:10px;color:rgba(255,255,255,0.8);display:block;margin-top:1px">Millones</span>';
-  }
-  const maxVal=Math.max(d.precio,r.precio_justo,r.oferta_apertura,r.precio_maximo);
-  function pct(v){return Math.round(v/maxVal*100);}
+  // Barras
+  function fmtBar(n){return'<span style="font-size:13px;font-weight:700;color:#fff">$'+Math.round(n/1000000)+'</span><span style="font-size:10px;color:rgba(255,255,255,0.8);display:block;margin-top:1px">Millones</span>';}
+  const maxV=Math.max(d.precio,r.precio_justo,r.oferta_apertura,r.precio_maximo);
+  const p=v=>Math.round(v/maxV*100);
   document.getElementById('s4Bars').innerHTML=
-    '<div class="s4bar-col"><div class="s4bar-rect" style="height:100%;background:#ff6200;flex-direction:column;align-items:center;padding-top:8px">'+fmtBar(d.precio)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#ff6200;margin-top:6px">🏷️</div><div class="s4bar-name">Lo que piden</div><div class="s4bar-desc">Precio vendedor</div></div>'+
-    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+pct(r.precio_justo)+'%;background:#0071e3;flex-direction:column;align-items:center;padding-top:8px">'+fmtBar(r.precio_justo)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#0071e3;margin-top:6px">✅</div><div class="s4bar-name">Lo que vale</div><div class="s4bar-desc">Precio mercado</div></div>'+
-    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+pct(r.oferta_apertura)+'%;background:#0F3460;flex-direction:column;align-items:center;padding-top:8px">'+fmtBar(r.oferta_apertura)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#0F3460;margin-top:6px">💬</div><div class="s4bar-name">Tu oferta</div><div class="s4bar-desc">Con qué arrancar</div></div>'+
-    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+pct(r.precio_maximo)+'%;background:#6b7280;flex-direction:column;align-items:center;padding-top:8px">'+fmtBar(r.precio_maximo)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#6b7280;margin-top:6px">🛑</div><div class="s4bar-name">Tu límite</div><div class="s4bar-desc">No pagues más</div></div>';
+    '<div class="s4bar-col"><div class="s4bar-rect" style="height:100%;background:#ff6200">'+fmtBar(d.precio)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#ff6200;margin-top:6px">🏷️</div><div class="s4bar-name">Lo que piden</div><div class="s4bar-desc">Precio vendedor</div></div>'+
+    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+p(r.precio_justo)+'%;background:#0071e3">'+fmtBar(r.precio_justo)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#0071e3;margin-top:6px">✅</div><div class="s4bar-name">Lo que vale</div><div class="s4bar-desc">Precio homologado</div></div>'+
+    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+p(r.oferta_apertura)+'%;background:#0F3460">'+fmtBar(r.oferta_apertura)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#0F3460;margin-top:6px">💬</div><div class="s4bar-name">Tu oferta</div><div class="s4bar-desc">Con qué arrancar</div></div>'+
+    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+p(r.precio_maximo)+'%;background:#6b7280">'+fmtBar(r.precio_maximo)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#6b7280;margin-top:6px">🛑</div><div class="s4bar-name">Tu límite</div><div class="s4bar-desc">No pagues más</div></div>';
 
-  const diff=d.diff;
   const exceso=fmtCOP(Math.abs(d.precio-r.precio_justo));
-  document.getElementById('s4DiffBox').innerHTML='<span style="font-size:22px;color:#ff6200;flex-shrink:0">⚠️</span><div class="s4diff-text">'+
-    (diff>0?'El vendedor está pidiendo <strong>'+exceso+' más</strong> de lo que vale según el mercado. Tienes espacio para negociar.':'El precio está <strong>'+Math.abs(diff)+'% por debajo</strong> del mercado. Es una buena oportunidad.')+
-    '</div>';
+  document.getElementById('s4DiffBox').innerHTML='<span style="font-size:22px;color:#ff6200;flex-shrink:0">⚠️</span><div class="s4diff-text">'+(d.diff>0?'El vendedor está pidiendo <strong>'+exceso+' más</strong> de lo que vale según el mercado homologado. Tienes espacio para negociar.':'El precio está <strong>'+Math.abs(d.diff)+'% por debajo</strong> del mercado homologado. Buena oportunidad.')+'</div>';
 
-  // Ajuste 1: Quitar legend (s4Legend vacío)
-  document.getElementById('s4Legend').innerHTML='';
+  // Tabla homologación
+  document.getElementById('s4HomoDetail').innerHTML=renderHomoDetalle(d.ajustes,d.refSimple,d.ref);
 
-  // Ajuste 4: Dato clave de cobertura por rango de área
-  const rango=getRangoArea(d.area);
-  const totalProyectos=PROYECTOS.filter(p=>p.tipo===d.tipo).length;
-  const enRango=PROYECTOS.filter(p=>p.tipo===d.tipo&&p.area>0&&getRangoArea(p.area)===rango).length;
-  const pctRango=totalProyectos>0?Math.round(enRango/totalProyectos*100):0;
-  const rangoLabel=rango==='pequeño'?'menores a 60 m²':rango==='mediano'?'entre 60 y 100 m²':'mayores a 100 m²';
-  const useFallback=d.comparables.length>=3&&PROYECTOS.filter(p=>p.tipo===d.tipo&&p.area>0&&getRangoArea(p.area)===rango).length<3;
-  document.getElementById('s4CoverageBox').innerHTML=
-    '<div style="display:flex;align-items:center;gap:10px">'+
-    '<span style="font-size:24px">📊</span>'+
-    '<div>'+
-    '<div style="font-size:12px;font-weight:700;color:#1A1A2E">Cobertura en tu rango</div>'+
-    '<div style="font-size:11px;color:#6b7280;margin-top:2px">'+
-    (enRango>0?'Para áreas '+rangoLabel+', esto representa el '+pctRango+'% de la oferta actual analizada.':'Sin oferta registrada en este rango — análisis con rango extendido')+
-    '</div>'+
-    (useFallback?'<div style="font-size:10px;color:#f59e0b;margin-top:2px">⚡ Pocos comparables en tu rango exacto — se amplió la búsqueda</div>':'')+
-    '</div></div>';
+  // Cobertura
+  const rango=getRangoArea(d.area),total=PROYECTOS.filter(p=>p.tipo===d.tipo).length;
+  const enR=PROYECTOS.filter(p=>p.tipo===d.tipo&&p.area>0&&getRangoArea(p.area)===rango).length;
+  const pctR=total>0?Math.round(enR/total*100):0;
+  const rl=rango==='pequeño'?'menores a 60 m²':rango==='mediano'?'entre 60 y 100 m²':'mayores a 100 m²';
+  document.getElementById('s4CoverageBox').innerHTML='<div style="display:flex;align-items:center;gap:10px"><span style="font-size:24px">📊</span><div><div style="font-size:12px;font-weight:700;color:#1A1A2E">Cobertura en tu rango</div><div style="font-size:11px;color:#6b7280;margin-top:2px">'+(enR>0?'Para áreas '+rl+', representa el '+pctR+'% de la oferta analizada.':'Sin oferta registrada en este rango — análisis con rango extendido')+'</div></div></div>';
 
-  // Punto 2: Rentabilidad con datos reales de arriendos
-  const canonData=getCanonMercado(d.hab,d.area,d.tipo,'tradicional');
-  const canon=canonData?canonData.canon:Math.round(r.precio_justo*0.004);
-  const canonFuente=canonData?canonData.fuente:'estimado (0.4% precio justo)';
-  const admin=Math.round(canon*0.145);
-  const vacancia=Math.round(canon*0.08);
-  const predial=Math.round(canon*0.062);
-  const neto=canon-admin-vacancia-predial;
-  const netoAnual=neto*12;
-  const rentabilidad=((netoAnual/d.precio)*100).toFixed(1);
+  // Arriendo
+  const cData=getCanonMercado(d.hab,d.area,d.tipo,'tradicional');
+  const canon=cData?cData.canon:Math.round(r.precio_justo*0.004);
+  const cFuente=cData?cData.fuente:'estimado (0.4% precio justo)';
+  const admin=Math.round(canon*0.145),vac=Math.round(canon*0.08),pred=Math.round(canon*0.062);
+  const neto=canon-admin-vac-pred,netoA=neto*12;
+  const rent=((netoA/d.precio)*100).toFixed(1);
 
-  document.getElementById('s4RentLabel').innerHTML='2 · ¿Cuánto dinero te genera en arriendo? <span class="s4canon-badge">'+canonFuente+'</span>';
-
+  document.getElementById('s4RentLabel').innerHTML='2 · ¿Cuánto dinero te genera en arriendo? <span class="s4canon-badge">'+cFuente+'</span>';
   document.getElementById('s4Cascade').innerHTML=
-    '<div class="s4row"><div class="s4row-icon" style="background:#e6f0fd"><span style="font-size:18px">🏠</span></div><div class="s4row-info"><div class="s4row-label">El inquilino te paga cada mes</div><div class="s4row-name">Canon mensual estimado</div></div><div class="s4row-val" style="color:#0071e3">+'+fmtFull(canon)+'</div></div>'+
+    '<div class="s4row"><div class="s4row-icon" style="background:#e6f0fd"><span>🏠</span></div><div class="s4row-info"><div class="s4row-label">El inquilino te paga cada mes</div><div class="s4row-name">Canon mensual estimado</div></div><div class="s4row-val" style="color:#0071e3">+'+fmtFull(canon)+'</div></div>'+
     '<div class="s4arrow">↓</div>'+
-    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><span style="font-size:18px">🔧</span></div><div class="s4row-info"><div class="s4row-label">Pagas al edificio cada mes</div><div class="s4row-name">Administración</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtFull(admin)+'</div></div>'+
-    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><span style="font-size:18px">📅</span></div><div class="s4row-info"><div class="s4row-label">Meses sin inquilino (~1 mes/año)</div><div class="s4row-name">Vacancia estimada 8%</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtFull(vacancia)+'</div></div>'+
-    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><span style="font-size:18px">🧾</span></div><div class="s4row-info"><div class="s4row-label">Impuesto anual del inmueble</div><div class="s4row-name">Predial + seguros</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtFull(predial)+'</div></div>'+
+    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><span>🔧</span></div><div class="s4row-info"><div class="s4row-label">Pagas al edificio</div><div class="s4row-name">Administración</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtFull(admin)+'</div></div>'+
     '<div class="s4arrow">↓</div>'+
-    '<div class="s4net-row"><div class="s4net-icon"><span style="font-size:20px">👛</span></div><div style="flex:1"><div style="font-size:11px;color:#2d7a4f;margin-bottom:2px">Lo que llega a tu bolsillo cada mes</div><div style="font-size:13px;font-weight:700;color:#1a5c38">Ingreso neto mensual</div></div><div class="s4net-val">+'+fmtFull(neto)+'</div></div>'+
-    '<div style="font-size:10px;color:#9ca3af;margin-top:10px;padding:0 4px;line-height:1.5">📋 Administración, vacancia y predial son valores de referencia para inmuebles similares en la zona. El costo exacto puede variar según el reglamento del edificio y el avalúo catastral específico.</div>';
+    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><span>📅</span></div><div class="s4row-info"><div class="s4row-label">Meses sin inquilino (~1/año)</div><div class="s4row-name">Vacancia estimada 8%</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtFull(vac)+'</div></div>'+
+    '<div class="s4arrow">↓</div>'+
+    '<div class="s4row"><div class="s4row-icon" style="background:#fff0e6"><span>🧾</span></div><div class="s4row-info"><div class="s4row-label">Impuesto anual</div><div class="s4row-name">Predial + seguros</div></div><div class="s4row-val" style="color:#ff6200">-'+fmtFull(pred)+'</div></div>'+
+    '<div class="s4arrow">↓</div>'+
+    '<div class="s4net-row"><div style="width:40px;height:40px;border-radius:12px;background:#c8f0d8;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:20px">👛</span></div><div style="flex:1"><div style="font-size:11px;color:#2d7a4f;margin-bottom:2px">Lo que llega a tu bolsillo</div><div style="font-size:13px;font-weight:700;color:#1a5c38">Ingreso neto mensual</div></div><div class="s4net-val">+'+fmtFull(neto)+'</div></div>'+
+    '<div style="font-size:10px;color:#9ca3af;margin-top:10px;line-height:1.5">📋 Administración, vacancia y predial son valores de referencia. El costo exacto puede variar.</div>';
 
   document.getElementById('s4RentBox').innerHTML=
     '<div class="s4rent-title">¿Y al año cuánto es?</div>'+
-    '<div class="s4rent-row"><span class="s4rl">Ingreso neto al año</span><span class="s4rv" style="color:#1a5c38">+'+fmtFull(netoAnual)+'</span></div>'+
+    '<div class="s4rent-row"><span class="s4rl">Ingreso neto al año</span><span class="s4rv" style="color:#1a5c38">+'+fmtFull(netoA)+'</span></div>'+
     '<div class="s4rent-row"><span class="s4rl">Precio que pagaste</span><span class="s4rv">'+fmtFull(d.precio)+'</span></div>'+
     '<div style="border-top:0.5px solid #d1d5db;margin:8px 0"></div>'+
-    '<div class="s4rent-row"><span class="s4rl">🟡 Rentabilidad anual por rentas</span><span class="s4rv" style="color:#b45309;font-size:16px">'+rentabilidad+'%</span></div>'+
-    '<div style="font-size:10px;color:#6b7280;margin-top:8px;line-height:1.5">Por cada $100M invertidos, el arriendo te devuelve $'+rentabilidad+'M al año. Sin contar valorización.</div>';
+    '<div class="s4rent-row"><span class="s4rl">🟡 Rentabilidad anual por rentas</span><span class="s4rv" style="color:#b45309;font-size:16px">'+rent+'%</span></div>'+
+    '<div style="font-size:10px;color:#6b7280;margin-top:8px;line-height:1.5">Por cada $100M invertidos, el arriendo te devuelve $'+rent+'M al año.</div>';
 
-  // Punto 3: Valoración temporal
-  const val1=Math.round(d.precio*1.06);
-  const val2=Math.round(d.precio*1.123);
-  const val3=Math.round(d.precio*1.19);
+  // Valorización
+  const v1=Math.round(d.precio*1.06),v2=Math.round(d.precio*1.123),v3=Math.round(d.precio*1.19);
   document.getElementById('s4Timeline').innerHTML=
     '<div class="s4tl-points">'+
     '<div class="s4tl-point"><div class="s4tl-yr">Hoy</div><div class="s4tl-val" style="color:#1A1A2E">'+fmtCOP(d.precio)+'</div><div class="s4tl-gain" style="background:#f0f2f5;color:#6b7280">precio compra</div></div>'+
-    '<div class="s4tl-point"><div class="s4tl-yr">Año 1</div><div class="s4tl-val" style="color:#0071e3">'+fmtCOP(val1)+'</div><div class="s4tl-gain" style="background:#e6f0fd;color:#0071e3">+'+fmtCOP(val1-d.precio)+'</div></div>'+
-    '<div class="s4tl-point"><div class="s4tl-yr">Año 2</div><div class="s4tl-val" style="color:#059669">'+fmtCOP(val2)+'</div><div class="s4tl-gain" style="background:#e8f8ef;color:#059669">+'+fmtCOP(val2-d.precio)+'</div></div>'+
-    '<div class="s4tl-point"><div class="s4tl-yr">Año 3</div><div class="s4tl-val" style="color:#4ade80">'+fmtCOP(val3)+'</div><div class="s4tl-gain" style="background:#e8f8ef;color:#1a5c38">+'+fmtCOP(val3-d.precio)+'</div></div>'+
+    '<div class="s4tl-point"><div class="s4tl-yr">Año 1</div><div class="s4tl-val" style="color:#0071e3">'+fmtCOP(v1)+'</div><div class="s4tl-gain" style="background:#e6f0fd;color:#0071e3">+'+fmtCOP(v1-d.precio)+'</div></div>'+
+    '<div class="s4tl-point"><div class="s4tl-yr">Año 2</div><div class="s4tl-val" style="color:#059669">'+fmtCOP(v2)+'</div><div class="s4tl-gain" style="background:#e8f8ef;color:#059669">+'+fmtCOP(v2-d.precio)+'</div></div>'+
+    '<div class="s4tl-point"><div class="s4tl-yr">Año 3</div><div class="s4tl-val" style="color:#4ade80">'+fmtCOP(v3)+'</div><div class="s4tl-gain" style="background:#e8f8ef;color:#1a5c38">+'+fmtCOP(v3-d.precio)+'</div></div>'+
     '</div>'+
     '<div class="s4tl-track"><div class="s4tl-fill"></div>'+
     '<div style="position:absolute;top:-4px;left:-1px;width:14px;height:14px;border-radius:50%;background:#6b7280;border:2px solid #fff"></div>'+
@@ -1236,367 +1065,180 @@ function showStep4(){
     '</div>';
 
   document.getElementById('s4GainBox').innerHTML=
-    '<div class="s4gcard" style="background:#e6f0fd;border-color:#b5d4f4"><div class="s4gc-yr">Si vendes año 1</div><div class="s4gc-gain" style="color:#0071e3">+'+fmtCOP(val1-d.precio)+'</div><div class="s4gc-sub">de ganancia</div></div>'+
-    '<div class="s4gcard" style="background:#e8f8ef;border-color:#a7e3be"><div class="s4gc-yr">Si vendes año 2</div><div class="s4gc-gain" style="color:#059669">+'+fmtCOP(val2-d.precio)+'</div><div class="s4gc-sub">de ganancia</div></div>'+
-    '<div class="s4gcard" style="background:#dcfce7;border-color:#86efac"><div class="s4gc-yr">Si vendes año 3</div><div class="s4gc-gain" style="color:#1a5c38">+'+fmtCOP(val3-d.precio)+'</div><div class="s4gc-sub">de ganancia</div></div>';
+    '<div class="s4gcard" style="background:#e6f0fd;border-color:#b5d4f4"><div class="s4gc-yr">Si vendes año 1</div><div class="s4gc-gain" style="color:#0071e3">+'+fmtCOP(v1-d.precio)+'</div><div class="s4gc-sub">de ganancia</div></div>'+
+    '<div class="s4gcard" style="background:#e8f8ef;border-color:#a7e3be"><div class="s4gc-yr">Si vendes año 2</div><div class="s4gc-gain" style="color:#059669">+'+fmtCOP(v2-d.precio)+'</div><div class="s4gc-sub">de ganancia</div></div>'+
+    '<div class="s4gcard" style="background:#dcfce7;border-color:#86efac"><div class="s4gc-yr">Si vendes año 3</div><div class="s4gc-gain" style="color:#1a5c38">+'+fmtCOP(v3-d.precio)+'</div><div class="s4gc-sub">de ganancia</div></div>';
 
-  // Punto 5: Resumen
-  const totalAnio1=netoAnual+(val1-d.precio);
-  const retorno=((totalAnio1/d.precio)*100).toFixed(1);
-
-  // Semáforo de 2 niveles según retorno total
-  if(parseFloat(retorno)>=10){
-    document.getElementById('s4Semaforo').innerHTML=
-      '<div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(251,191,36,0.2)"><span style="font-size:20px;color:#fbbf24">−</span></div><div class="s4sem-lbl" style="color:rgba(255,255,255,0.3)">Retorno<br>moderado</div></div>'+
-      '<div class="s4sem-col" id="s4SemVerde"><div class="s4sem-circle" style="background:rgba(74,222,128,0.25);box-shadow:0 0 0 4px rgba(255,255,255,0.15)"><span style="font-size:22px;color:#4ade80">✓</span></div><div class="s4sem-lbl" style="color:#4ade80;font-weight:700">Retorno<br>atractivo</div></div>';
+  // Resumen
+  const total1=netoA+(v1-d.precio),ret=((total1/d.precio)*100).toFixed(1);
+  if(parseFloat(ret)>=10){
+    document.getElementById('s4Semaforo').innerHTML='<div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(251,191,36,0.2)"><span style="font-size:20px;color:#fbbf24">−</span></div><div class="s4sem-lbl" style="color:rgba(255,255,255,0.3)">Retorno<br>moderado</div></div><div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(74,222,128,0.25);box-shadow:0 0 0 4px rgba(255,255,255,0.15)"><span style="font-size:22px;color:#4ade80">✓</span></div><div class="s4sem-lbl" style="color:#4ade80;font-weight:700">Retorno<br>atractivo</div></div>';
   }else{
-    document.getElementById('s4Semaforo').innerHTML=
-      '<div class="s4sem-col" id="s4SemAmarillo"><div class="s4sem-circle" style="background:rgba(251,191,36,0.25);box-shadow:0 0 0 4px rgba(255,255,255,0.15)"><span style="font-size:22px;color:#fbbf24">−</span></div><div class="s4sem-lbl" style="color:#fbbf24;font-weight:700">Retorno<br>moderado</div></div>'+
-      '<div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(74,222,128,0.2)"><span style="font-size:20px;color:#4ade80">✓</span></div><div class="s4sem-lbl" style="color:rgba(255,255,255,0.3)">Retorno<br>atractivo</div></div>';
+    document.getElementById('s4Semaforo').innerHTML='<div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(251,191,36,0.25);box-shadow:0 0 0 4px rgba(255,255,255,0.15)"><span style="font-size:22px;color:#fbbf24">−</span></div><div class="s4sem-lbl" style="color:#fbbf24;font-weight:700">Retorno<br>moderado</div></div><div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(74,222,128,0.2)"><span style="font-size:20px;color:#4ade80">✓</span></div><div class="s4sem-lbl" style="color:rgba(255,255,255,0.3)">Retorno<br>atractivo</div></div>';
   }
-
-  document.getElementById('s4ResSub').textContent='Si negocias bien el precio, en un año este inmueble te habrá generado '+fmtCOP(totalAnio1)+' entre arriendo y valorización.';
+  document.getElementById('s4ResSub').textContent='Si negocias bien el precio, en un año este inmueble te habrá generado '+fmtCOP(total1)+' entre arriendo y valorización.';
   document.getElementById('s4Ingresos').innerHTML=
-    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(0,113,227,0.15)"><span style="font-size:18px">🏠</span></div><div class="s4ing-info"><div class="s4ing-label">Lo que ganas arrendando (año 1)</div><div class="s4ing-name">Ingreso neto por rentas</div></div><div class="s4ing-val">+'+fmtFull(netoAnual)+'</div></div>'+
+    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(0,113,227,0.15)"><span>🏠</span></div><div class="s4ing-info"><div class="s4ing-label">Lo que ganas arrendando (año 1)</div><div class="s4ing-name">Ingreso neto por rentas</div></div><div class="s4ing-val">+'+fmtFull(netoA)+'</div></div>'+
     '<div class="s4plus">+</div>'+
-    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(74,222,128,0.12)"><span style="font-size:18px">📈</span></div><div class="s4ing-info"><div class="s4ing-label">Lo que sube de precio el inmueble</div><div class="s4ing-name">Valorización estimada año 1</div></div><div class="s4ing-val">+'+fmtFull(val1-d.precio)+'</div></div>';
-
+    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(74,222,128,0.12)"><span>📈</span></div><div class="s4ing-info"><div class="s4ing-label">Lo que sube el inmueble</div><div class="s4ing-name">Valorización estimada año 1</div></div><div class="s4ing-val">+'+fmtFull(v1-d.precio)+'</div></div>';
   document.getElementById('s4Total').innerHTML=
     '<div class="s4total-label">Total que genera tu inversión en el año 1</div>'+
-    '<div class="s4total-val">+'+fmtFull(totalAnio1)+'</div>'+
-    '<div class="s4total-sub">sobre una inversión de '+fmtFull(d.precio)+' = <strong style="color:#4ade80">'+retorno+'% de retorno total</strong></div>';
+    '<div class="s4total-val">+'+fmtFull(total1)+'</div>'+
+    '<div class="s4total-sub">sobre una inversión de '+fmtFull(d.precio)+' = <strong style="color:#4ade80">'+ret+'% de retorno total</strong></div>';
 
-  // WA
-  let cel=d.celular.replace(/\D/g,'');
-  if(!cel.startsWith('57'))cel='57'+cel;
+  let cel=d.celular.replace(/\D/g,'');if(!cel.startsWith('57'))cel='57'+cel;
   document.getElementById('waNum').textContent=d.celular;
-  const msg=encodeURIComponent('Hola, me gustaría contratar un servicio puntual de asesoría con UrbanBrokers.');
-  document.getElementById('waSendBtn').href='https://wa.me/'+WA_NUM+'?text='+msg;
+  document.getElementById('waSendBtn').href='https://wa.me/'+WA_NUM+'?text='+encodeURIComponent('Hola, me gustaría contratar un servicio puntual de asesoría con UrbanBrokers.');
 
-  // Tracking: llegó a step4 con todos los datos del análisis
-  enviarTracking({
-    codigo:sessionStorage.getItem('ub_codigo')||'',
-    nombre:d.nombre,email:d.email,celular:d.celular,
-    zona:d.subzona,direccion:d.direccion,proyecto:d.proyecto,
-    tipo:d.tipo,precio:d.precio,area:d.area,habitaciones:d.hab,
-    llegoStep4:'Si',llegoPDF:'No',
-    veredicto:r.veredicto_tipo,diffPorcentaje:d.diff,
-    comparablesEncontrados:d.comparables.length,
-    envioWhatsApp:'No',tiempoEnApp:getTiempoTranscurrido(),
-    dispositivoTipo:getDispositivoTipo(),idioma:currentLang
-  });
+  enviarTracking({codigo:sessionStorage.getItem('ub_codigo')||'',nombre:d.nombre,email:d.email,celular:d.celular,zona:d.subzona,direccion:d.direccion,tipo:d.tipo,precio:d.precio,area:d.area,habitaciones:d.hab,llegoStep4:'Si',llegoPDF:'No',veredicto:r.veredicto_tipo,diffPorcentaje:d.diff,comparablesEncontrados:d.comparables.length,refHomologada:d.ref,refSimple:d.refSimple,envioWhatsApp:'No',tiempoEnApp:getTiempo(),dispositivoTipo:getDevice(),idioma:currentLang});
 
   setStep('step4');
 
-  // Buscar lugares cercanos reales con Google Places
   if(d.lat&&d.lng){
-    buscarLugaresCercanos(d.lat,d.lng).then(resultados=>{
-      renderPoiList(resultados);
-    }).catch(err=>{
-      console.error('Error buscando lugares cercanos:',err);
-      document.getElementById('s4PoiList').innerHTML='<div style="text-align:center;padding:1rem;color:#6b7280;font-size:12px">No pudimos cargar los lugares cercanos en este momento.</div>';
-    });
+    buscarPOIs(d.lat,d.lng).then(renderPOIs).catch(()=>{document.getElementById('s4PoiList').innerHTML='<div style="text-align:center;padding:1rem;color:#6b7280;font-size:12px">No pudimos cargar los lugares cercanos.</div>';});
   }
 }
 
+// ══════════════════════════════════════════════════════
+// UTILS VARIOS
+// ══════════════════════════════════════════════════════
 function saveWaitlist(){alert('Listo! Te avisamos cuando tu zona esté disponible.');resetAll();}
 
-function trackPDF(){
-  document.getElementById('encuestaScreen').classList.remove('hidden');
-}
-
+function trackPDF(){document.getElementById('encuestaScreen').classList.remove('hidden');}
 function enviarEncuesta(){
-  const facilidad=document.getElementById('encFacilidad').value;
-  const claridad=document.getElementById('encClaridad').value;
-  const comentario=document.getElementById('encComentario').value;
-
-  enviarTracking({
-    tipoRegistro:'encuesta',
-    codigo:sessionStorage.getItem('ub_codigo')||'',
-    nombre:state.nombre||'',email:state.email||'',celular:state.celular||'',
-    facilidadUso:facilidad,claridadInforme:claridad,
-    comentario:comentario
-  });
-
+  enviarTracking({tipoRegistro:'encuesta',codigo:sessionStorage.getItem('ub_codigo')||'',nombre:state.nombre||'',email:state.email||'',celular:state.celular||'',facilidadUso:document.getElementById('encFacilidad').value,claridadInforme:document.getElementById('encClaridad').value,comentario:document.getElementById('encComentario').value});
   ejecutarPDF();
 }
-
-function saltarEncuesta(){
-  ejecutarPDF();
-}
-
+function saltarEncuesta(){ejecutarPDF();}
 function ejecutarPDF(){
   document.getElementById('encuestaScreen').classList.add('hidden');
-  enviarTracking({
-    codigo:sessionStorage.getItem('ub_codigo')||'',
-    nombre:state.nombre||'',email:state.email||'',celular:state.celular||'',
-    zona:state.subzona||'',direccion:state.direccion||'',proyecto:state.proyecto||'',
-    tipo:state.tipo||'',precio:state.precio||'',area:state.area||'',habitaciones:state.hab||'',
-    llegoStep4:'Si',llegoPDF:'Si',
-    veredicto:state.report?state.report.veredicto_tipo:'',diffPorcentaje:state.diff||'',
-    comparablesEncontrados:state.comparables?state.comparables.length:'',
-    envioWhatsApp:'No',tiempoEnApp:getTiempoTranscurrido(),
-    dispositivoTipo:getDispositivoTipo(),idioma:currentLang
-  });
+  enviarTracking({codigo:sessionStorage.getItem('ub_codigo')||'',nombre:state.nombre||'',email:state.email||'',celular:state.celular||'',zona:state.subzona||'',direccion:state.direccion||'',tipo:state.tipo||'',precio:state.precio||'',area:state.area||'',habitaciones:state.hab||'',llegoStep4:'Si',llegoPDF:'Si',veredicto:state.report?.veredicto_tipo||'',diffPorcentaje:state.diff||'',comparablesEncontrados:state.comparables?.length||'',envioWhatsApp:'No',tiempoEnApp:getTiempo(),dispositivoTipo:getDevice(),idioma:currentLang});
   window.print();
 }
-
 function trackWhatsApp(){
-  enviarTracking({
-    codigo:sessionStorage.getItem('ub_codigo')||'',
-    nombre:state.nombre||'',email:state.email||'',celular:state.celular||'',
-    zona:state.subzona||'',direccion:state.direccion||'',proyecto:state.proyecto||'',
-    tipo:state.tipo||'',precio:state.precio||'',area:state.area||'',habitaciones:state.hab||'',
-    llegoStep4:'Si',llegoPDF:'No',
-    veredicto:state.report?state.report.veredicto_tipo:'',diffPorcentaje:state.diff||'',
-    comparablesEncontrados:state.comparables?state.comparables.length:'',
-    envioWhatsApp:'Si',tiempoEnApp:getTiempoTranscurrido(),
-    dispositivoTipo:getDispositivoTipo(),idioma:currentLang
-  });
+  enviarTracking({codigo:sessionStorage.getItem('ub_codigo')||'',nombre:state.nombre||'',email:state.email||'',celular:state.celular||'',llegoStep4:'Si',llegoPDF:'No',envioWhatsApp:'Si',tiempoEnApp:getTiempo(),dispositivoTipo:getDevice(),idioma:currentLang});
 }
 
 function resetAll(){
   state={};
   ['nombre','email','celular','proyecto','precio','area','piso','direccion','emailWait'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('zona').value='';
-  document.getElementById('subzonaS1').value='';
+  document.getElementById('zona').value='';document.getElementById('subzonaS1').value='';
   document.getElementById('subzonaGroup').classList.add('hidden');
   document.getElementById('subzonaHint').textContent='';
   document.getElementById('coordsInfo').textContent='';
   document.getElementById('dirHint').textContent='Escribe la dirección y selecciona de las sugerencias';
   document.getElementById('dirHint').className='fg-hint';
   document.querySelectorAll('#amenidades .chk').forEach(el=>{el.classList.remove('sel');el.querySelector('input').checked=false;});
-  autocompleteWidget=null;
-  setStep('step1');
-}
-
-// PANTALLA DE ACCESO - 50 códigos beta
-const CODIGOS_VALIDOS=['UB001','UB002','UB003','UB004','UB005','UB006','UB007','UB008','UB009','UB010','UB011','UB012','UB013','UB014','UB015','UB016','UB017','UB018','UB019','UB020','UB021','UB022','UB023','UB024','UB025','UB026','UB027','UB028','UB029','UB030','UB031','UB032','UB033','UB034','UB035','UB036','UB037','UB038','UB039','UB040','UB041','UB042','UB043','UB044','UB045','UB046','UB047','UB048','UB049','UB050'];
-const TRACKING_URL='https://script.google.com/macros/s/AKfycbya7fYcFYUyt4Bm1kfyE1rbJVQY4v6vDAdLsY1HlbTscKCSl4uh6i5F5Dtd_96ozxty/exec';
-let appStartTime=Date.now();
-
-function enviarTracking(data){
-  try{
-    fetch(TRACKING_URL,{
-      method:'POST',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify(data)
-    }).catch(e=>console.log('Tracking error (no crítico):',e));
-  }catch(e){console.log('Tracking error:',e);}
-}
-
-function getTiempoTranscurrido(){
-  return Math.round((Date.now()-appStartTime)/1000)+'s';
-}
-
-function getDispositivoTipo(){
-  return /Mobi|Android/i.test(navigator.userAgent)?'Móvil':'Escritorio';
+  autocompleteWidget=null;setStep('step1');
 }
 
 function verificarCodigoStep3(){
-  const input=document.getElementById('codigoAccesoStep3');
-  const codigo=input.value.trim().toUpperCase();
-  const err=document.getElementById('accesoErrStep3');
+  const inp=document.getElementById('codigoAccesoStep3'),codigo=inp.value.trim().toUpperCase(),err=document.getElementById('accesoErrStep3');
   if(CODIGOS_VALIDOS.includes(codigo)){
     sessionStorage.setItem('ub_codigo',codigo);
-    enviarTracking({codigo:codigo,nombre:state.nombre||'',email:state.email||'',celular:state.celular||'',idioma:currentLang,dispositivoTipo:getDispositivoTipo()});
+    enviarTracking({codigo,nombre:state.nombre||'',email:state.email||'',celular:state.celular||'',idioma:currentLang,dispositivoTipo:getDevice()});
     unlockReport();
-  }else{
-    err.textContent='Código inválido. Verifica e intenta de nuevo.';
-    input.style.borderColor='#ff6b6b';
-  }
+  }else{err.textContent='Código inválido. Verifica e intenta de nuevo.';inp.style.borderColor='#ff6b6b';}
 }
 
-function mostrarPago(){
-  const msgPago=encodeURIComponent('Hola, quiero pagar el informe completo de UrbanBrokers ($49.900 - precio promocional).');
-  window.open('https://wa.me/'+WA_NUM+'?text='+msgPago,'_blank');
-}
-
+// ══════════════════════════════════════════════════════
+// WOMPI
+// ══════════════════════════════════════════════════════
 async function inicializarWompi(){
-  const container=document.getElementById('wompiContainer');
-  if(!container)return;
+  const container=document.getElementById('wompiContainer');if(!container)return;
   container.innerHTML='<div style="text-align:center;padding:10px;color:rgba(255,255,255,0.4);font-size:12px">Preparando pago...</div>';
-
   const ref='UB-'+Date.now()+'-'+Math.random().toString(36).substr(2,6).toUpperCase();
   sessionStorage.setItem('wompi_ref',ref);
-
-  // Guardar state completo para restaurar después del pago
   sessionStorage.setItem('wompi_state',JSON.stringify(state));
-
-  const res=await fetch('https://urbanbrokers-proxy.urbanbrokers-lab.workers.dev/wompi-signature',{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({ref:ref})
-  });
-  const data=await res.json();
-  const signature=data.signature||'';
-
-  container.innerHTML='';
-  const form=document.createElement('form');
-  form.action='https://checkout.wompi.co/p/';
-  form.method='GET';
-  form.target='_blank';
-
-  const campos={
-    'public-key':'pub_prod_7BAWYNCj45XMPgbln4wUd6cDSc7cTY3B',
-    'currency':'COP',
-    'amount-in-cents':'4990000',
-    'reference':ref,
-    'signature:integrity':signature,
-    'redirect-url':'https://urbanbrokers.app',
-    'customer-data:email':state.email||'',
-    'customer-data:full-name':state.nombre||'',
-    'customer-data:phone-number':(state.celular||'').replace(/\D/g,'')
-  };
-
-  Object.entries(campos).forEach(([name,value])=>{
-    const input=document.createElement('input');
-    input.type='hidden';
-    input.name=name;
-    input.value=value;
-    form.appendChild(input);
-  });
-
-  const btn=document.createElement('button');
-  btn.type='submit';
-  btn.className='btn btn-blue';
-  btn.style.cssText='border-radius:980px;width:100%;padding:14px;font-size:15px;font-weight:600;border:none;cursor:pointer;font-family:inherit';
-  btn.textContent='💳 Pagar con Wompi';
-  form.appendChild(btn);
-  container.appendChild(form);
-
-  window.addEventListener('focus',verificarPagoWompi);
+  try{
+    const res=await fetch('https://urbanbrokers-proxy.urbanbrokers-lab.workers.dev/wompi-signature',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ref})});
+    const data=await res.json();
+    const signature=data.signature||'';
+    container.innerHTML='';
+    const form=document.createElement('form');form.action='https://checkout.wompi.co/p/';form.method='GET';form.target='_blank';
+    const campos={'public-key':'pub_prod_7BAWYNCj45XMPgbln4wUd6cDSc7cTY3B','currency':'COP','amount-in-cents':'4990000','reference':ref,'signature:integrity':signature,'redirect-url':'https://urbanbrokers.app','customer-data:email':state.email||'','customer-data:full-name':state.nombre||'','customer-data:phone-number':(state.celular||'').replace(/\D/g,'')};
+    Object.entries(campos).forEach(([name,value])=>{const i=document.createElement('input');i.type='hidden';i.name=name;i.value=value;form.appendChild(i);});
+    const btn=document.createElement('button');btn.type='submit';btn.className='btn btn-blue';btn.style.cssText='border-radius:980px;width:100%;padding:14px;font-size:15px;font-weight:600;border:none;cursor:pointer;font-family:inherit';btn.textContent='💳 Pagar con Wompi';
+    form.appendChild(btn);container.appendChild(form);
+    window.addEventListener('focus',verificarPagoWompi);
+  }catch(e){container.innerHTML='<div style="font-size:12px;color:rgba(255,255,255,0.4);text-align:center;padding:10px">Error al cargar pago. Intenta de nuevo.</div>';}
 }
 
 async function verificarPagoWompi(){
-  const ref=sessionStorage.getItem('wompi_ref');
-  if(!ref)return;
+  const ref=sessionStorage.getItem('wompi_ref');if(!ref)return;
   try{
-    const res=await fetch('https://urbanbrokers-proxy.urbanbrokers-lab.workers.dev/wompi-verify',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ref:ref})
-    });
+    const res=await fetch('https://urbanbrokers-proxy.urbanbrokers-lab.workers.dev/wompi-verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ref})});
     const data=await res.json();
     if(data.approved){
       window.removeEventListener('focus',verificarPagoWompi);
-      sessionStorage.setItem('ub_pago','ok');
-      sessionStorage.setItem('ub_codigo','WOMPI-'+ref);
-
-      // Restaurar state guardado antes del pago
-      const stateGuardado=sessionStorage.getItem('wompi_state');
-      if(stateGuardado){
-        const estadoAnterior=JSON.parse(stateGuardado);
-        Object.assign(state,estadoAnterior);
-      }
-
-      // Esperar a que carguen los datos
-      let intentos=0;
-      while(!proyectosListos&&intentos<40){
-        await new Promise(r=>setTimeout(r,250));
-        intentos++;
-      }
+      sessionStorage.setItem('ub_pago','ok');sessionStorage.setItem('ub_codigo','WOMPI-'+ref);
+      const sg=sessionStorage.getItem('wompi_state');if(sg)Object.assign(state,JSON.parse(sg));
+      let i=0;while(!proyectosListos&&i<40){await new Promise(r=>setTimeout(r,250));i++;}
       unlockReport();
     }
-  }catch(e){console.log('Verificando pago...',e);}
+  }catch(e){}
+}
+
+function enviarLinkWA(){
+  const datos={nombre:state.nombre,email:state.email,celular:state.celular,direccion:state.direccion,tipo:state.tipo,precio:state.precio,area:state.area,hab:state.hab,ban:state.ban,piso:state.piso,lat:state.lat,lng:state.lng,ref:state.ref,diff:state.diff,m2:state.m2,report:state.report};
+  const link='https://urbanbrokers.app?informe='+btoa(unescape(encodeURIComponent(JSON.stringify(datos))));
+  window.open('https://wa.me/'+WA_NUM+'?text='+encodeURIComponent('Hola '+state.nombre+', aquí está tu informe completo de UrbanBrokers 🏠\n\n📍 '+state.direccion+'\n\n👉 '+link+'\n\n¡Gracias por confiar en UrbanBrokers!'),'_blank');
 }
 
 document.addEventListener('DOMContentLoaded',function(){
-  const inpCod=document.getElementById('codigoAccesoStep3');
-  if(inpCod){
-    inpCod.addEventListener('keypress',function(e){
-      if(e.key==='Enter')verificarCodigoStep3();
-    });
-  }
+  const inp=document.getElementById('codigoAccesoStep3');
+  if(inp)inp.addEventListener('keypress',e=>{if(e.key==='Enter')verificarCodigoStep3();});
 });
+
+// ══════════════════════════════════════════════════════
+// IDIOMA
+// ══════════════════════════════════════════════════════
 const TEXTS={
   es:{tag:'Análisis inteligente de inmuebles · Medellín',m1t:'Análisis Compra / Venta',m1s:'¿El precio es justo? ¿Cuánto negociar?',m2t:'Análisis Renta Tradicional',m2s:'Rentabilidad, canon ideal y proyección',m3t:'Análisis Renta Corta',m3s:'Airbnb / Booking — ocupación y ROI',footer:'✦ Gratis durante junio 2026 · Desde julio $10 USD'},
   en:{tag:'Smart real estate analysis · Medellín',m1t:'Buy / Sell Analysis',m1s:'Is the price fair? How much to negotiate?',m2t:'Traditional Rental Analysis',m2s:'Profitability, ideal rent and projection',m3t:'Short-term Rental Analysis',m3s:'Airbnb / Booking — occupancy and ROI',footer:'✦ Free during June 2026 · From July $10 USD'}
 };
-let currentLang='es';
 function setLang(lang){
-  if(lang==='en'){
-    alert('🌎 English version coming soon!\n\nWant early access? Contact us on WhatsApp.');
-    return;
-  }
+  if(lang==='en'){alert('🌎 English version coming soon!');return;}
   currentLang=lang;
   document.querySelectorAll('.lang-btn').forEach(b=>b.classList.remove('active'));
-  document.querySelector('.lang-btn[onclick="setLang(\''+lang+'\')"]').classList.add('active');
+  document.querySelector(`.lang-btn[onclick="setLang('${lang}')"]`).classList.add('active');
   const t=TEXTS[lang];
-  document.getElementById('cover-tag').textContent=t.tag;
-  document.getElementById('m1-title').textContent=t.m1t;
-  document.getElementById('m1-sub').textContent=t.m1s;
-  document.getElementById('m2-title').textContent=t.m2t;
-  document.getElementById('m2-sub').textContent=t.m2s;
-  document.getElementById('m3-title').textContent=t.m3t;
-  document.getElementById('m3-sub').textContent=t.m3s;
-  document.getElementById('cover-footer').textContent=t.footer;
+  ['cover-tag','m1-title','m1-sub','m2-title','m2-sub','m3-title','m3-sub','cover-footer'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=[t.tag,t.m1t,t.m1s,t.m2t,t.m2s,t.m3t,t.m3s,t.footer][i];});
 }
-function selectModule(mod){
-  if(mod==='compraventa'){document.getElementById('portada').style.display='none';}
-}
-function showComingSoon(){
-  alert(currentLang==='es'?'Próximamente disponible 🚀':'Coming soon 🚀');
-}
+function selectModule(mod){if(mod==='compraventa')document.getElementById('portada').style.display='none';}
+function showComingSoon(){alert(currentLang==='es'?'Próximamente disponible 🚀':'Coming soon 🚀');}
 
-// Detectar retorno desde Wompi
+// ══════════════════════════════════════════════════════
+// RETORNO WOMPI
+// ══════════════════════════════════════════════════════
 async function verificarRetornoWompi(){
   const params=new URLSearchParams(window.location.search);
   const informeParam=params.get('informe');
-
-  // Si viene con datos del informe codificados, cargar directo al Step 4
   if(informeParam){
     try{
-      const datos=JSON.parse(decodeURIComponent(escape(atob(informeParam))));
-      Object.assign(state,datos);
+      Object.assign(state,JSON.parse(decodeURIComponent(escape(atob(informeParam)))));
       window.history.replaceState({},'',window.location.pathname);
-      // Esperar a que carguen los datos
-      let intentos=0;
-      while(!proyectosListos&&intentos<40){
-        await new Promise(r=>setTimeout(r,250));
-        intentos++;
-      }
-      document.getElementById('portada').style.display='none';
-      showStep4();
-      return;
-    }catch(e){console.log('Error cargando informe desde link:',e);}
+      let i=0;while(!proyectosListos&&i<40){await new Promise(r=>setTimeout(r,250));i++;}
+      document.getElementById('portada').style.display='none';showStep4();return;
+    }catch(e){}
   }
-
-  const transaccionId=params.get('id');
-  const status=params.get('status');
-  if(!transaccionId)return;
+  const transId=params.get('id'),status=params.get('status');if(!transId)return;
   window.history.replaceState({},'',window.location.pathname);
   if(status==='APPROVED'){
-    sessionStorage.setItem('ub_pago','ok');
-    sessionStorage.setItem('ub_codigo','WOMPI-'+transaccionId);
-    let intentos=0;
-    while(!proyectosListos&&intentos<40){
-      await new Promise(r=>setTimeout(r,250));
-      intentos++;
-    }
-    unlockReport();
-    return;
+    sessionStorage.setItem('ub_pago','ok');sessionStorage.setItem('ub_codigo','WOMPI-'+transId);
+    let i=0;while(!proyectosListos&&i<40){await new Promise(r=>setTimeout(r,250));i++;}
+    unlockReport();return;
   }
-  const ref=sessionStorage.getItem('wompi_ref');
-  if(!ref)return;
+  const ref=sessionStorage.getItem('wompi_ref');if(!ref)return;
   try{
-    const res=await fetch('https://urbanbrokers-proxy.urbanbrokers-lab.workers.dev/wompi-verify',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ref:ref})
-    });
+    const res=await fetch('https://urbanbrokers-proxy.urbanbrokers-lab.workers.dev/wompi-verify',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ref})});
     const data=await res.json();
     if(data.approved){
-      sessionStorage.setItem('ub_pago','ok');
-      sessionStorage.setItem('ub_codigo','WOMPI-'+ref);
-      let intentos=0;
-      while(!proyectosListos&&intentos<40){
-        await new Promise(r=>setTimeout(r,250));
-        intentos++;
-      }
+      sessionStorage.setItem('ub_pago','ok');sessionStorage.setItem('ub_codigo','WOMPI-'+ref);
+      let i=0;while(!proyectosListos&&i<40){await new Promise(r=>setTimeout(r,250));i++;}
       unlockReport();
     }
-  }catch(e){console.log('Error verificando retorno Wompi:',e);}
+  }catch(e){}
 }
 
 cargarProyectos();
