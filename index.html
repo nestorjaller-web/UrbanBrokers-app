@@ -1002,15 +1002,34 @@ function showStep4(){
 
   // Cobertura por rango — removida del informe
 
-  // Arriendo
+  // Arriendo — canon base
   const cData=getCanonMercado(d.hab,d.area,d.tipo,'tradicional');
   const canon=cData?cData.canon:Math.round(r.precio_justo*0.004);
   const cFuente=cData?cData.fuente:'estimado';
   const admin=Math.round(canon*0.145),vac=Math.round(canon*0.08),pred=Math.round(canon*0.062);
   const neto=canon-admin-vac-pred,netoA=neto*12;
-  const rent=((netoA/d.precio)*100).toFixed(1);
+
+  // Tres escenarios de rentabilidad según precio de compra
+  const precioPublicado=d.precio;
+  const precioMercado=Math.round(d.ref*d.area);      // valor homologado
+  const precioOferta=r.oferta_apertura;              // oferta recomendada por IA
+
+  function calcRent(precioBase){ return((netoA/precioBase)*100).toFixed(1); }
+  const rentPublicado=calcRent(precioPublicado);
+  const rentMercado=calcRent(precioMercado);
+  const rentOferta=calcRent(precioOferta);
+
+  // Color según umbral de rentabilidad
+  function colorRent(pct){
+    const v=parseFloat(pct);
+    if(v>=5)return'#4ade80';
+    if(v>=3.5)return'#fbbf24';
+    return'#f87171';
+  }
 
   document.getElementById('s4RentLabel').innerHTML='2 · ¿Cuánto dinero te genera en arriendo? <span class="s4canon-badge">'+cFuente+'</span>';
+
+  // Cascade de deducciones (usa precio publicado como referencia)
   document.getElementById('s4Cascade').innerHTML=
     '<div class="s4row"><div class="s4row-icon" style="background:#e6f0fd"><span>🏠</span></div><div class="s4row-info"><div class="s4row-label">El inquilino te paga cada mes</div><div class="s4row-name">Canon mensual estimado</div></div><div class="s4row-val" style="color:#0071e3">+'+fmtFull(canon)+'</div></div>'+
     '<div class="s4arrow">↓</div>'+
@@ -1023,13 +1042,24 @@ function showStep4(){
     '<div class="s4net-row"><div style="width:40px;height:40px;border-radius:12px;background:#c8f0d8;display:flex;align-items:center;justify-content:center;flex-shrink:0"><span style="font-size:20px">👛</span></div><div style="flex:1"><div style="font-size:11px;color:#2d7a4f;margin-bottom:2px">Lo que llega a tu bolsillo</div><div style="font-size:13px;font-weight:700;color:#1a5c38">Ingreso neto mensual</div></div><div class="s4net-val">+'+fmtFull(neto)+'</div></div>'+
     '<div style="font-size:10px;color:#9ca3af;margin-top:10px;line-height:1.5">📋 Administración, vacancia y predial son valores de referencia. El costo exacto puede variar.</div>';
 
+  // Tabla de sensibilización por precio de compra
   document.getElementById('s4RentBox').innerHTML=
-    '<div class="s4rent-title">¿Y al año cuánto es?</div>'+
-    '<div class="s4rent-row"><span class="s4rl">Ingreso neto al año</span><span class="s4rv" style="color:#1a5c38">+'+fmtFull(netoA)+'</span></div>'+
-    '<div class="s4rent-row"><span class="s4rl">Precio que pagaste</span><span class="s4rv">'+fmtFull(d.precio)+'</span></div>'+
-    '<div style="border-top:0.5px solid #d1d5db;margin:8px 0"></div>'+
-    '<div class="s4rent-row"><span class="s4rl">🟡 Rentabilidad anual por rentas</span><span class="s4rv" style="color:#b45309;font-size:16px">'+rent+'%</span></div>'+
-    '<div style="font-size:10px;color:#6b7280;margin-top:8px;line-height:1.5">Por cada $100M invertidos, el arriendo te devuelve $'+rent+'M al año.</div>';
+    '<div class="s4rent-title" style="font-size:12px;font-weight:700;color:#1A1A2E;margin-bottom:10px">💡 ¿Cuánto importa negociar? Así cambia tu rentabilidad:</div>'+
+    '<div style="display:grid;grid-template-columns:1fr auto;gap:0;border-radius:12px;overflow:hidden;border:0.5px solid #e5e7eb">'+
+      // Header
+      '<div style="background:#f0f2f5;padding:8px 12px;font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em">Escenario</div>'+
+      '<div style="background:#f0f2f5;padding:8px 12px;font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em;text-align:right">Rent. neta anual</div>'+
+      // Fila 1: precio publicado
+      '<div style="padding:12px;border-top:0.5px solid #e5e7eb"><div style="font-size:11px;color:#6b7280;margin-bottom:2px">🏷️ Precio publicado</div><div style="font-size:13px;font-weight:700;color:#1A1A2E">'+fmtFull(precioPublicado)+'</div></div>'+
+      '<div style="padding:12px;border-top:0.5px solid #e5e7eb;text-align:right;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:20px;font-weight:700;color:'+colorRent(rentPublicado)+'">'+rentPublicado+'%</span></div>'+
+      // Fila 2: valor mercado
+      '<div style="padding:12px;border-top:0.5px solid #e5e7eb;background:#f8faff"><div style="font-size:11px;color:#0057cc;margin-bottom:2px">✅ Valor de mercado</div><div style="font-size:13px;font-weight:700;color:#1A1A2E">'+fmtFull(precioMercado)+'</div></div>'+
+      '<div style="padding:12px;border-top:0.5px solid #e5e7eb;text-align:right;display:flex;align-items:center;justify-content:flex-end;background:#f8faff"><span style="font-size:20px;font-weight:700;color:'+colorRent(rentMercado)+'">'+rentMercado+'%</span></div>'+
+      // Fila 3: oferta recomendada
+      '<div style="padding:12px;border-top:0.5px solid #e5e7eb;background:#f0faf4"><div style="font-size:11px;color:#1a5c38;margin-bottom:2px">💬 Oferta recomendada</div><div style="font-size:13px;font-weight:700;color:#1A1A2E">'+fmtFull(precioOferta)+'</div></div>'+
+      '<div style="padding:12px;border-top:0.5px solid #e5e7eb;text-align:right;display:flex;align-items:center;justify-content:flex-end;background:#f0faf4"><span style="font-size:20px;font-weight:700;color:'+colorRent(rentOferta)+'">'+rentOferta+'%</span></div>'+
+    '</div>'+
+    '<div style="font-size:10px;color:#9ca3af;margin-top:8px;line-height:1.5">Rentabilidad neta anual = ingreso neto ÷ precio de compra. El canon de arriendo es el mismo en los tres escenarios.</div>';
 
   // Valorización
   const v1=Math.round(d.precio*1.06),v2=Math.round(d.precio*1.123),v3=Math.round(d.precio*1.19);
