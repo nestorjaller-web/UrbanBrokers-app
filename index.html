@@ -436,6 +436,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#f5f5f7;color:var(-
     <div class="s4card-dark">
       <div class="s4sec-label-d">Veredicto</div>
       <div id="addrBadgeFull" style="margin-bottom:.75rem"></div>
+      <div id="s4FichaInmueble" style="background:rgba(255,255,255,0.05);border:0.5px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px 14px;margin-bottom:1rem"></div>
       <div class="s4veredicto-inner">
         <div class="s4v-icon" id="s4VIcon">⚖️</div>
         <div class="s4v-title" id="s4VTitle">—</div>
@@ -981,6 +982,46 @@ function showStep4(){
   const im={buena_oferta:'✅',precio_justo:'⚖️',sobrevalorado:'⚠️'};
 
   document.getElementById('addrBadgeFull').innerHTML='<div style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.1);color:#fff;font-size:11px;font-weight:500;padding:3px 10px;border-radius:980px;">📍 '+d.direccion+'</div>';
+
+  // Ficha del inmueble en veredicto
+  document.getElementById('s4FichaInmueble').innerHTML=
+    '<div style="font-size:10px;font-weight:600;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Inmueble analizado</div>'+
+    // Fila 1: m², habitaciones, parqueaderos
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0">'+
+      '<div style="text-align:center;padding:8px 4px">'+
+        '<div style="font-size:20px;margin-bottom:4px">📐</div>'+
+        '<div style="font-size:17px;font-weight:700;color:#fff">'+d.area+'</div>'+
+        '<div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px">m²</div>'+
+      '</div>'+
+      '<div style="text-align:center;padding:8px 4px;border-left:0.5px solid rgba(255,255,255,0.08);border-right:0.5px solid rgba(255,255,255,0.08)">'+
+        '<div style="font-size:20px;margin-bottom:4px">🛏️</div>'+
+        '<div style="font-size:17px;font-weight:700;color:#fff">'+d.hab+'</div>'+
+        '<div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px">habitaciones</div>'+
+      '</div>'+
+      '<div style="text-align:center;padding:8px 4px">'+
+        '<div style="font-size:20px;margin-bottom:4px">🚗</div>'+
+        '<div style="font-size:17px;font-weight:700;color:#fff">'+d.numParqueaderos+'</div>'+
+        '<div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px">'+(d.numParqueaderos===1?'parqueadero':'parqueaderos')+'</div>'+
+      '</div>'+
+    '</div>'+
+    // Fila 2: edad y amenidades centradas
+    '<div style="border-top:0.5px solid rgba(255,255,255,0.08);margin-top:10px;padding-top:10px;display:grid;grid-template-columns:1fr 1fr;gap:0">'+
+      '<div style="text-align:center;padding:6px 4px">'+
+        '<div style="font-size:16px;margin-bottom:4px">🏗️</div>'+
+        '<div style="font-size:12px;font-weight:500;color:#fff">'+d.edadStr+' años</div>'+
+        '<div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px">Edad</div>'+
+      '</div>'+
+      '<div style="text-align:center;padding:6px 4px;border-left:0.5px solid rgba(255,255,255,0.08)">'+
+        '<div style="font-size:16px;margin-bottom:4px">✨</div>'+
+        '<div style="font-size:12px;font-weight:500;color:#fff">'+d.nivelAmenidades+'</div>'+
+        '<div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:2px">Amenidades</div>'+
+      '</div>'+
+    '</div>'+
+    // Precio pedido
+    '<div style="border-top:0.5px solid rgba(255,255,255,0.08);margin-top:10px;padding-top:10px;display:flex;justify-content:space-between;align-items:center">'+
+      '<div style="font-size:11px;color:rgba(255,255,255,0.4)">Precio pedido</div>'+
+      '<div style="font-size:15px;font-weight:700;color:#ff6200">'+fmtFull(d.precio)+'</div>'+
+    '</div>';
   document.getElementById('s4VIcon').textContent=im[r.veredicto_tipo]||'⚖️';
   document.getElementById('s4VTitle').textContent=lm[r.veredicto_tipo]||'—';
   document.getElementById('s4VJust').textContent=r.justificacion||'—';
