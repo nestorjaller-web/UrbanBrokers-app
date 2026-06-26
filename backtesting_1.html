@@ -32,16 +32,16 @@
   .chart-card{background:#1a1d24;border-radius:16px;padding:1.25rem;border:0.5px solid rgba(255,255,255,0.08)}
   .chart-title{font-size:12px;font-weight:600;color:rgba(255,255,255,0.6);margin-bottom:1rem}
   .bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-  .bar-label{font-size:11px;color:rgba(255,255,255,0.5);width:80px;flex-shrink:0;text-align:right}
+  .bar-label{font-size:11px;color:rgba(255,255,255,0.5);width:90px;flex-shrink:0;text-align:right}
   .bar-track{flex:1;background:rgba(255,255,255,0.06);border-radius:4px;height:20px;overflow:hidden}
-  .bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:10px;font-weight:600;color:#fff}
-  .bar-val{font-size:11px;color:rgba(255,255,255,0.5);width:50px;text-align:right}
-  .table-wrap{background:#1a1d24;border-radius:16px;border:0.5px solid rgba(255,255,255,0.08);overflow:hidden;margin-bottom:2rem}
+  .bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:10px;font-weight:600;color:#fff;min-width:4px}
+  .bar-val{font-size:11px;color:rgba(255,255,255,0.5);width:55px;text-align:right;flex-shrink:0}
+  .table-wrap{background:#1a1d24;border-radius:16px;border:0.5px solid rgba(255,255,255,0.08);overflow:hidden;margin-bottom:2rem;overflow-x:auto}
   table{width:100%;border-collapse:collapse;font-size:12px}
-  thead th{background:rgba(255,255,255,0.04);padding:10px 12px;text-align:left;font-size:11px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.05em;border-bottom:0.5px solid rgba(255,255,255,0.08)}
+  thead th{background:rgba(255,255,255,0.04);padding:10px 12px;text-align:left;font-size:11px;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.05em;border-bottom:0.5px solid rgba(255,255,255,0.08);white-space:nowrap}
   tbody tr{border-bottom:0.5px solid rgba(255,255,255,0.05)}
   tbody tr:hover{background:rgba(255,255,255,0.03)}
-  tbody td{padding:10px 12px;color:rgba(255,255,255,0.8)}
+  tbody td{padding:10px 12px;color:rgba(255,255,255,0.8);white-space:nowrap}
   .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600}
   .tag-good{background:rgba(74,222,128,0.15);color:#4ade80}
   .tag-warn{background:rgba(251,191,36,0.15);color:#fbbf24}
@@ -49,25 +49,32 @@
   .loading{text-align:center;padding:3rem;color:rgba(255,255,255,0.4)}
   .spinner{width:32px;height:32px;border:3px solid rgba(255,255,255,0.1);border-top-color:#0071e3;border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 1rem}
   @keyframes spin{to{transform:rotate(360deg)}}
-  .empty{text-align:center;padding:2rem;color:rgba(255,255,255,0.3);font-size:13px}
   .progress-bar{background:rgba(255,255,255,0.06);border-radius:4px;height:6px;margin-bottom:1.5rem;overflow:hidden}
   .progress-fill{height:100%;background:#0071e3;border-radius:4px;transition:width .3s}
-  .scatter-wrap{position:relative;width:100%;height:200px}
-  canvas{width:100%;height:100%}
   .filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
   .filter-btn{padding:4px 12px;border-radius:980px;border:1px solid rgba(255,255,255,0.15);background:transparent;color:rgba(255,255,255,0.5);font-size:11px;cursor:pointer;font-family:inherit}
   .filter-btn.active{background:#0071e3;border-color:#0071e3;color:#fff}
+  .delta-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:980px;margin-left:4px}
+  .delta-pos{background:rgba(74,222,128,0.15);color:#4ade80}
+  .delta-neg{background:rgba(248,113,113,0.15);color:#f87171}
+  .delta-neu{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5)}
+  .homo-impact{background:#1a2535;border-radius:16px;padding:1.25rem;border:0.5px solid rgba(0,113,227,0.3);margin-bottom:2rem}
+  .homo-impact-title{font-size:13px;font-weight:700;color:#0071e3;margin-bottom:1rem}
+  .homo-impact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+  .hi-card{background:rgba(255,255,255,0.04);border-radius:12px;padding:12px;text-align:center}
+  .hi-label{font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.05em}
+  .hi-val{font-size:1.2rem;font-weight:700}
 </style>
 </head>
 <body>
 
 <div class="header">
   <div class="logo">Urban<span>Brokers</span></div>
-  <div class="subtitle">Tablero de Backtesting · Precisión del modelo</div>
+  <div class="subtitle">Tablero de Backtesting · Precisión del modelo con Homologación</div>
 </div>
 
 <div class="controls">
-  <button class="btn btn-primary" id="btnCargar" onclick="iniciarBacktest()">▶ Iniciar backtesting (usados depurados)</button>
+  <button class="btn btn-primary" id="btnCargar" onclick="iniciarBacktest()">▶ Iniciar backtesting</button>
   <button class="btn btn-secondary" id="btnExportar" onclick="exportarCSV()" disabled>⬇ Exportar CSV</button>
 </div>
 
@@ -77,23 +84,27 @@
 
 <div id="loading" class="loading" style="display:none">
   <div class="spinner"></div>
-  <div>Cargando datos del Sheet...</div>
+  <div id="loadingText">Cargando datos del Sheet...</div>
 </div>
 
 <div id="results" style="display:none">
 
-  <!-- Métricas principales -->
   <div class="section-title">Resumen de precisión</div>
   <div class="metrics">
     <div class="metric-card">
-      <div class="metric-label">Error promedio valor m²</div>
+      <div class="metric-label">Error promedio (homologado)</div>
       <div class="metric-value" id="mErrorM2">—</div>
       <div class="metric-sub">Desviación vs precio real</div>
     </div>
     <div class="metric-card">
-      <div class="metric-label">Error promedio renta</div>
-      <div class="metric-value" id="mErrorRenta">—</div>
-      <div class="metric-sub">Desviación vs canon real</div>
+      <div class="metric-label">Error promedio (simple)</div>
+      <div class="metric-value" id="mErrorSimple">—</div>
+      <div class="metric-sub">Sin ajuste de comparables</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label">Mejora por homologación</div>
+      <div class="metric-value" id="mMejora">—</div>
+      <div class="metric-sub">Reducción de error</div>
     </div>
     <div class="metric-card">
       <div class="metric-label">Dentro del ±10%</div>
@@ -106,26 +117,26 @@
       <div class="metric-sub">Rango aceptable</div>
     </div>
     <div class="metric-card">
-      <div class="metric-label">Sobreestimados</div>
-      <div class="metric-value" id="mSobre">—</div>
-      <div class="metric-sub">Herramienta > precio real</div>
-    </div>
-    <div class="metric-card">
-      <div class="metric-label">Subestimados</div>
-      <div class="metric-value" id="mSub">—</div>
-      <div class="metric-sub">Herramienta < precio real</div>
+      <div class="metric-label">Muestra analizada</div>
+      <div class="metric-value" id="mMuestra">—</div>
+      <div class="metric-sub">Propiedades usadas depuradas</div>
     </div>
   </div>
 
-  <!-- Gráficas -->
+  <!-- Impacto de homologación por variable -->
+  <div class="homo-impact">
+    <div class="homo-impact-title">🔬 Impacto de homologación por variable de ajuste</div>
+    <div class="homo-impact-grid" id="homoImpactGrid"></div>
+  </div>
+
   <div class="charts">
     <div class="chart-card">
-      <div class="chart-title">Distribución de error (valor m²)</div>
+      <div class="chart-title">Distribución de error — Homologado</div>
       <div id="chartError"></div>
     </div>
     <div class="chart-card">
-      <div class="chart-title">Error por tipo de inmueble</div>
-      <div id="chartTipo"></div>
+      <div class="chart-title">Distribución de error — Simple</div>
+      <div id="chartErrorSimple"></div>
     </div>
     <div class="chart-card">
       <div class="chart-title">Error por rango de área</div>
@@ -135,15 +146,23 @@
       <div class="chart-title">Error por habitaciones</div>
       <div id="chartHab"></div>
     </div>
+    <div class="chart-card">
+      <div class="chart-title">Error por edad del inmueble</div>
+      <div id="chartEdad"></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Error por nivel de amenidades</div>
+      <div id="chartAmen"></div>
+    </div>
   </div>
 
-  <!-- Tabla detalle -->
   <div class="section-title">Detalle por propiedad</div>
   <div class="filter-row" id="filterRow">
     <button class="filter-btn active" onclick="filtrarTabla('todos',this)">Todos</button>
     <button class="filter-btn" onclick="filtrarTabla('buenos',this)">✅ Bien estimados (±10%)</button>
     <button class="filter-btn" onclick="filtrarTabla('aceptables',this)">⚠️ Aceptables (10-20%)</button>
     <button class="filter-btn" onclick="filtrarTabla('malos',this)">❌ Fuera de rango (>20%)</button>
+    <button class="filter-btn" onclick="filtrarTabla('mejorados',this)">📈 Mejorados por homo</button>
   </div>
   <div class="table-wrap">
     <table>
@@ -151,15 +170,17 @@
         <tr>
           <th>#</th>
           <th>Proyecto</th>
-          <th>Tipo</th>
           <th>Área</th>
           <th>Hab</th>
+          <th>Edad</th>
+          <th>Parq</th>
+          <th>Amenidades</th>
           <th>M² Real</th>
-          <th>M² Estimado</th>
-          <th>Error M²</th>
-          <th>Canon Real</th>
-          <th>Canon Est.</th>
-          <th>Error Renta</th>
+          <th>M² Simple</th>
+          <th>Err. Simple</th>
+          <th>M² Homologado</th>
+          <th>Err. Homo</th>
+          <th>Δ Mejora</th>
           <th>Precisión</th>
         </tr>
       </thead>
@@ -170,116 +191,172 @@
 </div>
 
 <script>
-const SHEET_ID='1CBszkSAEg8lVJntJ-BGFeI2mlcqyvQqUVJclY5VR0qM';
-let todosLosDatos=[];
-let resultadosGlobales=[];
+// ══════════════════════════════════════════════════════
+// MOTOR DE HOMOLOGACIÓN (replicado de la app)
+// ══════════════════════════════════════════════════════
 
-// ===== LÓGICA DE VALORACIÓN (replicada de la app) =====
-function getRangoArea(area){
-  if(area<60)return'pequeño';
-  if(area<=100)return'mediano';
-  return'grande';
+function getClusterArea(a){
+  if(a<45)return 0; if(a<=65)return 1; if(a<=90)return 2; if(a<=140)return 3; return 4;
+}
+function getClusterEdad(s){
+  if(s==='0-2')return 0; if(s==='3-10')return 1; if(s==='11-20')return 2; return 3;
+}
+function nivelAmen(s){
+  if(s==='Fullhouse')return 2; if(s==='Estándar')return 1; return 0;
+}
+function normP(n){ return Math.min(parseInt(n)||0,4); }
+
+function calcularFactorAjuste(obj, comp){
+  let dA=0,dE=0,dP=0,dAm=0;
+
+  // Área
+  const cOA=getClusterArea(obj.area), cCA=getClusterArea(comp.area), diffA=cCA-cOA;
+  if(diffA>0)  dA= 0.06*diffA;
+  if(diffA<0)  dA=-0.07*Math.abs(diffA);
+
+  // Edad
+  const cOE=getClusterEdad(obj.edadStr), cCE=getClusterEdad(comp.edadStr);
+  if(cCE===0&&cOE>0)        dE=-0.04*(cOE-cCE);
+  else if(cCE===2&&cOE<2)   dE=0.06;
+  else if(cCE===3&&cOE<3)   dE=0.13;
+
+  // Parqueaderos
+  const pO=normP(obj.parq), pC=normP(comp.parq), diffP=pC-pO;
+  const fp=(cOA===0)?0.5:1.0;
+  if(diffP===-1)   dP= 0.08*fp;
+  else if(diffP===1)   dP=-0.08*fp;
+  else if(diffP>=2)    dP=-0.13*fp;
+
+  // Amenidades
+  const nO=nivelAmen(obj.amenidades), nC=nivelAmen(comp.amenidades);
+  if(nC===2&&nO===0)       dAm=-0.11;
+  else if(nC===2&&nO===1)  dAm=-0.05;
+  else if(nC===1&&nO===0)  dAm=-0.05;
+  else if(nC===0&&nO===2)  dAm= 0.11;
+  else if(nC===0&&nO===1)  dAm= 0.05;
+
+  const dn=Math.max(-0.40,Math.min(0.40,dA+dE+dP+dAm));
+  return{deltaNeto:dn,deltaArea:dA,deltaEdad:dE,deltaParq:dP,deltaAmen:dAm,
+         m2Ajustado:Math.round(comp.m2*(1+dn))};
 }
 
-function distKm(lat1,lng1,lat2,lng2){
-  const R=6371;
-  const dLat=(lat2-lat1)*Math.PI/180;
-  const dLng=(lng2-lng1)*Math.PI/180;
-  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+function getRangoArea(a){if(a<60)return'pequeño';if(a<=100)return'mediano';return'grande';}
+
+function distKm(la1,ln1,la2,ln2){
+  const R=6371,dL=(la2-la1)*Math.PI/180,dN=(ln2-ln1)*Math.PI/180;
+  const a=Math.sin(dL/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dN/2)**2;
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
 
-function estimarM2(propiedades, target){
-  // Buscar comparables similares
-  const lat=6.2200, lng=-75.5715; // coordenadas generales Ciudad del Río
+/**
+ * Estima el m² usando el motor de homologación.
+ * También retorna el promedio simple para comparar.
+ */
+function estimarM2Homologado(propiedades, target){
   const rango=getRangoArea(target.area);
-  
-  let comparables=propiedades.filter(p=>{
-    if(p.id===target.id)return false;
-    if(p.tipo!==target.tipo)return false;
-    if(p.m2<=0)return false;
-    return true;
+
+  // Pool de comparables (excluir el target)
+  let comps=propiedades.filter(p=>p.id!==target.id&&p.m2>0);
+
+  // Cascada de filtros igual que la app
+  function fil(opts){
+    return comps.filter(p=>{
+      if(opts.rango&&getRangoArea(p.area)!==rango)return false;
+      if(opts.habs&&Math.abs(p.hab-target.hab)>1)return false;
+      return true;
+    });
+  }
+
+  let pool;
+  pool=fil({rango:true,habs:true});  if(pool.length>=3){comps=pool;}
+  else{pool=fil({rango:true,habs:false}); if(pool.length>=3)comps=pool;}
+  pool=fil({rango:false,habs:true}); if(pool.length>=3&&comps.length<3)comps=pool;
+  if(comps.length===0)return null;
+
+  const top=comps.slice(0,6);
+
+  // Promedio simple
+  const simple=Math.round(top.reduce((a,c)=>a+c.m2,0)/top.length);
+
+  // Homologado
+  const obj={area:target.area,edadStr:target.edadStr,parq:target.parqNum,amenidades:target.amenLevel};
+  const ajustes=top.map(c=>{
+    const aj=calcularFactorAjuste(obj,{
+      area:c.area,edadStr:c.edadStr,parq:c.parqNum,amenidades:c.amenLevel,m2:c.m2
+    });
+    return{...aj,deltaAreaAbs:Math.abs(aj.deltaArea),deltaEdadAbs:Math.abs(aj.deltaEdad),deltaParqAbs:Math.abs(aj.deltaParq),deltaAmenAbs:Math.abs(aj.deltaAmen)};
   });
+  const homologado=Math.round(ajustes.reduce((a,aj)=>a+aj.m2Ajustado,0)/ajustes.length);
 
-  // Filtrar por rango de área
-  let porRango=comparables.filter(p=>getRangoArea(p.area)===rango);
-  if(porRango.length>=3)comparables=porRango;
+  // Promedio de deltas aplicados (para métricas de impacto)
+  const avgDeltaArea=ajustes.reduce((a,aj)=>a+aj.deltaAreaAbs,0)/ajustes.length;
+  const avgDeltaEdad=ajustes.reduce((a,aj)=>a+aj.deltaEdadAbs,0)/ajustes.length;
+  const avgDeltaParq=ajustes.reduce((a,aj)=>a+aj.deltaParqAbs,0)/ajustes.length;
+  const avgDeltaAmen=ajustes.reduce((a,aj)=>a+aj.deltaAmenAbs,0)/ajustes.length;
 
-  // Filtrar por habitaciones similares (±1)
-  let porHab=comparables.filter(p=>Math.abs(p.hab-target.hab)<=1);
-  if(porHab.length>=3)comparables=porHab;
-
-  if(comparables.length===0)return null;
-
-  // Calcular mediana de precio/m²
-  const m2s=comparables.map(p=>p.m2).sort((a,b)=>a-b);
-  const mid=Math.floor(m2s.length/2);
-  return m2s.length%2===0?(m2s[mid-1]+m2s[mid])/2:m2s[mid];
+  return{simple,homologado,avgDeltaArea,avgDeltaEdad,avgDeltaParq,avgDeltaAmen,nComps:top.length};
 }
 
 function estimarCanon(arriendos, target){
-  let filtrados=arriendos.filter(a=>{
-    if(a.modalidad!=='tradicional')return false;
-    if(Math.abs(a.hab-target.hab)>1)return false;
-    if(a.area>0&&Math.abs(a.area-target.area)/target.area>0.3)return false;
-    return true;
-  });
-  if(filtrados.length===0){
-    filtrados=arriendos.filter(a=>a.modalidad==='tradicional');
+  let f=arriendos.filter(a=>a.modalidad==='tradicional'&&Math.abs(a.hab-target.hab)<=1);
+  if(target.area>0&&f.length>=3){
+    const fa=f.filter(a=>a.area>0&&Math.abs(a.area-target.area)/target.area<=0.3);
+    if(fa.length>=3)f=fa;
   }
-  if(filtrados.length===0)return target.m2*target.area*0.004;
-  const canones=filtrados.map(a=>a.canon).sort((a,b)=>a-b);
-  const mid=Math.floor(canones.length/2);
-  return canones.length%2===0?(canones[mid-1]+canones[mid])/2:canones[mid];
+  if(!f.length)f=arriendos.filter(a=>a.modalidad==='tradicional');
+  if(!f.length)return target.m2*target.area*0.004;
+  const sorted=f.map(a=>a.canon).sort((a,b)=>a-b);
+  const mid=Math.floor(sorted.length/2);
+  return sorted.length%2===0?(sorted[mid-1]+sorted[mid])/2:sorted[mid];
 }
 
-// ===== CARGA DE DATOS =====
+// ══════════════════════════════════════════════════════
+// CARGA DE DATOS
+// ══════════════════════════════════════════════════════
+const SHEET_ID='1CBszkSAEg8lVJntJ-BGFeI2mlcqyvQqUVJclY5VR0qM';
+let resultadosGlobales=[];
+
 async function cargarSheet(){
-  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=datos`;
-  const res=await fetch(url);
+  const res=await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=datos`);
   const txt=await res.text();
   const json=JSON.parse(txt.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
-  const rows=json.table.rows||[];
-  
-  return rows.map((r,i)=>{
+  return(json.table.rows||[]).map((r,i)=>{
     const c=r.c||[];
-    const area=c[8]&&c[8].v?Number(c[8].v):0;
-    const precio=c[9]&&c[9].v?Number(c[9].v):0;
-    const m2real=c[10]&&c[10].v?Number(c[10].v):0;
-    const hab=c[5]&&c[5].v?Number(c[5].v):1;
-    const mercado=c[15]&&c[15].v?c[15].v.toString().toLowerCase().trim():'nuevo';
-    const tipo=mercado==='usado'?'usado':'nuevo';
+    const area=c[8]?.v?Number(c[8].v):0;
+    const precio=c[9]?.v?Number(c[9].v):0;
+    const m2real=c[10]?.v?Number(c[10].v):0;
+    const hab=c[5]?.v?Number(c[5].v):1;
+    const garajes=c[7]?.v?parseFloat(c[7].v):0;
+    // Edad desde col 3
+    const edadRaw=c[3]?.v?parseInt(c[3].v):null;
+    let edadStr='3-10';
+    if(edadRaw!==null){if(edadRaw<=2)edadStr='0-2';else if(edadRaw<=10)edadStr='3-10';else if(edadRaw<=20)edadStr='11-20';else edadStr='21-35';}
+    // Amenidades desde col 16
+    let amenLevel='Estándar';
+    if(c[16]?.v){const av=c[16].v.toLowerCase();if(av.includes('full')||av.includes('lujo'))amenLevel='Fullhouse';else if(av.includes('básico')||av.includes('basico'))amenLevel='Básico';}
     return{
       id:i,
-      nombre:c[1]&&c[1].v?c[1].v:'Sin nombre',
-      tipo:tipo,
-      area:area,
-      hab:hab,
-      precio:precio,
+      nombre:c[1]?.v||'Sin nombre',
+      area,hab,precio,edadStr,amenLevel,
+      parqNum:Math.min(Math.round(garajes),4),
       m2:m2real>0?m2real:(area>0&&precio>0?Math.round(precio/area):0)
     };
   }).filter(p=>p.m2>0&&p.area>0&&p.precio>0);
 }
 
 async function cargarArriendos(){
-  const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=arriendos`;
-  const res=await fetch(url);
+  const res=await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=arriendos`);
   const txt=await res.text();
   const json=JSON.parse(txt.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/)[1]);
-  const rows=json.table.rows||[];
-  
-  return rows.map(r=>{
+  return(json.table.rows||[]).map(r=>{
     const c=r.c||[];
-    return{
-      hab:c[5]&&c[5].v?Number(c[5].v):1,
-      area:c[8]&&c[8].v?Number(c[8].v):0,
-      canon:c[9]&&c[9].v?Number(c[9].v):0,
-      modalidad:c[16]&&c[16].v?c[16].v.toString().toLowerCase().trim():'tradicional'
-    };
+    return{hab:c[5]?.v?Number(c[5].v):1,area:c[8]?.v?Number(c[8].v):0,canon:c[9]?.v?Number(c[9].v):0,modalidad:c[16]?.v?c[16].v.toLowerCase().trim():'tradicional'};
   }).filter(a=>a.canon>0);
 }
 
-// ===== BACKTESTING =====
+// ══════════════════════════════════════════════════════
+// BACKTESTING PRINCIPAL
+// ══════════════════════════════════════════════════════
 async function iniciarBacktest(){
   document.getElementById('btnCargar').disabled=true;
   document.getElementById('loading').style.display='block';
@@ -288,36 +365,43 @@ async function iniciarBacktest(){
   document.getElementById('progressFill').style.width='10%';
 
   try{
-    const [propiedades, arriendos]=await Promise.all([cargarSheet(),cargarArriendos()]);
-    todosLosDatos=propiedades;
+    document.getElementById('loadingText').textContent='Cargando datos del Sheet...';
+    const[propiedades,arriendos]=await Promise.all([cargarSheet(),cargarArriendos()]);
     document.getElementById('progressFill').style.width='30%';
+    document.getElementById('loadingText').textContent='Aplicando motor de homologación...';
 
-    // Seleccionar 50 aleatorias — solo usados (datos depurados)
-    const soloUsados=propiedades.filter(p=>p.tipo==='usado');
-    const shuffled=[...soloUsados].sort(()=>Math.random()-0.5);
-    const muestra=shuffled.slice(0,Math.min(50,shuffled.length));
-    
+    // Muestra: hasta 60 propiedades aleatorias (todos los tipos ahora que no distinguimos)
+    const shuffled=[...propiedades].sort(()=>Math.random()-0.5);
+    const muestra=shuffled.slice(0,Math.min(60,shuffled.length));
+
     resultadosGlobales=[];
     for(let i=0;i<muestra.length;i++){
       const p=muestra[i];
-      const m2Estimado=estimarM2(propiedades,p);
-      const canonEstimado=estimarCanon(arriendos,p);
-      
-      if(m2Estimado&&p.m2>0){
-        const errorM2=((m2Estimado-p.m2)/p.m2)*100;
-        const errorRenta=p.area>0?((canonEstimado-(p.m2*p.area*0.004))/(p.m2*p.area*0.004))*100:null;
-        
-        resultadosGlobales.push({
-          ...p,
-          m2Estimado:Math.round(m2Estimado),
-          canonEstimado:Math.round(canonEstimado),
-          canonRef:Math.round(p.m2*p.area*0.004),
-          errorM2:errorM2,
-          errorRenta:errorRenta,
-          absErrorM2:Math.abs(errorM2)
-        });
-      }
-      document.getElementById('progressFill').style.width=(30+i/muestra.length*60)+'%';
+      const est=estimarM2Homologado(propiedades,p);
+      if(!est)continue;
+
+      const canonEst=estimarCanon(arriendos,p);
+      const errorSimple=((est.simple-p.m2)/p.m2)*100;
+      const errorHomo=((est.homologado-p.m2)/p.m2)*100;
+
+      resultadosGlobales.push({
+        ...p,
+        m2Simple:est.simple,
+        m2Homologado:est.homologado,
+        nComps:est.nComps,
+        canonEstimado:Math.round(canonEst),
+        errorSimple,
+        errorHomo,
+        absErrorSimple:Math.abs(errorSimple),
+        absErrorHomo:Math.abs(errorHomo),
+        mejorado:Math.abs(errorHomo)<Math.abs(errorSimple),
+        // Deltas promedio aplicados
+        avgDeltaArea:est.avgDeltaArea,
+        avgDeltaEdad:est.avgDeltaEdad,
+        avgDeltaParq:est.avgDeltaParq,
+        avgDeltaAmen:est.avgDeltaAmen
+      });
+      document.getElementById('progressFill').style.width=(30+i/muestra.length*65)+'%';
     }
 
     document.getElementById('progressFill').style.width='100%';
@@ -329,169 +413,157 @@ async function iniciarBacktest(){
       document.getElementById('btnExportar').disabled=false;
       document.getElementById('btnCargar').disabled=false;
       document.getElementById('btnCargar').textContent='↺ Nuevo backtesting';
-    },500);
+    },400);
 
   }catch(e){
-    document.getElementById('loading').innerHTML='<div style="color:#f87171">Error cargando datos: '+e.message+'</div>';
+    document.getElementById('loading').innerHTML='<div style="color:#f87171;text-align:center">Error: '+e.message+'</div>';
     document.getElementById('btnCargar').disabled=false;
   }
 }
 
-function fmtM(n){return'$'+(n/1000000).toFixed(1)+'M'}
-function fmtPct(n){return(n>=0?'+':'')+n.toFixed(1)+'%'}
+// ══════════════════════════════════════════════════════
+// RENDER RESULTADOS
+// ══════════════════════════════════════════════════════
+function fmtM(n){return'$'+(n/1000000).toFixed(1)+'M';}
+function fmtPct(n){return(n>=0?'+':'')+n.toFixed(1)+'%';}
+function barChart(container,grupos,maxVal){
+  document.getElementById(container).innerHTML=grupos.map(g=>{
+    if(!g.items.length)return`<div class="bar-row"><div class="bar-label">${g.label}</div><div class="bar-track"><div class="bar-fill" style="width:4%;background:#333"></div></div><div class="bar-val">Sin datos</div></div>`;
+    const prom=g.items.reduce((a,b)=>a+b,0)/g.items.length;
+    const color=prom<=10?'#4ade80':prom<=20?'#fbbf24':'#f87171';
+    const w=maxVal>0?Math.max(4,prom/maxVal*100):4;
+    return`<div class="bar-row"><div class="bar-label">${g.label}</div><div class="bar-track"><div class="bar-fill" style="width:${w}%;background:${color}">${prom.toFixed(1)}%</div></div><div class="bar-val">${g.items.length} prop.</div></div>`;
+  }).join('');
+}
 
 function mostrarResultados(datos){
-  if(datos.length===0){
-    document.getElementById('results').innerHTML='<div class="empty">No hay suficientes datos para el backtesting.</div>';
-    return;
-  }
+  if(!datos.length){document.getElementById('results').innerHTML='<div style="text-align:center;padding:2rem;color:rgba(255,255,255,0.3)">Sin datos suficientes.</div>';return;}
 
-  // Métricas
-  const errores=datos.map(d=>d.absErrorM2);
-  const errorProm=errores.reduce((a,b)=>a+b,0)/errores.length;
-  const dentro10=datos.filter(d=>d.absErrorM2<=10).length;
-  const dentro20=datos.filter(d=>d.absErrorM2<=20).length;
-  const sobre=datos.filter(d=>d.errorM2>0).length;
-  const sub=datos.filter(d=>d.errorM2<0).length;
+  // ── Métricas ──
+  const errHomo=datos.map(d=>d.absErrorHomo);
+  const errSimp=datos.map(d=>d.absErrorSimple);
+  const promHomo=errHomo.reduce((a,b)=>a+b,0)/errHomo.length;
+  const promSimp=errSimp.reduce((a,b)=>a+b,0)/errSimp.length;
+  const mejora=promSimp-promHomo;
+  const dentro10=datos.filter(d=>d.absErrorHomo<=10).length;
+  const dentro20=datos.filter(d=>d.absErrorHomo<=20).length;
 
-  const rentaValidos=datos.filter(d=>d.errorRenta!==null);
-  const errorRentaProm=rentaValidos.length>0?rentaValidos.reduce((a,b)=>a+Math.abs(b.errorRenta),0)/rentaValidos.length:0;
-
-  const colorMetrica=(pct)=>pct<=10?'good':pct<=20?'warn':'bad';
-
-  document.getElementById('mErrorM2').innerHTML=`<span class="${colorMetrica(errorProm)}">${errorProm.toFixed(1)}%</span>`;
-  document.getElementById('mErrorRenta').innerHTML=`<span class="${colorMetrica(errorRentaProm)}">${errorRentaProm.toFixed(1)}%</span>`;
+  const c=p=>p<=10?'good':p<=20?'warn':'bad';
+  document.getElementById('mErrorM2').innerHTML=`<span class="${c(promHomo)}">${promHomo.toFixed(1)}%</span>`;
+  document.getElementById('mErrorSimple').innerHTML=`<span class="${c(promSimp)}">${promSimp.toFixed(1)}%</span>`;
+  document.getElementById('mMejora').innerHTML=`<span class="${mejora>0?'good':'bad'}">${mejora>0?'-':'+'} ${Math.abs(mejora).toFixed(1)}pp</span>`;
   document.getElementById('mPrecision10').innerHTML=`<span class="${dentro10/datos.length>=0.7?'good':dentro10/datos.length>=0.5?'warn':'bad'}">${dentro10}/${datos.length}</span>`;
   document.getElementById('mPrecision20').innerHTML=`<span class="${dentro20/datos.length>=0.8?'good':dentro20/datos.length>=0.6?'warn':'bad'}">${dentro20}/${datos.length}</span>`;
-  document.getElementById('mSobre').innerHTML=`<span class="warn">${sobre}</span>`;
-  document.getElementById('mSub').innerHTML=`<span class="warn">${sub}</span>`;
+  document.getElementById('mMuestra').innerHTML=`<span class="good">${datos.length}</span>`;
 
-  // Gráfica distribución de error
-  const rangos=[
+  // ── Impacto por variable ──
+  const avgDA=datos.reduce((a,d)=>a+d.avgDeltaArea,0)/datos.length;
+  const avgDE=datos.reduce((a,d)=>a+d.avgDeltaEdad,0)/datos.length;
+  const avgDP=datos.reduce((a,d)=>a+d.avgDeltaParq,0)/datos.length;
+  const avgDAm=datos.reduce((a,d)=>a+d.avgDeltaAmen,0)/datos.length;
+  const mejoradosPct=datos.filter(d=>d.mejorado).length/datos.length*100;
+  document.getElementById('homoImpactGrid').innerHTML=[
+    {label:'Δ Área (promedio)',val:avgDA,sfx:'%'},
+    {label:'Δ Edad (promedio)',val:avgDE,sfx:'%'},
+    {label:'Δ Parqueaderos',val:avgDP,sfx:'%'},
+    {label:'Δ Amenidades',val:avgDAm,sfx:'%'},
+    {label:'Propiedades mejoradas',val:mejoradosPct,sfx:'%',color:mejoradosPct>=60?'#4ade80':'#fbbf24'}
+  ].map(m=>`<div class="hi-card"><div class="hi-label">${m.label}</div><div class="hi-val" style="color:${m.color||'#fff'}">${(m.val*100).toFixed?'':''}${typeof m.val==='number'?m.val.toFixed(1):m.val}${m.sfx||''}</div></div>`).join('');
+
+  // ── Gráficas distribución de error ──
+  const rangosErr=[
     {label:'< 5%',min:0,max:5},
-    {label:'5-10%',min:5,max:10},
-    {label:'10-15%',min:10,max:15},
-    {label:'15-20%',min:15,max:20},
+    {label:'5–10%',min:5,max:10},
+    {label:'10–15%',min:10,max:15},
+    {label:'15–20%',min:15,max:20},
     {label:'> 20%',min:20,max:999}
   ];
-  const maxCount=Math.max(...rangos.map(r=>datos.filter(d=>d.absErrorM2>=r.min&&d.absErrorM2<r.max).length));
-  document.getElementById('chartError').innerHTML=rangos.map(r=>{
-    const count=datos.filter(d=>d.absErrorM2>=r.min&&d.absErrorM2<r.max).length;
-    const pct=maxCount>0?count/maxCount*100:0;
-    const color=r.max<=10?'#4ade80':r.max<=20?'#fbbf24':'#f87171';
-    return`<div class="bar-row">
-      <div class="bar-label">${r.label}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${color}">${count>0?count:''}</div></div>
-      <div class="bar-val">${count} prop.</div>
-    </div>`;
-  }).join('');
+  ['chartError','chartErrorSimple'].forEach((id,idx)=>{
+    const key=idx===0?'absErrorHomo':'absErrorSimple';
+    const maxC=Math.max(...rangosErr.map(r=>datos.filter(d=>d[key]>=r.min&&d[key]<r.max).length));
+    document.getElementById(id).innerHTML=rangosErr.map(r=>{
+      const count=datos.filter(d=>d[key]>=r.min&&d[key]<r.max).length;
+      const color=r.max<=10?'#4ade80':r.max<=20?'#fbbf24':'#f87171';
+      return`<div class="bar-row"><div class="bar-label">${r.label}</div><div class="bar-track"><div class="bar-fill" style="width:${maxC?count/maxC*100:0}%;background:${color}">${count||''}</div></div><div class="bar-val">${count} prop.</div></div>`;
+    }).join('');
+  });
 
-  // Gráfica por tipo
-  const tipos=['nuevo','usado'];
-  const maxTipo=Math.max(...tipos.map(t=>{
-    const g=datos.filter(d=>d.tipo===t);
-    return g.length>0?g.reduce((a,b)=>a+b.absErrorM2,0)/g.length:0;
-  }));
-  document.getElementById('chartTipo').innerHTML=tipos.map(t=>{
-    const g=datos.filter(d=>d.tipo===t);
-    if(g.length===0)return`<div class="bar-row"><div class="bar-label">${t}</div><div class="bar-track"></div><div class="bar-val">Sin datos</div></div>`;
-    const prom=g.reduce((a,b)=>a+b.absErrorM2,0)/g.length;
-    const color=prom<=10?'#4ade80':prom<=20?'#fbbf24':'#f87171';
-    return`<div class="bar-row">
-      <div class="bar-label">${t==='nuevo'?'Nuevo':'Usado'}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${maxTipo>0?prom/maxTipo*100:0}%;background:${color}">${prom.toFixed(1)}%</div></div>
-      <div class="bar-val">${g.length} prop.</div>
-    </div>`;
-  }).join('');
-
-  // Gráfica por área
+  // ── Error por área ──
   const areas=[
-    {label:'< 60m²',fn:d=>d.area<60},
-    {label:'60-100m²',fn:d=>d.area>=60&&d.area<=100},
-    {label:'100-140m²',fn:d=>d.area>100&&d.area<=140},
-    {label:'> 140m²',fn:d=>d.area>140}
+    {label:'< 45 m²',fn:d=>d.area<45},
+    {label:'45–65 m²',fn:d=>d.area>=45&&d.area<=65},
+    {label:'66–90 m²',fn:d=>d.area>65&&d.area<=90},
+    {label:'91–140 m²',fn:d=>d.area>90&&d.area<=140},
+    {label:'> 140 m²',fn:d=>d.area>140}
   ];
-  const maxArea=Math.max(...areas.map(a=>{const g=datos.filter(a.fn);return g.length>0?g.reduce((x,b)=>x+b.absErrorM2,0)/g.length:0;}));
-  document.getElementById('chartArea').innerHTML=areas.map(a=>{
-    const g=datos.filter(a.fn);
-    if(g.length===0)return`<div class="bar-row"><div class="bar-label">${a.label}</div><div class="bar-track"><div class="bar-fill" style="width:5%;background:#333;color:#666">0</div></div><div class="bar-val">Sin datos</div></div>`;
-    const prom=g.reduce((x,b)=>x+b.absErrorM2,0)/g.length;
-    const color=prom<=10?'#4ade80':prom<=20?'#fbbf24':'#f87171';
-    return`<div class="bar-row">
-      <div class="bar-label">${a.label}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${maxArea>0?prom/maxArea*100:0}%;background:${color}">${prom.toFixed(1)}%</div></div>
-      <div class="bar-val">${g.length} prop.</div>
-    </div>`;
-  }).join('');
+  const maxA=Math.max(...areas.map(a=>{ const g=datos.filter(a.fn); return g.length?g.reduce((x,d)=>x+d.absErrorHomo,0)/g.length:0; }));
+  barChart('chartArea',areas.map(a=>({label:a.label,items:datos.filter(a.fn).map(d=>d.absErrorHomo)})),maxA);
 
-  // Gráfica por habitaciones
-  const habs=[1,2,3,4];
-  const maxHab=Math.max(...habs.map(h=>{const g=datos.filter(d=>d.hab===h);return g.length>0?g.reduce((a,b)=>a+b.absErrorM2,0)/g.length:0;}));
-  document.getElementById('chartHab').innerHTML=habs.map(h=>{
-    const g=datos.filter(d=>d.hab===h);
-    if(g.length===0)return`<div class="bar-row"><div class="bar-label">${h} hab</div><div class="bar-track"><div class="bar-fill" style="width:5%;background:#333;color:#666">0</div></div><div class="bar-val">Sin datos</div></div>`;
-    const prom=g.reduce((a,b)=>a+b.absErrorM2,0)/g.length;
-    const color=prom<=10?'#4ade80':prom<=20?'#fbbf24':'#f87171';
-    return`<div class="bar-row">
-      <div class="bar-label">${h} hab${h>1?'s':''}</div>
-      <div class="bar-track"><div class="bar-fill" style="width:${maxHab>0?prom/maxHab*100:0}%;background:${color}">${prom.toFixed(1)}%</div></div>
-      <div class="bar-val">${g.length} prop.</div>
-    </div>`;
-  }).join('');
+  // ── Error por habitaciones ──
+  const habs=[1,2,3,4].map(h=>({label:h+' hab'+(h>1?'s':''),items:datos.filter(d=>d.hab===h).map(d=>d.absErrorHomo)}));
+  barChart('chartHab',habs,Math.max(...habs.map(g=>g.items.length?g.items.reduce((a,b)=>a+b,0)/g.items.length:0)));
 
-  // Tabla
+  // ── Error por edad ──
+  const edades=['0-2','3-10','11-20','21-35'].map(e=>({label:e+' años',items:datos.filter(d=>d.edadStr===e).map(d=>d.absErrorHomo)}));
+  barChart('chartEdad',edades,Math.max(...edades.map(g=>g.items.length?g.items.reduce((a,b)=>a+b,0)/g.items.length:0)));
+
+  // ── Error por amenidades ──
+  const amens=['Básico','Estándar','Fullhouse'].map(a=>({label:a,items:datos.filter(d=>d.amenLevel===a).map(d=>d.absErrorHomo)}));
+  barChart('chartAmen',amens,Math.max(...amens.map(g=>g.items.length?g.items.reduce((a,b)=>a+b,0)/g.items.length:0)));
+
+  // ── Tabla ──
   renderTabla(datos);
 }
 
 function renderTabla(datos){
-  const sorted=[...datos].sort((a,b)=>b.absErrorM2-a.absErrorM2);
+  const sorted=[...datos].sort((a,b)=>b.absErrorHomo-a.absErrorHomo);
   document.getElementById('tablaBody').innerHTML=sorted.map((d,i)=>{
-    const tagClass=d.absErrorM2<=10?'tag-good':d.absErrorM2<=20?'tag-warn':'tag-bad';
-    const tagText=d.absErrorM2<=10?'✅ Preciso':d.absErrorM2<=20?'⚠️ Aceptable':'❌ Revisar';
-    return`<tr data-precision="${d.absErrorM2<=10?'buenos':d.absErrorM2<=20?'aceptables':'malos'}">
+    const tagCls=d.absErrorHomo<=10?'tag-good':d.absErrorHomo<=20?'tag-warn':'tag-bad';
+    const tagTxt=d.absErrorHomo<=10?'✅ Preciso':d.absErrorHomo<=20?'⚠️ Aceptable':'❌ Revisar';
+    const mejora=d.absErrorSimple-d.absErrorHomo;
+    const mejoraCls=mejora>0?'delta-pos':mejora<0?'delta-neg':'delta-neu';
+    const mejoraStr=mejora>0?'-'+mejora.toFixed(1)+'pp':mejora<0?'+'+Math.abs(mejora).toFixed(1)+'pp':'—';
+    return`<tr data-precision="${d.absErrorHomo<=10?'buenos':d.absErrorHomo<=20?'aceptables':'malos'}" data-mejorado="${d.mejorado?'si':'no'}">
       <td>${i+1}</td>
-      <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${d.nombre}">${d.nombre}</td>
-      <td>${d.tipo==='nuevo'?'Nuevo':'Usado'}</td>
+      <td style="max-width:110px;overflow:hidden;text-overflow:ellipsis" title="${d.nombre}">${d.nombre}</td>
       <td>${d.area}m²</td>
       <td>${d.hab}</td>
+      <td style="font-size:10px;color:rgba(255,255,255,0.5)">${d.edadStr}</td>
+      <td>${d.parqNum}</td>
+      <td style="font-size:10px;color:rgba(255,255,255,0.5)">${d.amenLevel}</td>
       <td>${fmtM(d.m2)}/m²</td>
-      <td>${fmtM(d.m2Estimado)}/m²</td>
-      <td style="color:${d.absErrorM2<=10?'#4ade80':d.absErrorM2<=20?'#fbbf24':'#f87171'}">${fmtPct(d.errorM2)}</td>
-      <td>${fmtM(d.canonRef)}</td>
-      <td>${fmtM(d.canonEstimado)}</td>
-      <td style="color:${d.errorRenta!==null&&Math.abs(d.errorRenta)<=20?'#4ade80':'#fbbf24'}">${d.errorRenta!==null?fmtPct(d.errorRenta):'—'}</td>
-      <td><span class="tag ${tagClass}">${tagText}</span></td>
+      <td style="color:rgba(255,255,255,0.45)">${fmtM(d.m2Simple)}/m²</td>
+      <td style="color:${d.absErrorSimple<=10?'#4ade80':d.absErrorSimple<=20?'#fbbf24':'#f87171'}">${fmtPct(d.errorSimple)}</td>
+      <td style="color:#0071e3;font-weight:700">${fmtM(d.m2Homologado)}/m²</td>
+      <td style="color:${d.absErrorHomo<=10?'#4ade80':d.absErrorHomo<=20?'#fbbf24':'#f87171'};font-weight:700">${fmtPct(d.errorHomo)}</td>
+      <td><span class="delta-badge ${mejoraCls}">${mejoraStr}</span></td>
+      <td><span class="tag ${tagCls}">${tagTxt}</span></td>
     </tr>`;
   }).join('');
 }
 
-function filtrarTabla(tipo, btn){
+function filtrarTabla(tipo,btn){
   document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  const rows=document.querySelectorAll('#tablaBody tr');
-  rows.forEach(r=>{
-    if(tipo==='todos'||r.dataset.precision===tipo){
-      r.style.display='';
-    }else{
-      r.style.display='none';
-    }
+  document.querySelectorAll('#tablaBody tr').forEach(r=>{
+    const show=tipo==='todos'||r.dataset.precision===tipo||(tipo==='mejorados'&&r.dataset.mejorado==='si');
+    r.style.display=show?'':'none';
   });
 }
 
 function exportarCSV(){
-  const headers=['Nombre','Tipo','Área','Hab','M² Real','M² Estimado','Error M²%','Canon Ref','Canon Est','Error Renta%','Precisión'];
+  const headers=['Nombre','Área','Hab','Edad','Parq','Amenidades','M² Real','M² Simple','Err Simple%','M² Homologado','Err Homo%','Δ Mejora pp','Precisión'];
   const rows=resultadosGlobales.map(d=>[
-    d.nombre,d.tipo,d.area,d.hab,
-    d.m2,d.m2Estimado,d.errorM2.toFixed(2),
-    d.canonRef,d.canonEstimado,
-    d.errorRenta!==null?d.errorRenta.toFixed(2):'',
-    d.absErrorM2<=10?'Preciso':d.absErrorM2<=20?'Aceptable':'Revisar'
+    d.nombre,d.area,d.hab,d.edadStr,d.parqNum,d.amenLevel,
+    d.m2,d.m2Simple,d.errorSimple.toFixed(2),
+    d.m2Homologado,d.errorHomo.toFixed(2),
+    (d.absErrorSimple-d.absErrorHomo).toFixed(2),
+    d.absErrorHomo<=10?'Preciso':d.absErrorHomo<=20?'Aceptable':'Revisar'
   ]);
   const csv=[headers,...rows].map(r=>r.join(',')).join('\n');
-  const blob=new Blob([csv],{type:'text/csv'});
   const a=document.createElement('a');
-  a.href=URL.createObjectURL(blob);
-  a.download='urbanbrokers_backtesting.csv';
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='urbanbrokers_backtesting_homo.csv';
   a.click();
 }
 </script>
