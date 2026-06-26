@@ -688,7 +688,9 @@ function getComparables(lat,lng,area,habs,parq,tipo,am,precioM2){
   r=fil({radio:esU?1.5:0.8,diff:esU?30:20,habs:!esU,parq:!esU,rango:false}); if(r.length>=3)return r;
   r=fil({radio:esU?1.5:0.8,diff:esU?30:20,habs:!esU,parq:false,rango:false}); if(r.length>=3)return r;
   r=fil({radio:esU?1.5:0.8,diff:esU?30:20,habs:false,parq:false,rango:false}); if(r.length>=3)return r;
-  return fil({radio:esU?2.5:1.5,diff:esU?40:30,habs:false,parq:false,rango:false});
+  r=fil({radio:esU?2.5:1.5,diff:esU?40:30,habs:false,parq:false,rango:false}); if(r.length>=3)return r;
+  // Nivel final: sin filtro de precio — el motor de homologación ajusta los comparables
+  return fil({radio:3,diff:9999,habs:false,parq:false,rango:false});
 }
 
 // ══════════════════════════════════════════════════════
