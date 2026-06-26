@@ -345,7 +345,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#f5f5f7;color:var(-
         <div class="map-hint" id="coordsInfo"></div>
       </div>
       <input type="hidden" id="proyecto" value="">
-      <div class="fg"><label>¿Proyecto nuevo o apartamento usado?</label><select id="tipoInm"><option value="nuevo">Proyecto nuevo</option><option value="usado">Apartamento usado</option></select></div>
+      <input type="hidden" id="tipoInm" value="nuevo">
       <div class="fg-row">
         <div class="fg"><label>Precio pedido (COP)</label><input type="text" id="precio" placeholder="600.000.000"></div>
         <div class="fg"><label>Área (m²)</label><input type="number" id="area" placeholder="55"></div>
@@ -382,13 +382,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#f5f5f7;color:var(-
           <option value="Fullhouse">Fullhouse — piscina, spa, coworking, concierge</option>
         </select>
       </div>
-      <div class="fg">
-        <label>Extras destacados</label>
-        <div class="checks" id="amenidades">
-          <label class="chk"><input type="checkbox" value="Balcón">🌿 Balcón</label>
-          <label class="chk"><input type="checkbox" value="Vista ciudad">🌆 Vista ciudad</label>
-        </div>
-      </div>
+      <div id="amenidades" style="display:none"></div>
       <button class="btn btn-blue" id="btnAnalizar">Analizar →</button>
     </div>
     <button class="reset-btn" onclick="goBackStep1()">← Volver</button>
@@ -459,7 +453,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#f5f5f7;color:var(-
       <div class="s4sec-label">1 · ¿Cuánto vale realmente este inmueble?</div>
       <div class="s4chart-area" id="s4Bars"></div>
       <div class="s4diff-box" id="s4DiffBox"></div>
-      <div id="s4HomoDetail"></div>
+
       <div style="background:#f0f2f5;border-radius:12px;padding:12px 14px;margin-top:1rem" id="s4CoverageBox"></div>
     </div>
     <div class="s4card">
@@ -1009,8 +1003,7 @@ function showStep4(){
   const exceso=fmtCOP(Math.abs(d.precio-r.precio_justo));
   document.getElementById('s4DiffBox').innerHTML='<span style="font-size:22px;color:#ff6200;flex-shrink:0">⚠️</span><div class="s4diff-text">'+(d.diff>0?'El vendedor está pidiendo <strong>'+exceso+' más</strong> de lo que vale según el mercado homologado. Tienes espacio para negociar.':'El precio está <strong>'+Math.abs(d.diff)+'% por debajo</strong> del mercado homologado. Buena oportunidad.')+'</div>';
 
-  // Tabla homologación
-  document.getElementById('s4HomoDetail').innerHTML=renderHomoDetalle(d.ajustes,d.refSimple,d.ref);
+  // Tabla homologación — interna, no se muestra al cliente
 
   // Cobertura
   const rango=getRangoArea(d.area),total=PROYECTOS.filter(p=>p.tipo===d.tipo).length;
