@@ -258,17 +258,11 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#f5f5f7;color:var(-
       <span class="mb-text"><div class="mb-title" id="m1-title">Análisis Compra / Venta</div><div class="mb-sub" id="m1-sub">¿El precio es justo? ¿Cuánto negociar?</div></span>
       <span class="mb-arrow">›</span>
     </button>
-    <button class="module-btn disabled" onclick="showComingSoon()">
-      <span class="mb-icon">🏘️</span>
-      <span class="mb-text"><div class="mb-title" id="m2-title">Análisis Renta Tradicional</div><div class="mb-sub" id="m2-sub">Rentabilidad, canon ideal y proyección</div></span>
-      <span class="mb-arrow">›</span>
-    </button>
-    <button class="module-btn disabled" onclick="showComingSoon()">
-      <span class="mb-icon">🌐</span>
-      <span class="mb-text"><div class="mb-title" id="m3-title">Análisis Renta Corta</div><div class="mb-sub" id="m3-sub">Airbnb / Booking — ocupación y ROI</div></span>
-      <span class="mb-arrow">›</span>
-    </button>
-    <div class="cover-footer" id="cover-footer">✦ Gratis durante junio 2026 · Desde julio $10 USD</div>
+    <div style="width:100%;padding:14px;border-radius:14px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.03);text-align:center;margin-bottom:10px">
+      <div style="font-size:13px;font-weight:600;color:rgba(255,255,255,0.35);margin-bottom:4px">🚀 Próximamente</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.2)">Nuevos productos UrbanBrokers</div>
+    </div>
+    <div class="cover-footer" id="cover-footer">urbanbrokers.app · Medellín</div>
   </div>
 </div>
 
@@ -283,7 +277,6 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#f5f5f7;color:var(-
       <text x="1015" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="url(#blueBrand)">kers</text>
     </svg>
     <div class="brand-tag">Análisis inteligente de inmuebles · Medellín</div>
-    <div class="free-pill">✦ Gratis durante junio 2026</div>
   </div>
   <div class="steps">
     <div class="step"><div class="step-dot active" id="sd1">1</div><div class="step-line"></div><div class="step-label active" id="sl1">Tus datos</div></div>
@@ -347,7 +340,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#f5f5f7;color:var(-
       <input type="hidden" id="proyecto" value="">
       <input type="hidden" id="tipoInm" value="nuevo">
       <div class="fg-row">
-        <div class="fg"><label>Precio pedido (COP)</label><input type="text" id="precio" placeholder="600.000.000"></div>
+        <div class="fg"><label>Precio pedido (COP)</label><input type="text" id="precio" placeholder="600.000.000" inputmode="numeric"></div>
         <div class="fg"><label>Área (m²)</label><input type="number" id="area" placeholder="55"></div>
       </div>
       <div class="fg-row-3">
@@ -454,7 +447,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#f5f5f7;color:var(-
       <div class="s4chart-area" id="s4Bars"></div>
       <div class="s4diff-box" id="s4DiffBox"></div>
 
-      <div style="background:#f0f2f5;border-radius:12px;padding:12px 14px;margin-top:1rem" id="s4CoverageBox"></div>
+
     </div>
     <div class="s4card">
       <div class="s4sec-label" id="s4RentLabel">2 · ¿Cuánto dinero te genera en arriendo?</div>
@@ -654,7 +647,7 @@ function getCanonMercado(habs,area,tipo,modalidad){
   let m=ARRIENDOS.filter(a=>Math.abs(a.habs-habN)<=1&&a.modalidad===modalidad);
   if(area>0&&m.length>=3){const ba=m.filter(a=>a.area>0&&Math.abs(a.area-area)/area<=0.2);if(ba.length>=3)m=ba;}
   if(!m.length)return null;
-  return{canon:Math.round(m.reduce((a,x)=>a+x.canon,0)/m.length),fuente:'mercado ('+m.length+' arriendos)',modalidad};
+  return{canon:Math.round(m.reduce((a,x)=>a+x.canon,0)/m.length),fuente:'datos de mercado',modalidad};
 }
 
 function distKm(la1,ln1,la2,ln2){
@@ -1005,17 +998,12 @@ function showStep4(){
 
   // Tabla homologación — interna, no se muestra al cliente
 
-  // Cobertura
-  const rango=getRangoArea(d.area),total=PROYECTOS.filter(p=>p.tipo===d.tipo).length;
-  const enR=PROYECTOS.filter(p=>p.tipo===d.tipo&&p.area>0&&getRangoArea(p.area)===rango).length;
-  const pctR=total>0?Math.round(enR/total*100):0;
-  const rl=rango==='pequeño'?'menores a 60 m²':rango==='mediano'?'entre 60 y 100 m²':'mayores a 100 m²';
-  document.getElementById('s4CoverageBox').innerHTML='<div style="display:flex;align-items:center;gap:10px"><span style="font-size:24px">📊</span><div><div style="font-size:12px;font-weight:700;color:#1A1A2E">Cobertura en tu rango</div><div style="font-size:11px;color:#6b7280;margin-top:2px">'+(enR>0?'Para áreas '+rl+', representa el '+pctR+'% de la oferta analizada.':'Sin oferta registrada en este rango — análisis con rango extendido')+'</div></div></div>';
+  // Cobertura por rango — removida del informe
 
   // Arriendo
   const cData=getCanonMercado(d.hab,d.area,d.tipo,'tradicional');
   const canon=cData?cData.canon:Math.round(r.precio_justo*0.004);
-  const cFuente=cData?cData.fuente:'estimado (0.4% precio justo)';
+  const cFuente=cData?cData.fuente:'estimado';
   const admin=Math.round(canon*0.145),vac=Math.round(canon*0.08),pred=Math.round(canon*0.062);
   const neto=canon-admin-vac-pred,netoA=neto*12;
   const rent=((netoA/d.precio)*100).toFixed(1);
@@ -1181,6 +1169,16 @@ function enviarLinkWA(){
 document.addEventListener('DOMContentLoaded',function(){
   const inp=document.getElementById('codigoAccesoStep3');
   if(inp)inp.addEventListener('keypress',e=>{if(e.key==='Enter')verificarCodigoStep3();});
+
+  // Formato automático con puntos de miles en el campo precio
+  const precioInp=document.getElementById('precio');
+  if(precioInp){
+    precioInp.addEventListener('input',function(){
+      const raw=this.value.replace(/\D/g,'');          // solo dígitos
+      if(!raw){this.value='';return;}
+      this.value=parseInt(raw).toLocaleString('es-CO'); // agrega puntos: 600.000.000
+    });
+  }
 });
 
 // ══════════════════════════════════════════════════════
