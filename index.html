@@ -1082,22 +1082,51 @@ function showStep4(){
     '<div class="s4gcard" style="background:#e8f8ef;border-color:#a7e3be"><div class="s4gc-yr">Si vendes año 2</div><div class="s4gc-gain" style="color:#059669">+'+fmtCOP(v2-d.precio)+'</div><div class="s4gc-sub">de ganancia</div></div>'+
     '<div class="s4gcard" style="background:#dcfce7;border-color:#86efac"><div class="s4gc-yr">Si vendes año 3</div><div class="s4gc-gain" style="color:#1a5c38">+'+fmtCOP(v3-d.precio)+'</div><div class="s4gc-sub">de ganancia</div></div>';
 
-  // Resumen
-  const total1=netoA+(v1-d.precio),ret=((total1/d.precio)*100).toFixed(1);
-  if(parseFloat(ret)>=10){
+  // Resumen — tres escenarios de retorno total (arriendo neto año 1 + valorización año 1)
+  // La valorización se calcula siempre sobre el precio publicado (es lo que se valoriza el activo)
+  // El retorno cambia según el precio que efectivamente se pague
+  const valorizacion1=v1-d.precio; // plusvalía año 1 fija
+
+  function calcTotal(precioBase){ return netoA + valorizacion1; } // total generado = igual en los 3
+  function calcRetorno(precioBase){ return ((netoA + valorizacion1) / precioBase * 100).toFixed(1); }
+
+  const retPublicado = calcRetorno(precioPublicado);
+  const retMercado   = calcRetorno(precioMercado);
+  const retOferta    = calcRetorno(precioOferta);
+  const total1       = netoA + valorizacion1;
+  const ret          = retOferta; // semáforo usa oferta recomendada como referencia
+
+  if(parseFloat(retOferta)>=10){
     document.getElementById('s4Semaforo').innerHTML='<div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(251,191,36,0.2)"><span style="font-size:20px;color:#fbbf24">−</span></div><div class="s4sem-lbl" style="color:rgba(255,255,255,0.3)">Retorno<br>moderado</div></div><div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(74,222,128,0.25);box-shadow:0 0 0 4px rgba(255,255,255,0.15)"><span style="font-size:22px;color:#4ade80">✓</span></div><div class="s4sem-lbl" style="color:#4ade80;font-weight:700">Retorno<br>atractivo</div></div>';
   }else{
     document.getElementById('s4Semaforo').innerHTML='<div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(251,191,36,0.25);box-shadow:0 0 0 4px rgba(255,255,255,0.15)"><span style="font-size:22px;color:#fbbf24">−</span></div><div class="s4sem-lbl" style="color:#fbbf24;font-weight:700">Retorno<br>moderado</div></div><div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(74,222,128,0.2)"><span style="font-size:20px;color:#4ade80">✓</span></div><div class="s4sem-lbl" style="color:rgba(255,255,255,0.3)">Retorno<br>atractivo</div></div>';
   }
-  document.getElementById('s4ResSub').textContent='Si negocias bien el precio, en un año este inmueble te habrá generado '+fmtCOP(total1)+' entre arriendo y valorización.';
+
+  document.getElementById('s4ResSub').textContent='Negociar bien el precio marca la diferencia. Aquí ves cuánto cambia tu retorno según lo que pagues.';
+
   document.getElementById('s4Ingresos').innerHTML=
-    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(0,113,227,0.15)"><span>🏠</span></div><div class="s4ing-info"><div class="s4ing-label">Lo que ganas arrendando (año 1)</div><div class="s4ing-name">Ingreso neto por rentas</div></div><div class="s4ing-val">+'+fmtFull(netoA)+'</div></div>'+
+    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(0,113,227,0.15)"><span>🏠</span></div><div class="s4ing-info"><div class="s4ing-label">Ingreso neto por rentas (año 1)</div><div class="s4ing-name">Canon neto estimado</div></div><div class="s4ing-val">+'+fmtFull(netoA)+'</div></div>'+
     '<div class="s4plus">+</div>'+
-    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(74,222,128,0.12)"><span>📈</span></div><div class="s4ing-info"><div class="s4ing-label">Lo que sube el inmueble</div><div class="s4ing-name">Valorización estimada año 1</div></div><div class="s4ing-val">+'+fmtFull(v1-d.precio)+'</div></div>';
+    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(74,222,128,0.12)"><span>📈</span></div><div class="s4ing-info"><div class="s4ing-label">Plusvalía estimada (6% anual)</div><div class="s4ing-name">Valorización año 1</div></div><div class="s4ing-val">+'+fmtFull(valorizacion1)+'</div></div>';
+
+  // Tabla sensibilización retorno total
   document.getElementById('s4Total').innerHTML=
-    '<div class="s4total-label">Total que genera tu inversión en el año 1</div>'+
-    '<div class="s4total-val">+'+fmtFull(total1)+'</div>'+
-    '<div class="s4total-sub">sobre una inversión de '+fmtFull(d.precio)+' = <strong style="color:#4ade80">'+ret+'% de retorno total</strong></div>';
+    '<div class="s4total-label">Total generado año 1: <strong style="color:#4ade80">+'+fmtFull(total1)+'</strong></div>'+
+    '<div style="margin:14px 0 4px;display:grid;grid-template-columns:1fr auto;gap:0;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.1)">'+
+      // Header
+      '<div style="background:rgba(255,255,255,0.06);padding:8px 12px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.06em">Precio de compra</div>'+
+      '<div style="background:rgba(255,255,255,0.06);padding:8px 12px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.06em;text-align:right">Retorno total año 1</div>'+
+      // Fila 1: precio publicado
+      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07)"><div style="font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:2px">🏷️ Precio publicado</div><div style="font-size:13px;font-weight:700;color:#fff">'+fmtFull(precioPublicado)+'</div></div>'+
+      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:flex-end"><span style="font-size:20px;font-weight:700;color:'+colorRent(retPublicado)+'">'+retPublicado+'%</span></div>'+
+      // Fila 2: valor mercado
+      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);background:rgba(0,113,227,0.07)"><div style="font-size:10px;color:#60a5fa;margin-bottom:2px">✅ Valor de mercado</div><div style="font-size:13px;font-weight:700;color:#fff">'+fmtFull(precioMercado)+'</div></div>'+
+      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:flex-end;background:rgba(0,113,227,0.07)"><span style="font-size:20px;font-weight:700;color:'+colorRent(retMercado)+'">'+retMercado+'%</span></div>'+
+      // Fila 3: oferta recomendada
+      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);background:rgba(74,222,128,0.08)"><div style="font-size:10px;color:#4ade80;margin-bottom:2px">💬 Oferta recomendada</div><div style="font-size:13px;font-weight:700;color:#fff">'+fmtFull(precioOferta)+'</div></div>'+
+      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:flex-end;background:rgba(74,222,128,0.08)"><span style="font-size:20px;font-weight:700;color:'+colorRent(retOferta)+'">'+retOferta+'%</span></div>'+
+    '</div>'+
+    '<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:10px;line-height:1.6;text-align:left">La valorización corresponde a un escenario base del mercado (6% anual). El retorno total esperado varía según el precio de compra, ya que una mejor negociación incrementa la rentabilidad sobre la inversión.</div>';
 
   let cel=d.celular.replace(/\D/g,'');if(!cel.startsWith('57'))cel='57'+cel;
   document.getElementById('waNum').textContent=d.celular;
