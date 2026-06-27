@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UrbanBrokers — Análisis de inmuebles</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -457,8 +458,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#f5f5f7;color:var(-
     </div>
     <div class="s4card">
       <div class="s4sec-label">3 · ¿Cuánto valdrá tu inmueble con el tiempo?</div>
-      <div class="s4timeline" id="s4Timeline"></div>
-      <div class="s4gain-box" id="s4GainBox"></div>
+      <div id="s4Timeline"></div>
       <div class="s4note-box"><span style="font-size:16px;color:#6b7280;flex-shrink:0;margin-top:1px">ℹ️</span><div class="s4note-text">Proyección basada en valorización histórica de Ciudad del Río (6% anual promedio). No es una garantía de rendimiento futuro.</div></div>
     </div>
     <div class="s4card">
@@ -1046,9 +1046,9 @@ function showStep4(){
   const maxV=Math.max(d.precio,r.precio_justo,r.oferta_apertura);
   const p=v=>Math.round(v/maxV*100);
   document.getElementById('s4Bars').innerHTML=
-    '<div class="s4bar-col"><div class="s4bar-rect" style="height:100%;background:#ff6200">'+fmtBar(d.precio)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#ff6200;margin-top:6px">🏷️</div><div class="s4bar-name">Lo que piden</div><div class="s4bar-desc">Precio vendedor</div></div>'+
-    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+p(r.precio_justo)+'%;background:#0071e3">'+fmtBar(r.precio_justo)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#0071e3;margin-top:6px">✅</div><div class="s4bar-name">Lo que vale</div><div class="s4bar-desc">Precio homologado</div></div>'+
-    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+p(r.oferta_apertura)+'%;background:#0F3460">'+fmtBar(r.oferta_apertura)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#0F3460;margin-top:6px">💬</div><div class="s4bar-name">Tu oferta</div><div class="s4bar-desc">Con qué arrancar</div></div>';
+    '<div class="s4bar-col"><div class="s4bar-rect" style="height:100%;background:#ff6200">'+fmtBar(d.precio)+'</div><div class="s4axis"></div><div style="font-size:18px;color:#ff6200;margin-top:6px"><i class="ti ti-tag"></i></div><div class="s4bar-name">Lo que piden</div><div class="s4bar-desc">Precio vendedor</div></div>'+
+    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+p(r.precio_justo)+'%;background:#0071e3">'+fmtBar(r.precio_justo)+'</div><div class="s4axis"></div><div style="font-size:18px;color:#0071e3;margin-top:6px"><i class="ti ti-circle-check"></i></div><div class="s4bar-name">Lo que vale</div><div class="s4bar-desc">Precio homologado</div></div>'+
+    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+p(r.oferta_apertura)+'%;background:#0F3460">'+fmtBar(r.oferta_apertura)+'</div><div class="s4axis"></div><div style="font-size:18px;color:#0F3460;margin-top:6px"><i class="ti ti-message-circle"></i></div><div class="s4bar-name">Tu oferta</div><div class="s4bar-desc">Con qué arrancar</div></div>';
 
   const exceso=fmtCOP(Math.abs(d.precio-r.precio_justo));
   document.getElementById('s4DiffBox').innerHTML='<span style="font-size:22px;color:#ff6200;flex-shrink:0">⚠️</span><div class="s4diff-text">'+(d.diff>0?'El vendedor está pidiendo <strong>'+exceso+' más</strong> de lo que vale según el mercado homologado. Tienes espacio para negociar.':'El precio está <strong>'+Math.abs(d.diff)+'% por debajo</strong> del mercado homologado. Buena oportunidad.')+'</div>';
@@ -1105,37 +1105,76 @@ function showStep4(){
       '<div style="background:#f0f2f5;padding:8px 12px;font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em">Escenario</div>'+
       '<div style="background:#f0f2f5;padding:8px 12px;font-size:10px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em;text-align:right">Rent. neta anual</div>'+
       // Fila 1: precio publicado
-      '<div style="padding:12px;border-top:0.5px solid #e5e7eb"><div style="font-size:11px;color:#6b7280;margin-bottom:2px">🏷️ Precio publicado</div><div style="font-size:13px;font-weight:700;color:#1A1A2E">'+fmtFull(precioPublicado)+'</div></div>'+
+      '<div style="padding:12px;border-top:0.5px solid #e5e7eb"><div style="font-size:11px;color:#6b7280;margin-bottom:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-tag" style="font-size:13px"></i> Precio publicado</div><div style="font-size:13px;font-weight:700;color:#1A1A2E">'+fmtFull(precioPublicado)+'</div></div>'+
       '<div style="padding:12px;border-top:0.5px solid #e5e7eb;text-align:right;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:20px;font-weight:700;color:'+colorRent(rentPublicado)+'">'+rentPublicado+'%</span></div>'+
       // Fila 2: valor mercado
-      '<div style="padding:12px;border-top:0.5px solid #e5e7eb;background:#f8faff"><div style="font-size:11px;color:#0057cc;margin-bottom:2px">✅ Valor de mercado</div><div style="font-size:13px;font-weight:700;color:#1A1A2E">'+fmtFull(precioMercado)+'</div></div>'+
+      '<div style="padding:12px;border-top:0.5px solid #e5e7eb;background:#f8faff"><div style="font-size:11px;color:#0057cc;margin-bottom:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-circle-check" style="font-size:13px"></i> Valor de mercado</div><div style="font-size:13px;font-weight:700;color:#1A1A2E">'+fmtFull(precioMercado)+'</div></div>'+
       '<div style="padding:12px;border-top:0.5px solid #e5e7eb;text-align:right;display:flex;align-items:center;justify-content:flex-end;background:#f8faff"><span style="font-size:20px;font-weight:700;color:'+colorRent(rentMercado)+'">'+rentMercado+'%</span></div>'+
       // Fila 3: oferta recomendada
-      '<div style="padding:12px;border-top:0.5px solid #e5e7eb;background:#f0faf4"><div style="font-size:11px;color:#1a5c38;margin-bottom:2px">💬 Oferta recomendada</div><div style="font-size:13px;font-weight:700;color:#1A1A2E">'+fmtFull(precioOferta)+'</div></div>'+
+      '<div style="padding:12px;border-top:0.5px solid #e5e7eb;background:#f0faf4"><div style="font-size:11px;color:#1a5c38;margin-bottom:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-message-circle" style="font-size:13px"></i> Oferta recomendada</div><div style="font-size:13px;font-weight:700;color:#1A1A2E">'+fmtFull(precioOferta)+'</div></div>'+
       '<div style="padding:12px;border-top:0.5px solid #e5e7eb;text-align:right;display:flex;align-items:center;justify-content:flex-end;background:#f0faf4"><span style="font-size:20px;font-weight:700;color:'+colorRent(rentOferta)+'">'+rentOferta+'%</span></div>'+
     '</div>'+
     '<div style="font-size:10px;color:#9ca3af;margin-top:8px;line-height:1.5">Rentabilidad neta anual = ingreso neto ÷ precio de compra. El canon de arriendo es el mismo en los tres escenarios.</div>';
 
-  // Valorización
-  const v1=Math.round(d.precio*1.06),v2=Math.round(d.precio*1.123),v3=Math.round(d.precio*1.19);
+  // Valorización — base siempre sobre precioMercado (valor real del activo)
+  const precioMercadoVal = Math.round(d.ref * d.area);
+  const activoAno1 = Math.round(precioMercadoVal * 1.06);
+
+  function ganancia(precioPagado){ return activoAno1 - precioPagado; }
+  function pctGanancia(precioPagado){ return ((ganancia(precioPagado)/precioPagado)*100).toFixed(1); }
+  function colorGanancia(val){ return val>=0?'#059669':'#dc2626'; }
+  function bgGanancia(val){ return val>=0?'rgba(5,150,105,0.1)':'rgba(220,38,38,0.1)'; }
+  function fmtGanancia(val){ return (val>=0?'+':'')+fmtFull(val); }
+
+  const ganP=ganancia(d.precio), ganM=ganancia(precioMercadoVal), ganO=ganancia(r.oferta_apertura);
+
   document.getElementById('s4Timeline').innerHTML=
-    '<div class="s4tl-points">'+
-    '<div class="s4tl-point"><div class="s4tl-yr">Hoy</div><div class="s4tl-val" style="color:#1A1A2E">'+fmtCOP(d.precio)+'</div><div class="s4tl-gain" style="background:#f0f2f5;color:#6b7280">precio compra</div></div>'+
-    '<div class="s4tl-point"><div class="s4tl-yr">Año 1</div><div class="s4tl-val" style="color:#0071e3">'+fmtCOP(v1)+'</div><div class="s4tl-gain" style="background:#e6f0fd;color:#0071e3">+'+fmtCOP(v1-d.precio)+'</div></div>'+
-    '<div class="s4tl-point"><div class="s4tl-yr">Año 2</div><div class="s4tl-val" style="color:#059669">'+fmtCOP(v2)+'</div><div class="s4tl-gain" style="background:#e8f8ef;color:#059669">+'+fmtCOP(v2-d.precio)+'</div></div>'+
-    '<div class="s4tl-point"><div class="s4tl-yr">Año 3</div><div class="s4tl-val" style="color:#4ade80">'+fmtCOP(v3)+'</div><div class="s4tl-gain" style="background:#e8f8ef;color:#1a5c38">+'+fmtCOP(v3-d.precio)+'</div></div>'+
+    // Cabecera: valorización del activo
+    '<div style="background:#e6f0fd;border:0.5px solid #b5d4f4;border-radius:12px;padding:12px 14px;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between">'+
+      '<div>'+
+        '<div style="font-size:10px;font-weight:600;color:#0057cc;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px">Valorización del activo año 1</div>'+
+        '<div style="font-size:11px;color:#0071e3">6% anual sobre precio de mercado ('+fmtFull(precioMercadoVal)+')</div>'+
+      '</div>'+
+      '<div style="font-size:18px;font-weight:700;color:#0071e3">'+fmtFull(activoAno1)+'</div>'+
     '</div>'+
-    '<div class="s4tl-track"><div class="s4tl-fill"></div>'+
-    '<div style="position:absolute;top:-4px;left:-1px;width:14px;height:14px;border-radius:50%;background:#6b7280;border:2px solid #fff"></div>'+
-    '<div style="position:absolute;top:-4px;left:calc(33% - 7px);width:14px;height:14px;border-radius:50%;background:#0071e3;border:2px solid #fff"></div>'+
-    '<div style="position:absolute;top:-4px;left:calc(66% - 7px);width:14px;height:14px;border-radius:50%;background:#059669;border:2px solid #fff"></div>'+
-    '<div style="position:absolute;top:-4px;right:-1px;width:14px;height:14px;border-radius:50%;background:#4ade80;border:2px solid #fff"></div>'+
+    // Tabla
+    '<div style="border:0.5px solid #e5e7eb;border-radius:12px;overflow:hidden">'+
+      // Header
+      '<div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 0.6fr;background:#f0f2f5;border-bottom:0.5px solid #e5e7eb">'+
+        '<div style="padding:8px 10px;font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em">Escenario</div>'+
+        '<div style="padding:8px 10px;font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em;text-align:right">Precio pagado</div>'+
+        '<div style="padding:8px 10px;font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em;text-align:right">Ganancia año 1</div>'+
+        '<div style="padding:8px 10px;font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em;text-align:right">%</div>'+
+      '</div>'+
+      // Fila 1: precio pedido
+      '<div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 0.6fr;border-bottom:0.5px solid #e5e7eb">'+
+        '<div style="padding:12px 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-tag" style="font-size:15px;color:#6b7280;flex-shrink:0"></i><span style="font-size:12px;font-weight:500;color:#1A1A2E">Precio pedido</span></div>'+
+        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;color:#1A1A2E">'+fmtFull(d.precio)+'</span></div>'+
+        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;background:'+bgGanancia(ganP)+';color:'+colorGanancia(ganP)+';padding:2px 7px;border-radius:6px">'+fmtGanancia(ganP)+'</span></div>'+
+        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;color:'+colorGanancia(ganP)+'">'+pctGanancia(d.precio)+'%</span></div>'+
+      '</div>'+
+      // Fila 2: valor de mercado
+      '<div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 0.6fr;border-bottom:0.5px solid #e5e7eb;background:#f8faff">'+
+        '<div style="padding:12px 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-circle-check" style="font-size:15px;color:#0071e3;flex-shrink:0"></i><span style="font-size:12px;font-weight:500;color:#1A1A2E">Valor de mercado</span></div>'+
+        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;color:#1A1A2E">'+fmtFull(precioMercadoVal)+'</span></div>'+
+        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;background:'+bgGanancia(ganM)+';color:'+colorGanancia(ganM)+';padding:2px 7px;border-radius:6px">'+fmtGanancia(ganM)+'</span></div>'+
+        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;color:'+colorGanancia(ganM)+'">'+pctGanancia(precioMercadoVal)+'%</span></div>'+
+      '</div>'+
+      // Fila 3: oferta recomendada
+      '<div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 0.6fr;background:#f0faf4">'+
+        '<div style="padding:12px 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-message-circle" style="font-size:15px;color:#059669;flex-shrink:0"></i><span style="font-size:12px;font-weight:500;color:#1A1A2E">Oferta recomendada</span></div>'+
+        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;color:#1A1A2E">'+fmtFull(r.oferta_apertura)+'</span></div>'+
+        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;background:'+bgGanancia(ganO)+';color:'+colorGanancia(ganO)+';padding:2px 7px;border-radius:6px">'+fmtGanancia(ganO)+'</span></div>'+
+        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;color:'+colorGanancia(ganO)+'">'+pctGanancia(r.oferta_apertura)+'%</span></div>'+
+      '</div>'+
+    '</div>'+
+    // Nota
+    '<div style="margin-top:10px;display:flex;gap:8px;align-items:flex-start">'+
+      '<i class="ti ti-info-circle" style="font-size:15px;color:#9ca3af;flex-shrink:0;margin-top:1px"></i>'+
+      '<div style="font-size:10px;color:#6b7280;line-height:1.6">El activo crece igual sin importar lo que pagaste — lo que cambia es tu punto de partida. Comprar por debajo del mercado significa que tu inversión ya tiene una ganancia incorporada desde el día 1.</div>'+
     '</div>';
 
-  document.getElementById('s4GainBox').innerHTML=
-    '<div class="s4gcard" style="background:#e6f0fd;border-color:#b5d4f4"><div class="s4gc-yr">Si vendes año 1</div><div class="s4gc-gain" style="color:#0071e3">+'+fmtCOP(v1-d.precio)+'</div><div class="s4gc-sub">de ganancia</div></div>'+
-    '<div class="s4gcard" style="background:#e8f8ef;border-color:#a7e3be"><div class="s4gc-yr">Si vendes año 2</div><div class="s4gc-gain" style="color:#059669">+'+fmtCOP(v2-d.precio)+'</div><div class="s4gc-sub">de ganancia</div></div>'+
-    '<div class="s4gcard" style="background:#dcfce7;border-color:#86efac"><div class="s4gc-yr">Si vendes año 3</div><div class="s4gc-gain" style="color:#1a5c38">+'+fmtCOP(v3-d.precio)+'</div><div class="s4gc-sub">de ganancia</div></div>';
+  document.getElementById('s4GainBox').innerHTML='';
 
   // Resumen — tres escenarios de retorno total (arriendo neto año 1 + valorización año 1)
   // La valorización se calcula siempre sobre el precio publicado (es lo que se valoriza el activo)
@@ -1172,13 +1211,13 @@ function showStep4(){
       '<div style="background:rgba(255,255,255,0.06);padding:8px 12px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.06em">Precio de compra</div>'+
       '<div style="background:rgba(255,255,255,0.06);padding:8px 12px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.06em;text-align:right">Retorno total año 1</div>'+
       // Fila 1: precio publicado
-      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07)"><div style="font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:2px">🏷️ Precio publicado</div><div style="font-size:13px;font-weight:700;color:#fff">'+fmtFull(precioPublicado)+'</div></div>'+
+      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07)"><div style="font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-tag" style="font-size:12px"></i> Precio publicado</div><div style="font-size:13px;font-weight:700;color:#fff">'+fmtFull(precioPublicado)+'</div></div>'+
       '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:flex-end"><span style="font-size:20px;font-weight:700;color:'+colorRent(retPublicado)+'">'+retPublicado+'%</span></div>'+
       // Fila 2: valor mercado
-      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);background:rgba(0,113,227,0.07)"><div style="font-size:10px;color:#60a5fa;margin-bottom:2px">✅ Valor de mercado</div><div style="font-size:13px;font-weight:700;color:#fff">'+fmtFull(precioMercado)+'</div></div>'+
+      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);background:rgba(0,113,227,0.07)"><div style="font-size:10px;color:#60a5fa;margin-bottom:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-circle-check" style="font-size:12px"></i> Valor de mercado</div><div style="font-size:13px;font-weight:700;color:#fff">'+fmtFull(precioMercado)+'</div></div>'+
       '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:flex-end;background:rgba(0,113,227,0.07)"><span style="font-size:20px;font-weight:700;color:'+colorRent(retMercado)+'">'+retMercado+'%</span></div>'+
       // Fila 3: oferta recomendada
-      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);background:rgba(74,222,128,0.08)"><div style="font-size:10px;color:#4ade80;margin-bottom:2px">💬 Oferta recomendada</div><div style="font-size:13px;font-weight:700;color:#fff">'+fmtFull(precioOferta)+'</div></div>'+
+      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);background:rgba(74,222,128,0.08)"><div style="font-size:10px;color:#4ade80;margin-bottom:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-message-circle" style="font-size:12px"></i> Oferta recomendada</div><div style="font-size:13px;font-weight:700;color:#fff">'+fmtFull(precioOferta)+'</div></div>'+
       '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:flex-end;background:rgba(74,222,128,0.08)"><span style="font-size:20px;font-weight:700;color:'+colorRent(retOferta)+'">'+retOferta+'%</span></div>'+
     '</div>'+
     '<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:10px;line-height:1.6;text-align:left">La valorización corresponde a un escenario base del mercado (6% anual). El retorno total esperado varía según el precio de compra, ya que una mejor negociación incrementa la rentabilidad sobre la inversión.</div>';
