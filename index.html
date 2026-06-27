@@ -192,7 +192,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#f5f5f7;color:var(-
   .s4card-dark{background:var(--s4-navy)!important}
   body{background:#f5f5f7!important}
 }
-#portada{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#0f1115;display:flex;align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto}
+#portada{position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#030405;display:flex;align-items:center;justify-content:center;padding:1.5rem;overflow-y:auto}
 #portada .cover-card{background:#1a1d24;border-radius:20px;padding:2rem 1.75rem;max-width:380px;width:100%;text-align:center;border:0.5px solid rgba(255,255,255,0.08)}
 #portada .cover-icon{font-size:2rem;margin-bottom:1rem}
 #portada .cover-tag{font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:1.5rem}
@@ -240,7 +240,20 @@ body{font-family:'Inter',-apple-system,sans-serif;background:#f5f5f7;color:var(-
 
 <div id="portada">
   <div class="cover-card">
-    <div class="cover-icon">🏢</div>
+    <div style="margin-bottom:1rem">
+      <svg width="72" height="82" viewBox="0 0 80 92" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto;filter:drop-shadow(0px 0px 12px rgba(0,113,227,0.8)) drop-shadow(0px 8px 20px rgba(0,113,227,0.5))">
+        <defs>
+          <linearGradient id="pinCov" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#1a80ff"/>
+            <stop offset="100%" stop-color="#0052cc"/>
+          </linearGradient>
+        </defs>
+        <path d="M40 4 C22 4 8 18 8 36 C8 56 40 86 40 86 C40 86 72 56 72 36 C72 18 58 4 40 4Z" fill="url(#pinCov)"/>
+        <circle cx="40" cy="36" r="14" fill="white"/>
+        <circle cx="40" cy="36" r="6" fill="#0071e3"/>
+        <ellipse cx="40" cy="89" rx="13" ry="3" fill="rgba(0,113,227,0.3)"/>
+      </svg>
+    </div>
     <svg width="240" height="69" viewBox="0 0 1400 400" xmlns="http://www.w3.org/2000/svg" style="margin:0 auto 6px;display:block">
       <defs><linearGradient id="blueCov" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0057FF"/><stop offset="100%" stop-color="#0A6CFF"/></linearGradient></defs>
       <text x="70" y="240" font-family="Arial,Helvetica,sans-serif" font-size="190" font-weight="700" fill="#ffffff">Urban</text>
