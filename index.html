@@ -976,6 +976,14 @@ function renderHomoDetalle(ajustes,refSimple,refHomo){
 // ══════════════════════════════════════════════════════
 // STEP 4 — INFORME COMPLETO
 // ══════════════════════════════════════════════════════
+
+// ── Funciones auxiliares de showStep4 (nivel global para evitar redefinición) ──
+function fmtBar(n){return'<span style="font-size:13px;font-weight:700;color:#fff">$'+Math.round(n/1000000)+'</span><span style="font-size:10px;color:rgba(255,255,255,0.8);display:block;margin-top:1px">Millones</span>';}
+function colorRent(pct){const v=parseFloat(pct);if(v>=5)return'#4ade80';if(v>=3.5)return'#fbbf24';return'#f87171';}
+function colorGanancia(val){return val>=0?'#059669':'#dc2626';}
+function bgGanancia(val){return val>=0?'rgba(5,150,105,0.1)':'rgba(220,38,38,0.1)';}
+function fmtGanancia(val){return(val>=0?'+':'')+fmtFull(val);}
+
 /**
  * calcOfertaApertura — lógica de descuento según escenario:
  * - Sobrevalorado (pedido > mercado): arrancar desde mercado con 5% de descuento
@@ -1042,7 +1050,7 @@ function showStep4(){
   document.getElementById('s4VJust').textContent=r.justificacion||'—';
 
   // Barras
-  function fmtBar(n){return'<span style="font-size:13px;font-weight:700;color:#fff">$'+Math.round(n/1000000)+'</span><span style="font-size:10px;color:rgba(255,255,255,0.8);display:block;margin-top:1px">Millones</span>';}
+
   const maxV=Math.max(d.precio,r.precio_justo,r.oferta_apertura);
   const p=v=>Math.round(v/maxV*100);
   document.getElementById('s4Bars').innerHTML=
@@ -1069,18 +1077,13 @@ function showStep4(){
   const precioMercado=Math.round(d.ref*d.area);      // valor homologado
   const precioOferta=r.oferta_apertura;              // oferta recomendada por IA
 
-  function calcRent(precioBase){ return((netoA/precioBase)*100).toFixed(1); }
-  const rentPublicado=calcRent(precioPublicado);
-  const rentMercado=calcRent(precioMercado);
-  const rentOferta=calcRent(precioOferta);
+
+  const rentPublicado=((netoA/precioPublicado)*100).toFixed(1);
+  const rentMercado=((netoA/precioMercado)*100).toFixed(1);
+  const rentOferta=((netoA/precioOferta)*100).toFixed(1);
 
   // Color según umbral de rentabilidad
-  function colorRent(pct){
-    const v=parseFloat(pct);
-    if(v>=5)return'#4ade80';
-    if(v>=3.5)return'#fbbf24';
-    return'#f87171';
-  }
+
 
   document.getElementById('s4RentLabel').innerHTML='2 · ¿Cuánto dinero te genera en arriendo? <span class="s4canon-badge">'+cFuente+'</span>';
 
@@ -1120,12 +1123,14 @@ function showStep4(){
   const precioMercadoVal = Math.round(d.ref * d.area);
   const activoAno1 = Math.round(precioMercadoVal * 1.06);
 
-  function ganancia(precioPagado){ return activoAno1 - precioPagado; }
-  function pctGanancia(precioPagado){ return ((ganancia(precioPagado)/precioPagado)*100).toFixed(1); }
-  function colorGanancia(val){ return val>=0?'#059669':'#dc2626'; }
-  function bgGanancia(val){ return val>=0?'rgba(5,150,105,0.1)':'rgba(220,38,38,0.1)'; }
-  function fmtGanancia(val){ return (val>=0?'+':'')+fmtFull(val); }
 
+
+
+
+
+
+  function ganancia(pp){ return activoAno1 - pp; }
+  function pctGanancia(pp){ return ((ganancia(pp)/pp)*100).toFixed(1); }
   const ganP=ganancia(d.precio), ganM=ganancia(precioMercadoVal), ganO=ganancia(r.oferta_apertura);
 
   const filaP='<div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 0.6fr;border-bottom:0.5px solid #e5e7eb"><div style="padding:12px 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-tag" style="font-size:15px;color:#6b7280;flex-shrink:0"></i><span style="font-size:12px;font-weight:500;color:#1A1A2E">Precio pedido</span></div><div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;color:#1A1A2E">'+fmtFull(d.precio)+'</span></div><div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;background:'+bgGanancia(ganP)+';color:'+colorGanancia(ganP)+';padding:2px 7px;border-radius:6px">'+fmtGanancia(ganP)+'</span></div><div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;color:'+colorGanancia(ganP)+'">'+pctGanancia(d.precio)+'%</span></div></div>';
@@ -1153,12 +1158,12 @@ function showStep4(){
   // El retorno cambia según el precio que efectivamente se pague
   const valorizacion1=v1-d.precio; // plusvalía año 1 fija
 
-  function calcTotal(precioBase){ return netoA + valorizacion1; } // total generado = igual en los 3
-  function calcRetorno(precioBase){ return ((netoA + valorizacion1) / precioBase * 100).toFixed(1); }
+ // total generado = igual en los 3
 
-  const retPublicado = calcRetorno(precioPublicado);
-  const retMercado   = calcRetorno(precioMercado);
-  const retOferta    = calcRetorno(precioOferta);
+
+  const retPublicado = ((netoA+valorizacion1)/precioPublicado*100).toFixed(1);
+  const retMercado   = ((netoA+valorizacion1)/precioMercado*100).toFixed(1);
+  const retOferta    = ((netoA+valorizacion1)/precioOferta*100).toFixed(1);
   const total1       = netoA + valorizacion1;
   const ret          = retOferta; // semáforo usa oferta recomendada como referencia
 
