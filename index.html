@@ -1122,6 +1122,9 @@ function showStep4(){
   // Valorización — base siempre sobre precioMercado (valor real del activo)
   const precioMercadoVal = Math.round(d.ref * d.area);
   const activoAno1 = Math.round(precioMercadoVal * 1.06);
+  // v1 = valorización año 1 sobre precio pedido (usado en resumen final)
+  const v1 = Math.round(d.precio * 1.06);
+  const valorizacion1 = v1 - d.precio;
 
 
 
