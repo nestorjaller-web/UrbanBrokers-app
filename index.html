@@ -1128,53 +1128,25 @@ function showStep4(){
 
   const ganP=ganancia(d.precio), ganM=ganancia(precioMercadoVal), ganO=ganancia(r.oferta_apertura);
 
-  document.getElementById('s4Timeline').innerHTML=
-    // Cabecera: valorización del activo
-    '<div style="background:#e6f0fd;border:0.5px solid #b5d4f4;border-radius:12px;padding:12px 14px;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between">'+
-      '<div>'+
-        '<div style="font-size:10px;font-weight:600;color:#0057cc;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px">Valorización del activo año 1</div>'+
-        '<div style="font-size:11px;color:#0071e3">6% anual sobre precio de mercado ('+fmtFull(precioMercadoVal)+')</div>'+
-      '</div>'+
-      '<div style="font-size:18px;font-weight:700;color:#0071e3">'+fmtFull(activoAno1)+'</div>'+
-    '</div>'+
-    // Tabla
-    '<div style="border:0.5px solid #e5e7eb;border-radius:12px;overflow:hidden">'+
-      // Header
-      '<div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 0.6fr;background:#f0f2f5;border-bottom:0.5px solid #e5e7eb">'+
-        '<div style="padding:8px 10px;font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em">Escenario</div>'+
-        '<div style="padding:8px 10px;font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em;text-align:right">Precio pagado</div>'+
-        '<div style="padding:8px 10px;font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em;text-align:right">Ganancia año 1</div>'+
-        '<div style="padding:8px 10px;font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em;text-align:right">%</div>'+
-      '</div>'+
-      // Fila 1: precio pedido
-      '<div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 0.6fr;border-bottom:0.5px solid #e5e7eb">'+
-        '<div style="padding:12px 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-tag" style="font-size:15px;color:#6b7280;flex-shrink:0"></i><span style="font-size:12px;font-weight:500;color:#1A1A2E">Precio pedido</span></div>'+
-        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;color:#1A1A2E">'+fmtFull(d.precio)+'</span></div>'+
-        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;background:'+bgGanancia(ganP)+';color:'+colorGanancia(ganP)+';padding:2px 7px;border-radius:6px">'+fmtGanancia(ganP)+'</span></div>'+
-        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;color:'+colorGanancia(ganP)+'">'+pctGanancia(d.precio)+'%</span></div>'+
-      '</div>'+
-      // Fila 2: valor de mercado
-      '<div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 0.6fr;border-bottom:0.5px solid #e5e7eb;background:#f8faff">'+
-        '<div style="padding:12px 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-circle-check" style="font-size:15px;color:#0071e3;flex-shrink:0"></i><span style="font-size:12px;font-weight:500;color:#1A1A2E">Valor de mercado</span></div>'+
-        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;color:#1A1A2E">'+fmtFull(precioMercadoVal)+'</span></div>'+
-        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;background:'+bgGanancia(ganM)+';color:'+colorGanancia(ganM)+';padding:2px 7px;border-radius:6px">'+fmtGanancia(ganM)+'</span></div>'+
-        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;color:'+colorGanancia(ganM)+'">'+pctGanancia(precioMercadoVal)+'%</span></div>'+
-      '</div>'+
-      // Fila 3: oferta recomendada
-      '<div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 0.6fr;background:#f0faf4">'+
-        '<div style="padding:12px 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-message-circle" style="font-size:15px;color:#059669;flex-shrink:0"></i><span style="font-size:12px;font-weight:500;color:#1A1A2E">Oferta recomendada</span></div>'+
-        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;color:#1A1A2E">'+fmtFull(r.oferta_apertura)+'</span></div>'+
-        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;background:'+bgGanancia(ganO)+';color:'+colorGanancia(ganO)+';padding:2px 7px;border-radius:6px">'+fmtGanancia(ganO)+'</span></div>'+
-        '<div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;color:'+colorGanancia(ganO)+'">'+pctGanancia(r.oferta_apertura)+'%</span></div>'+
-      '</div>'+
-    '</div>'+
-    // Nota
-    '<div style="margin-top:10px;display:flex;gap:8px;align-items:flex-start">'+
-      '<i class="ti ti-info-circle" style="font-size:15px;color:#9ca3af;flex-shrink:0;margin-top:1px"></i>'+
-      '<div style="font-size:10px;color:#6b7280;line-height:1.6">El activo crece igual sin importar lo que pagaste — lo que cambia es tu punto de partida. Comprar por debajo del mercado significa que tu inversión ya tiene una ganancia incorporada desde el día 1.</div>'+
-    '</div>';
+  const filaP='<div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 0.6fr;border-bottom:0.5px solid #e5e7eb"><div style="padding:12px 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-tag" style="font-size:15px;color:#6b7280;flex-shrink:0"></i><span style="font-size:12px;font-weight:500;color:#1A1A2E">Precio pedido</span></div><div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;color:#1A1A2E">'+fmtFull(d.precio)+'</span></div><div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;background:'+bgGanancia(ganP)+';color:'+colorGanancia(ganP)+';padding:2px 7px;border-radius:6px">'+fmtGanancia(ganP)+'</span></div><div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;color:'+colorGanancia(ganP)+'">'+pctGanancia(d.precio)+'%</span></div></div>';
+  const filaM='<div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 0.6fr;border-bottom:0.5px solid #e5e7eb;background:#f8faff"><div style="padding:12px 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-circle-check" style="font-size:15px;color:#0071e3;flex-shrink:0"></i><span style="font-size:12px;font-weight:500;color:#1A1A2E">Valor de mercado</span></div><div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;color:#1A1A2E">'+fmtFull(precioMercadoVal)+'</span></div><div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;background:'+bgGanancia(ganM)+';color:'+colorGanancia(ganM)+';padding:2px 7px;border-radius:6px">'+fmtGanancia(ganM)+'</span></div><div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;color:'+colorGanancia(ganM)+'">'+pctGanancia(precioMercadoVal)+'%</span></div></div>';
+  const filaO='<div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 0.6fr;background:#f0faf4"><div style="padding:12px 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-message-circle" style="font-size:15px;color:#059669;flex-shrink:0"></i><span style="font-size:12px;font-weight:500;color:#1A1A2E">Oferta recomendada</span></div><div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;color:#1A1A2E">'+fmtFull(r.oferta_apertura)+'</span></div><div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;background:'+bgGanancia(ganO)+';color:'+colorGanancia(ganO)+';padding:2px 7px;border-radius:6px">'+fmtGanancia(ganO)+'</span></div><div style="padding:12px 10px;display:flex;align-items:center;justify-content:flex-end"><span style="font-size:12px;font-weight:600;color:'+colorGanancia(ganO)+'">'+pctGanancia(r.oferta_apertura)+'%</span></div></div>';
 
-  // s4GainBox removido — reemplazado por tabla en s4Timeline
+  const headerTabla='<div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 0.6fr;background:#f0f2f5;border-bottom:0.5px solid #e5e7eb"><div style="padding:8px 10px;font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;letter-spacing:0.06em">Escenario</div><div style="padding:8px 10px;font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;text-align:right">Precio pagado</div><div style="padding:8px 10px;font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;text-align:right">Ganancia año 1</div><div style="padding:8px 10px;font-size:10px;font-weight:600;color:#6b7280;text-transform:uppercase;text-align:right">%</div></div>';
+
+  const cabecera='<div style="background:#e6f0fd;border:0.5px solid #b5d4f4;border-radius:12px;padding:12px 14px;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:10px;font-weight:600;color:#0057cc;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px">Valorización del activo año 1</div><div style="font-size:11px;color:#0071e3">6% anual sobre precio de mercado ('+fmtFull(precioMercadoVal)+')</div></div><div style="font-size:18px;font-weight:700;color:#0071e3">'+fmtFull(activoAno1)+'</div></div>';
+
+  const nota='<div style="margin-top:10px;display:flex;gap:8px;align-items:flex-start"><i class="ti ti-info-circle" style="font-size:15px;color:#9ca3af;flex-shrink:0;margin-top:1px"></i><div style="font-size:10px;color:#6b7280;line-height:1.6">El activo crece igual sin importar lo que pagaste — lo que cambia es tu punto de partida. Comprar por debajo del mercado significa que tu inversión ya tiene una ganancia incorporada desde el día 1.</div></div>';
+
+  document.getElementById('s4Timeline').innerHTML=
+    cabecera+
+    '<div style="border:0.5px solid #e5e7eb;border-radius:12px;overflow:hidden">'+
+      headerTabla+filaP+filaM+filaO+
+    '</div>'+
+    nota;
+
+
+    // s4GainBox removido — reemplazado por tabla en s4Timeline
 
   // Resumen — tres escenarios de retorno total (arriendo neto año 1 + valorización año 1)
   // La valorización se calcula siempre sobre el precio publicado (es lo que se valoriza el activo)
