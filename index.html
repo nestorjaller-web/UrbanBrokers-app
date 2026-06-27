@@ -919,7 +919,7 @@ async function unlockReport(){
     const aj=d.ajustes?.find(a=>a.nombre===c.p.n);
     return c.p.n+' ('+c.dist.toFixed(2)+'km · base:'+fmtCOP(c.p.m2)+' → ajust:'+fmtCOP(aj?.m2Ajustado||c.p.m2)+')';
   }).join(', ');
-  const prompt='Eres analista inmobiliario experto en Medellín Colombia.\n\nINMUEBLE:\n- Dirección: '+d.proyecto+'\n- Tipo: '+(d.tipo==='nuevo'?'Proyecto nuevo':'Usado')+'\n- Área: '+d.area+'m² | Hab: '+d.hab+' | Baños: '+d.ban+' | Piso: '+(d.piso||'ND')+'\n- Precio: $'+d.precio.toLocaleString('es-CO')+' COP ('+fmtCOP(d.m2)+'/m²)\n- Parqueaderos: '+d.numParqueaderos+' | Edad: '+d.edadStr+' años | Amenidades: '+d.nivelAmenidades+'\n\nCOMPARABLES HOMOLOGADOS:\n'+compInfo+'\n\nREF HOMOLOGADA: '+fmtCOP(d.ref)+'/m² (simple: '+fmtCOP(d.refSimple)+'/m²) | Diferencia vs pedido: '+(d.diff>0?'+':'')+d.diff+'%\n\nNUNCA menciones el número exacto de comparables en la justificación.\n\nResponde SOLO JSON:\n{"veredicto_tipo":"buena_oferta|precio_justo|sobrevalorado","justificacion":"2 oraciones","precio_justo":numero,"margen_negociacion":numero,"oferta_apertura":numero,"precio_maximo":numero,"comparables":[{"nombre":"txt","precio_m2":num,"distancia":"txt","motivo_aceptado":"txt"}],"riesgos":[{"nivel":"alto|medio|bajo","titulo":"max 30 chars","descripcion":"max 80 chars"}],"recomendacion":"2-3 oraciones"}';
+  const prompt='Eres analista inmobiliario experto en Medellín Colombia.\n\nINMUEBLE:\n- Dirección: '+d.proyecto+'\n- Tipo: '+(d.tipo==='nuevo'?'Proyecto nuevo':'Usado')+'\n- Área: '+d.area+'m² | Hab: '+d.hab+' | Baños: '+d.ban+' | Piso: '+(d.piso||'ND')+'\n- Precio: $'+d.precio.toLocaleString('es-CO')+' COP ('+fmtCOP(d.m2)+'/m²)\n- Parqueaderos: '+d.numParqueaderos+' | Edad: '+d.edadStr+' años | Amenidades: '+d.nivelAmenidades+'\n\nCOMPARABLES HOMOLOGADOS:\n'+compInfo+'\n\nREF HOMOLOGADA: '+fmtCOP(d.ref)+'/m² (simple: '+fmtCOP(d.refSimple)+'/m²) | Diferencia vs pedido: '+(d.diff>0?'+':'')+d.diff+'%\n\nNUNCA menciones el número exacto de comparables en la justificación.\n\nResponde SOLO JSON:\n{"veredicto_tipo":"buena_oferta|precio_justo|sobrevalorado","justificacion":"2 oraciones","precio_justo":numero,"margen_negociacion":numero,"oferta_apertura":numero,"precio_maximo":numero,"_instruccion_oferta":"oferta_apertura debe ser: si precio pedido > precio_justo entonces precio_justo*0.95; si precio pedido <= precio_justo entonces precio pedido*0.97","comparables":[{"nombre":"txt","precio_m2":num,"distancia":"txt","motivo_aceptado":"txt"}],"riesgos":[{"nivel":"alto|medio|bajo","titulo":"max 30 chars","descripcion":"max 80 chars"}],"recomendacion":"2-3 oraciones"}';
   try{
     const res=await fetch('https://urbanbrokers-proxy.urbanbrokers-lab.workers.dev',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1200,messages:[{role:'user',content:prompt}]})});
     const data=await res.json();
@@ -931,7 +931,7 @@ async function unlockReport(){
       veredicto_tipo:d.diff>5?'sobrevalorado':d.diff<-5?'buena_oferta':'precio_justo',
       justificacion:'El precio de '+fmtCOP(d.m2)+'/m² está '+(d.diff>0?d.diff+'% sobre':Math.abs(d.diff)+'% bajo')+' el mercado homologado ('+fmtCOP(d.ref)+'/m²). '+(d.diff>5?'Hay margen de negociación.':'El precio es competitivo.'),
       precio_justo:Math.round(d.ref*d.area),margen_negociacion:Math.max(5,Math.round(d.diff*0.6)),
-      oferta_apertura:Math.round(d.ref*d.area*0.92),precio_maximo:Math.round(d.ref*d.area*1.02),
+      oferta_apertura:calcOfertaApertura(d.precio,Math.round(d.ref*d.area)),precio_maximo:Math.round(d.ref*d.area*1.02),
       comparables:c3.map(c=>({nombre:c.p.n,precio_m2:c.p.m2,distancia:c.dist.toFixed(2)+'km',motivo_aceptado:'Comparable válido'})),
       riesgos:[{nivel:'alto',titulo:'Precio sobre comparables',descripcion:'El precio supera el mercado homologado.'},{nivel:'medio',titulo:'Liquidez del mercado',descripcion:'Analiza la liquidez si planeas revender antes de 3 años.'},{nivel:'bajo',titulo:'Ubicación Ciudad del Río',descripcion:'Zona con alta demanda y valorización sostenida.'}],
       recomendacion:'Inicia con '+fmtFull(Math.round(d.ref*d.area*0.92))+' argumentando comparables del sector. No pagues más de '+fmtFull(Math.round(d.ref*d.area*1.02))+'.'
@@ -976,6 +976,21 @@ function renderHomoDetalle(ajustes,refSimple,refHomo){
 // ══════════════════════════════════════════════════════
 // STEP 4 — INFORME COMPLETO
 // ══════════════════════════════════════════════════════
+/**
+ * calcOfertaApertura — lógica de descuento según escenario:
+ * - Sobrevalorado (pedido > mercado): arrancar desde mercado con 5% de descuento
+ * - Precio justo o ganga (pedido <= mercado): pequeño descuento del 3% sobre lo pedido
+ */
+function calcOfertaApertura(precioPedido, precioMercado){
+  if(precioPedido > precioMercado){
+    // Escenario 1 y 2: sobrevalorando o justo → negociar desde el valor de mercado
+    return Math.round(precioMercado * 0.95);
+  } else {
+    // Escenario 3: ya está por debajo del mercado → pequeño ajuste sobre lo pedido
+    return Math.round(precioPedido * 0.97);
+  }
+}
+
 function showStep4(){
   const r=state.report,d=state;
   const lm={buena_oferta:'✅ Buena oferta',precio_justo:'⚖️ Precio justo',sobrevalorado:'⚠️ Sobrevalorado'};
@@ -1028,13 +1043,12 @@ function showStep4(){
 
   // Barras
   function fmtBar(n){return'<span style="font-size:13px;font-weight:700;color:#fff">$'+Math.round(n/1000000)+'</span><span style="font-size:10px;color:rgba(255,255,255,0.8);display:block;margin-top:1px">Millones</span>';}
-  const maxV=Math.max(d.precio,r.precio_justo,r.oferta_apertura,r.precio_maximo);
+  const maxV=Math.max(d.precio,r.precio_justo,r.oferta_apertura);
   const p=v=>Math.round(v/maxV*100);
   document.getElementById('s4Bars').innerHTML=
     '<div class="s4bar-col"><div class="s4bar-rect" style="height:100%;background:#ff6200">'+fmtBar(d.precio)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#ff6200;margin-top:6px">🏷️</div><div class="s4bar-name">Lo que piden</div><div class="s4bar-desc">Precio vendedor</div></div>'+
     '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+p(r.precio_justo)+'%;background:#0071e3">'+fmtBar(r.precio_justo)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#0071e3;margin-top:6px">✅</div><div class="s4bar-name">Lo que vale</div><div class="s4bar-desc">Precio homologado</div></div>'+
-    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+p(r.oferta_apertura)+'%;background:#0F3460">'+fmtBar(r.oferta_apertura)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#0F3460;margin-top:6px">💬</div><div class="s4bar-name">Tu oferta</div><div class="s4bar-desc">Con qué arrancar</div></div>'+
-    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+p(r.precio_maximo)+'%;background:#6b7280">'+fmtBar(r.precio_maximo)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#6b7280;margin-top:6px">🛑</div><div class="s4bar-name">Tu límite</div><div class="s4bar-desc">No pagues más</div></div>';
+    '<div class="s4bar-col"><div class="s4bar-rect" style="height:'+p(r.oferta_apertura)+'%;background:#0F3460">'+fmtBar(r.oferta_apertura)+'</div><div class="s4axis"></div><div style="font-size:16px;color:#0F3460;margin-top:6px">💬</div><div class="s4bar-name">Tu oferta</div><div class="s4bar-desc">Con qué arrancar</div></div>';
 
   const exceso=fmtCOP(Math.abs(d.precio-r.precio_justo));
   document.getElementById('s4DiffBox').innerHTML='<span style="font-size:22px;color:#ff6200;flex-shrink:0">⚠️</span><div class="s4diff-text">'+(d.diff>0?'El vendedor está pidiendo <strong>'+exceso+' más</strong> de lo que vale según el mercado homologado. Tienes espacio para negociar.':'El precio está <strong>'+Math.abs(d.diff)+'% por debajo</strong> del mercado homologado. Buena oportunidad.')+'</div>';
