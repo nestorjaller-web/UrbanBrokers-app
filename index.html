@@ -716,12 +716,7 @@ function getCanonMercado(habs, area, tipo, modalidad, objetivo){
       if(diffP > 0) dP = -DELTA; // comp tiene más → baja
     }
 
-    // Δ Amenidades: comp mejor que obj → su $/m² baja; comp peor → sube
-    if(objetivo.amenidades && comp.amenLevel){
-      const nO = nivelAmen(objetivo.amenidades), nC = nivelAmen(comp.amenLevel);
-      const diffAm = nC - nO;
-      if(diffAm !== 0) dAm = -DELTA * diffAm;
-    }
+    // Δ Amenidades: no se aplica en canon de arriendo
 
     // Cap ±20% para arriendo (más conservador que ventas)
     const deltaNeto = Math.max(-0.20, Math.min(0.20, dA + dE + dP + dAm));
