@@ -676,8 +676,6 @@ function getCanonMercado(habs, area, tipo, modalidad, objetivo){
     a.modalidad === modalidad &&
     a.canon > 0 && a.area > 0
   );
-  console.log('Canon DEBUG - habN:',habN,'modalidad:',modalidad,'pool:',pool.length,'total arriendos:',ARRIENDOS.length);
-  if(pool.length>0) console.log('Canon DEBUG - muestra modalidades:',[...new Set(ARRIENDOS.map(a=>a.modalidad))]);
 
 
   // Fallback si no hay suficientes
