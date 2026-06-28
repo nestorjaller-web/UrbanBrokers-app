@@ -632,18 +632,19 @@ async function cargarProyectos(){
     ARRIENDOS=json2.table.rows.slice(1).map(r=>{
       const c=r.c; if(!c||!c[9])return null;
       const canon=c[9].v||0; if(!canon)return null;
-      // Edad desde col 3
-      const edRaw=c[3]&&c[3].v?parseInt(c[3].v):null;
+      // Edad desde col 13 (Antigüedad_anos)
+      const edRaw=c[13]&&c[13].v?parseInt(c[13].v):null;
       let edStr='3-10';
       if(edRaw!==null){if(edRaw<=2)edStr='0-2';else if(edRaw<=10)edStr='3-10';else if(edRaw<=20)edStr='11-20';else edStr='21-35';}
-      // Parqueaderos desde col 7
+      // Parqueaderos desde col 7 (Garajes)
       const garA=c[7]&&c[7].v?parseFloat(c[7].v):0;
-      // Amenidades desde col 15 (estado conservación como proxy)
+      // Amenidades desde col 14 (Estado_conservacion como proxy)
       let amenA='Estándar';
-      if(c[15]&&c[15].v){const av=c[15].v.toLowerCase();if(av.includes('excelen'))amenA='Fullhouse';else if(av.includes('regular')||av.includes('mal'))amenA='Básico';}
+      if(c[14]&&c[14].v){const av=c[14].v.toLowerCase();if(av.includes('excelen'))amenA='Fullhouse';else if(av.includes('regular')||av.includes('mal'))amenA='Básico';}
+      // Modalidad desde col 16
+      const modalidadRaw=c[16]&&c[16].v?c[16].v.toLowerCase().trim():'tradicional';
       return{canon,habs:c[5]&&c[5].v?parseInt(c[5].v):2,area:c[8]&&c[8].v?parseFloat(c[8].v):0,
-             modalidad:c[16]&&c[16].v?c[16].v.toLowerCase().trim():'tradicional',
-             edadStr:edStr,parqNum:Math.min(Math.round(garA),4),amenLevel:amenA};
+             modalidad:modalidadRaw,edadStr:edStr,parqNum:Math.min(Math.round(garA),4),amenLevel:amenA};
     }).filter(a=>a&&a.canon>0);
     console.log('Arriendos:',ARRIENDOS.length);
   }catch(e){ARRIENDOS=[];}
