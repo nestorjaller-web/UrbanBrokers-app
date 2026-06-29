@@ -632,19 +632,8 @@ async function cargarProyectos(){
     ARRIENDOS=json2.table.rows.slice(1).map(r=>{
       const c=r.c; if(!c||!c[9])return null;
       const canon=c[9].v||0; if(!canon)return null;
-      // Edad desde col 13 (Antigüedad_anos)
-      const edRaw=c[13]&&c[13].v?parseInt(c[13].v):null;
-      let edStr='3-10';
-      if(edRaw!==null){if(edRaw<=2)edStr='0-2';else if(edRaw<=10)edStr='3-10';else if(edRaw<=20)edStr='11-20';else edStr='21-35';}
-      // Parqueaderos desde col 7 (Garajes)
-      const garA=c[7]&&c[7].v?parseFloat(c[7].v):0;
-      // Amenidades desde col 14 (Estado_conservacion como proxy)
-      let amenA='Estándar';
-      if(c[14]&&c[14].v){const av=c[14].v.toLowerCase();if(av.includes('excelen'))amenA='Fullhouse';else if(av.includes('regular')||av.includes('mal'))amenA='Básico';}
-      // Modalidad desde col 16
-      const modalidadRaw=c[16]&&c[16].v?c[16].v.toLowerCase().trim():'tradicional';
       return{canon,habs:c[5]&&c[5].v?parseInt(c[5].v):2,area:c[8]&&c[8].v?parseFloat(c[8].v):0,
-             modalidad:modalidadRaw,edadStr:edStr,parqNum:Math.min(Math.round(garA),4),amenLevel:amenA};
+             modalidad:c[16]&&c[16].v?c[16].v.toLowerCase().trim():'tradicional'};
     }).filter(a=>a&&a.canon>0);
     console.log('Arriendos:',ARRIENDOS.length);
   }catch(e){ARRIENDOS=[];}
@@ -654,91 +643,12 @@ async function cargarProyectos(){
 // ══════════════════════════════════════════════════════
 // LÓGICA COMPARABLES
 // ══════════════════════════════════════════════════════
-/**
- * getCanonMercado — Nueva lógica con homologación individual y mediana de $/m²
- *
- * Pasos:
- * 1. Filtrar arriendos por habitaciones (±1) y modalidad
- * 2. Para cada comparable, calcular su $/m² de arriendo
- * 3. Aplicar Factor de Ajuste Neto individual (±3% por variable)
- *    según diferencias en Área, Edad, Parqueaderos, Amenidades
- * 4. Tomar la MEDIANA de los $/m² ajustados (depura outliers)
- * 5. Multiplicar por el área del objetivo → canon estimado
- */
-function getCanonMercado(habs, area, tipo, modalidad, objetivo){
-  const habN = parseInt(habs) || 2;
-  modalidad = modalidad || 'tradicional';
-  objetivo = objetivo || {};
-
-  // 1. Pool inicial: misma modalidad, habitaciones ±1, excluir amoblados
-  let pool = ARRIENDOS.filter(a =>
-    Math.abs(a.habs - habN) <= 1 &&
-    a.modalidad === modalidad &&
-    a.canon > 0 && a.area > 0
-  );
-
-
-  // Fallback si no hay suficientes
-  if(pool.length < 3){
-    pool = ARRIENDOS.filter(a => a.modalidad === modalidad && a.canon > 0 && a.area > 0);
-  }
-  if(!pool.length) return null;
-
-  // 2. Calcular $/m² de arriendo para cada comparable
-  // 3. Aplicar ajuste individual con factores de 3% por variable
-  const DELTA = 0.03; // factor estándar para arriendo (más conservador que ventas)
-
-  const m2sAjustados = pool.map(comp => {
-    const canonM2Base = comp.canon / comp.area;
-
-    let dA = 0, dE = 0, dP = 0, dAm = 0;
-
-    // Δ Área (clústers)
-    if(area > 0 && comp.area > 0){
-      const cO = getClusterArea(area), cC = getClusterArea(comp.area);
-      const diff = cC - cO;
-      if(diff > 0) dA =  DELTA * diff;   // comp más grande → su $/m² sube
-      if(diff < 0) dA = -DELTA * Math.abs(diff); // comp más pequeño → baja
-    }
-
-    // Δ Edad
-    if(objetivo.edadStr && comp.edadStr){
-      const cOE = getClusterEdad(objetivo.edadStr);
-      const cCE = getClusterEdad(comp.edadStr);
-      const diffE = cCE - cOE;
-      if(diffE !== 0) dE = DELTA * diffE; // más antiguo que obj → sube; más nuevo → baja
-    }
-
-    // Δ Parqueaderos
-    if(objetivo.parq !== undefined && comp.parqNum !== undefined){
-      const pO = normP(objetivo.parq), pC = normP(comp.parqNum);
-      const diffP = pC - pO;
-      if(diffP < 0) dP =  DELTA; // comp tiene menos → sube
-      if(diffP > 0) dP = -DELTA; // comp tiene más → baja
-    }
-
-    // Δ Amenidades: no se aplica en canon de arriendo
-
-    // Cap ±20% para arriendo (más conservador que ventas)
-    const deltaNeto = Math.max(-0.20, Math.min(0.20, dA + dE + dP + dAm));
-    return canonM2Base * (1 + deltaNeto);
-  });
-
-  // 4. Mediana de $/m² ajustados
-  const sorted = [...m2sAjustados].sort((a, b) => a - b);
-  const mid = Math.floor(sorted.length / 2);
-  const mediana = sorted.length % 2 === 0
-    ? (sorted[mid-1] + sorted[mid]) / 2
-    : sorted[mid];
-
-  // 5. × área objetivo
-  const canonEstimado = Math.round(mediana * (area || 1));
-
-  return {
-    canon: canonEstimado,
-    fuente: 'datos de mercado',
-    modalidad
-  };
+function getCanonMercado(habs,area,tipo,modalidad){
+  const habN=parseInt(habs)||2; modalidad=modalidad||'tradicional';
+  let m=ARRIENDOS.filter(a=>Math.abs(a.habs-habN)<=1&&a.modalidad===modalidad);
+  if(area>0&&m.length>=3){const ba=m.filter(a=>a.area>0&&Math.abs(a.area-area)/area<=0.2);if(ba.length>=3)m=ba;}
+  if(!m.length)return null;
+  return{canon:Math.round(m.reduce((a,x)=>a+x.canon,0)/m.length),fuente:'datos de mercado',modalidad};
 }
 
 function distKm(la1,ln1,la2,ln2){
@@ -987,7 +897,7 @@ function showStep3(){
   else if(d.diff<-5){pc='vp-good';pt='🟢 Por debajo del mercado';}
   else{pc='vp-fair';pt='⚖️ En rango de mercado';}
   document.getElementById('verdictPill').innerHTML='<div class="verdict-pill '+pc+'">'+pt+'</div>';
-  const canonI=getCanonMercado(d.hab,d.area,d.tipo,'tradicional',{edadStr:d.edadStr,parq:d.numParqueaderos,amenidades:d.nivelAmenidades});
+  const canonI=getCanonMercado(d.hab,d.area,d.tipo,'tradicional');
   const canonE=canonI?canonI.canon:Math.round(d.ref*d.area*0.004);
   const rPct=(canonE*12/d.precio)*100;
   let calR=rPct<3?'Regular':rPct<=5?'Buena':'Excelente';
@@ -1066,6 +976,39 @@ function renderHomoDetalle(ajustes,refSimple,refHomo){
 // ══════════════════════════════════════════════════════
 // STEP 4 — INFORME COMPLETO
 // ══════════════════════════════════════════════════════
+
+/**
+ * calRetornoTotal — calificación según % de retorno total
+ * <8%: Baja | 8-10%: Aceptable | 10-12%: Buena | 12-15%: Muy buena | >15%: Excepcional
+ */
+function calRetornoTotal(pct){
+  const v=parseFloat(pct);
+  if(v<8)  return{emoji:'🔴',label:'Baja',     color:'#ef4444',bg:'rgba(239,68,68,0.15)'};
+  if(v<10) return{emoji:'🟠',label:'Aceptable', color:'#f97316',bg:'rgba(249,115,22,0.15)'};
+  if(v<12) return{emoji:'🟡',label:'Buena',     color:'#eab308',bg:'rgba(234,179,8,0.15)'};
+  if(v<15) return{emoji:'🟢',label:'Muy buena', color:'#22c55e',bg:'rgba(34,197,94,0.15)'};
+  return     {emoji:'⭐',label:'Excepcional', color:'#f59e0b',bg:'rgba(245,158,11,0.15)'};
+}
+
+/**
+ * semRetornoTotal — 3 estados: bajo(<8%), moderado(8-12%), atractivo(>12%)
+ */
+function semRetornoTotal(pct){
+  const v=parseFloat(pct);
+  const bajo    ={activo:false,color:'rgba(248,113,113,0.15)',  icon:'✕', iconColor:'rgba(248,113,113,0.3)',  label:'Retorno\nbajo',     labelColor:'rgba(255,255,255,0.25)',shadow:''};
+  const moderado={activo:false,color:'rgba(251,191,36,0.28)',   icon:'−', iconColor:'#fbbf24',                label:'Retorno\nmoderado', labelColor:'#fbbf24',             shadow:'box-shadow:0 0 0 4px rgba(251,191,36,0.15)'};
+  const atractivo={activo:false,color:'rgba(74,222,128,0.12)',  icon:'✓', iconColor:'rgba(74,222,128,0.3)',  label:'Retorno\natractivo', labelColor:'rgba(255,255,255,0.25)',shadow:''};
+  if(v<8)  {bajo.activo=true;bajo.shadow='box-shadow:0 0 0 4px rgba(248,113,113,0.15)';bajo.iconColor='#f87171';bajo.labelColor='#f87171';}
+  else if(v<12){moderado.activo=true;}
+  else     {atractivo.activo=true;atractivo.shadow='box-shadow:0 0 0 4px rgba(74,222,128,0.15)';atractivo.iconColor='#4ade80';atractivo.labelColor='#4ade80';}
+  return [bajo,moderado,atractivo].map(s=>
+    '<div class="s4sem-col">'+
+    '<div class="s4sem-circle" style="background:'+s.color+';'+s.shadow+'"><span style="font-size:'+(s.activo?'22':'18')+'px;color:'+s.iconColor+'">'+s.icon+'</span></div>'+
+    '<div class="s4sem-lbl" style="color:'+s.labelColor+';'+(s.activo?'font-weight:600':'')+'">'+(s.label.replace('\n','<br>'))+'</div>'+
+    '</div>'
+  ).join('');
+}
+
 /**
  * calcOfertaApertura — lógica de descuento según escenario:
  * - Sobrevalorado (pedido > mercado): arrancar desde mercado con 5% de descuento
@@ -1148,7 +1091,7 @@ function showStep4(){
   // Cobertura por rango — removida del informe
 
   // Arriendo — canon base
-  const cData=getCanonMercado(d.hab,d.area,d.tipo,'tradicional',{edadStr:d.edadStr,parq:d.numParqueaderos,amenidades:d.nivelAmenidades});
+  const cData=getCanonMercado(d.hab,d.area,d.tipo,'tradicional');
   const canon=cData?cData.canon:Math.round(r.precio_justo*0.004);
   const cFuente=cData?cData.fuente:'estimado';
   const admin=Math.round(canon*0.145),vac=Math.round(canon*0.08),pred=Math.round(canon*0.062);
@@ -1241,7 +1184,6 @@ function showStep4(){
   // Resumen — tres escenarios de retorno total (arriendo neto año 1 + valorización año 1)
   // La valorización se calcula siempre sobre el precio publicado (es lo que se valoriza el activo)
   // El retorno cambia según el precio que efectivamente se pague
-  const v1=Math.round(d.precio*1.06);
   const valorizacion1=v1-d.precio; // plusvalía año 1 fija
 
   function calcTotal(precioBase){ return netoA + valorizacion1; } // total generado = igual en los 3
@@ -1253,37 +1195,111 @@ function showStep4(){
   const total1       = netoA + valorizacion1;
   const ret          = retOferta; // semáforo usa oferta recomendada como referencia
 
-  if(parseFloat(retOferta)>=10){
-    document.getElementById('s4Semaforo').innerHTML='<div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(251,191,36,0.2)"><span style="font-size:20px;color:#fbbf24">−</span></div><div class="s4sem-lbl" style="color:rgba(255,255,255,0.3)">Retorno<br>moderado</div></div><div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(74,222,128,0.25);box-shadow:0 0 0 4px rgba(255,255,255,0.15)"><span style="font-size:22px;color:#4ade80">✓</span></div><div class="s4sem-lbl" style="color:#4ade80;font-weight:700">Retorno<br>atractivo</div></div>';
-  }else{
-    document.getElementById('s4Semaforo').innerHTML='<div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(251,191,36,0.25);box-shadow:0 0 0 4px rgba(255,255,255,0.15)"><span style="font-size:22px;color:#fbbf24">−</span></div><div class="s4sem-lbl" style="color:#fbbf24;font-weight:700">Retorno<br>moderado</div></div><div class="s4sem-col"><div class="s4sem-circle" style="background:rgba(74,222,128,0.2)"><span style="font-size:20px;color:#4ade80">✓</span></div><div class="s4sem-lbl" style="color:rgba(255,255,255,0.3)">Retorno<br>atractivo</div></div>';
-  }
-
+  // ── Semáforo 3 estados ─────────────────────────────
+  document.getElementById('s4Semaforo').innerHTML = semRetornoTotal(retOferta);
+  document.getElementById('s4ResTitle').textContent = 'Retorno total esperado';
   document.getElementById('s4ResSub').textContent='Negociar bien el precio marca la diferencia. Aquí ves cuánto cambia tu retorno según lo que pagues.';
 
-  document.getElementById('s4Ingresos').innerHTML=
-    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(0,113,227,0.15)"><span>🏠</span></div><div class="s4ing-info"><div class="s4ing-label">Ingreso neto por rentas (año 1)</div><div class="s4ing-name">Canon neto estimado</div></div><div class="s4ing-val">+'+fmtFull(netoA)+'</div></div>'+
-    '<div class="s4plus">+</div>'+
-    '<div class="s4ingreso-row"><div class="s4ing-icon" style="background:rgba(74,222,128,0.12)"><span>📈</span></div><div class="s4ing-info"><div class="s4ing-label">Plusvalía estimada (6% anual)</div><div class="s4ing-name">Valorización año 1</div></div><div class="s4ing-val">+'+fmtFull(valorizacion1)+'</div></div>';
+  // ── s4Ingresos: quitamos casillas, dejamos vacío ──
+  document.getElementById('s4Ingresos').innerHTML='';
 
-  // Tabla sensibilización retorno total
+  // ── s4Total: nueva matriz ──────────────────────────
+  const calP=calRetornoTotal(retPublicado), calM=calRetornoTotal(retMercado), calO=calRetornoTotal(retOferta);
+
+  // Posición puntero en barra (escala 0-20%, 5 segmentos iguales de 20% c/u)
+  const pctPtr=Math.min(parseFloat(retOferta),20);
+  const leftPtr=(pctPtr/20*100).toFixed(1);
+
   document.getElementById('s4Total').innerHTML=
-    '<div class="s4total-label">Total generado año 1: <strong style="color:#4ade80">+'+fmtFull(total1)+'</strong></div>'+
-    '<div style="margin:14px 0 4px;display:grid;grid-template-columns:1fr auto;gap:0;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.1)">'+
-      // Header
-      '<div style="background:rgba(255,255,255,0.06);padding:8px 12px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.06em">Precio de compra</div>'+
-      '<div style="background:rgba(255,255,255,0.06);padding:8px 12px;font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.06em;text-align:right">Retorno total año 1</div>'+
-      // Fila 1: precio publicado
-      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07)"><div style="font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-tag" style="font-size:12px"></i> Precio publicado</div><div style="font-size:13px;font-weight:700;color:#fff">'+fmtFull(precioPublicado)+'</div></div>'+
-      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:flex-end"><span style="font-size:20px;font-weight:700;color:'+colorRent(retPublicado)+'">'+retPublicado+'%</span></div>'+
-      // Fila 2: valor mercado
-      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);background:rgba(0,113,227,0.07)"><div style="font-size:10px;color:#60a5fa;margin-bottom:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-circle-check" style="font-size:12px"></i> Valor de mercado</div><div style="font-size:13px;font-weight:700;color:#fff">'+fmtFull(precioMercado)+'</div></div>'+
-      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:flex-end;background:rgba(0,113,227,0.07)"><span style="font-size:20px;font-weight:700;color:'+colorRent(retMercado)+'">'+retMercado+'%</span></div>'+
-      // Fila 3: oferta recomendada
-      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);background:rgba(74,222,128,0.08)"><div style="font-size:10px;color:#4ade80;margin-bottom:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-message-circle" style="font-size:12px"></i> Oferta recomendada</div><div style="font-size:13px;font-weight:700;color:#fff">'+fmtFull(precioOferta)+'</div></div>'+
-      '<div style="padding:12px;border-top:0.5px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:flex-end;background:rgba(74,222,128,0.08)"><span style="font-size:20px;font-weight:700;color:'+colorRent(retOferta)+'">'+retOferta+'%</span></div>'+
+    // Valores agrupados
+    '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-radius:12px 12px 0 0;overflow:hidden;border:1px solid rgba(255,255,255,0.1);border-bottom:none">'+
+      '<div style="background:rgba(255,255,255,0.08);padding:10px 8px 8px;text-align:center">'+
+        '<div style="font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Renta año 1</div>'+
+        '<div style="font-size:12px;font-weight:500;color:#60a5fa">'+fmtFull(netoA)+'</div>'+
+      '</div>'+
+      '<div style="background:rgba(255,255,255,0.08);padding:10px 8px 8px;text-align:center;border-left:0.5px solid rgba(255,255,255,0.08);border-right:0.5px solid rgba(255,255,255,0.08)">'+
+        '<div style="font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Valorización</div>'+
+        '<div style="font-size:12px;font-weight:500;color:#60a5fa">'+fmtFull(valorizacion1)+'</div>'+
+      '</div>'+
+      '<div style="background:rgba(255,255,255,0.08);padding:10px 8px 8px;text-align:center">'+
+        '<div style="font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px">Total año 1</div>'+
+        '<div style="font-size:12px;font-weight:500;color:#60a5fa">'+fmtFull(total1)+'</div>'+
+      '</div>'+
     '</div>'+
-    '<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:10px;line-height:1.6;text-align:left">La valorización corresponde a un escenario base del mercado (6% anual). El retorno total esperado varía según el precio de compra, ya que una mejor negociación incrementa la rentabilidad sobre la inversión.</div>';
+    // Tabla escenario + retorno total
+    '<div style="border-radius:0 0 12px 12px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);margin-bottom:14px">'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;background:rgba(255,255,255,0.06)">'+
+        '<div style="padding:8px 12px;font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.05em">Escenario</div>'+
+        '<div style="padding:8px 12px;font-size:10px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.05em;text-align:right">Retorno total</div>'+
+      '</div>'+
+      // Fila precio pedido
+      '<div style="display:grid;grid-template-columns:1fr 1fr;background:rgba(255,255,255,0.03);border-top:0.5px solid rgba(255,255,255,0.06)">'+
+        '<div style="padding:12px"><div style="font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-tag" style="font-size:12px"></i> Precio pedido</div><div style="font-size:12px;font-weight:500;color:#fff">'+fmtFull(precioPublicado)+'</div></div>'+
+        '<div style="padding:12px;display:flex;align-items:center;justify-content:flex-end"><span style="display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:500;padding:3px 8px;border-radius:980px;background:'+calP.bg+';color:'+calP.color+'">'+calP.emoji+' '+retPublicado+'%</span></div>'+
+      '</div>'+
+      // Fila valor mercado
+      '<div style="display:grid;grid-template-columns:1fr 1fr;background:rgba(0,113,227,0.08);border-top:0.5px solid rgba(255,255,255,0.06)">'+
+        '<div style="padding:12px"><div style="font-size:10px;color:#60a5fa;margin-bottom:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-circle-check" style="font-size:12px"></i> Valor de mercado</div><div style="font-size:12px;font-weight:500;color:#fff">'+fmtFull(precioMercado)+'</div></div>'+
+        '<div style="padding:12px;display:flex;align-items:center;justify-content:flex-end"><span style="display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:500;padding:3px 8px;border-radius:980px;background:'+calM.bg+';color:'+calM.color+'">'+calM.emoji+' '+retMercado+'%</span></div>'+
+      '</div>'+
+      // Fila oferta recomendada
+      '<div style="display:grid;grid-template-columns:1fr 1fr;background:rgba(74,222,128,0.07);border-top:0.5px solid rgba(255,255,255,0.06)">'+
+        '<div style="padding:12px"><div style="font-size:10px;color:#4ade80;margin-bottom:2px;display:flex;align-items:center;gap:4px"><i class="ti ti-message-circle" style="font-size:12px"></i> Oferta recomendada</div><div style="font-size:12px;font-weight:500;color:#fff">'+fmtFull(precioOferta)+'</div></div>'+
+        '<div style="padding:12px;display:flex;align-items:center;justify-content:flex-end"><span style="display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:500;padding:3px 8px;border-radius:980px;background:'+calO.bg+';color:'+calO.color+'">'+calO.emoji+' '+retOferta+'%</span></div>'+
+      '</div>'+
+    '</div>'+
+    // Barra de escala
+    '<div style="background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px;margin-bottom:12px">'+
+      '<div style="font-size:10px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px">Escala de calificación — retorno total</div>'+
+      '<div style="position:relative;height:16px;margin-bottom:6px">'+
+        '<span style="position:absolute;left:10%;transform:translateX(-50%);font-size:10px;color:#ef4444;white-space:nowrap">● Baja</span>'+
+        '<span style="position:absolute;left:30%;transform:translateX(-50%);font-size:10px;color:#f97316;white-space:nowrap">● Aceptable</span>'+
+        '<span style="position:absolute;left:50%;transform:translateX(-50%);font-size:10px;color:#eab308;white-space:nowrap">● Buena</span>'+
+        '<span style="position:absolute;left:70%;transform:translateX(-50%);font-size:10px;color:#22c55e;white-space:nowrap">● Muy buena</span>'+
+        '<span style="position:absolute;left:90%;transform:translateX(-50%);font-size:10px;color:#f59e0b;white-space:nowrap">★ Excepc.</span>'+
+      '</div>'+
+      '<div style="position:relative;height:8px;border-radius:980px;overflow:hidden">'+
+        '<div style="position:absolute;left:0%;width:20%;height:100%;background:#ef4444"></div>'+
+        '<div style="position:absolute;left:20%;width:20%;height:100%;background:#f97316"></div>'+
+        '<div style="position:absolute;left:40%;width:20%;height:100%;background:#eab308"></div>'+
+        '<div style="position:absolute;left:60%;width:20%;height:100%;background:#22c55e"></div>'+
+        '<div style="position:absolute;left:80%;width:20%;height:100%;background:#f59e0b"></div>'+
+      '</div>'+
+      '<div style="position:relative;height:14px;margin-top:3px">'+
+        '<span style="position:absolute;left:0%;font-size:9px;color:rgba(255,255,255,0.3)">0%</span>'+
+        '<span style="position:absolute;left:20%;transform:translateX(-50%);font-size:9px;color:rgba(255,255,255,0.3)">8%</span>'+
+        '<span style="position:absolute;left:40%;transform:translateX(-50%);font-size:9px;color:rgba(255,255,255,0.3)">10%</span>'+
+        '<span style="position:absolute;left:60%;transform:translateX(-50%);font-size:9px;color:rgba(255,255,255,0.3)">12%</span>'+
+        '<span style="position:absolute;left:80%;transform:translateX(-50%);font-size:9px;color:rgba(255,255,255,0.3)">15%</span>'+
+        '<span style="position:absolute;right:0%;font-size:9px;color:rgba(255,255,255,0.3)">20%+</span>'+
+      '</div>'+
+      '<div style="position:relative;height:28px;margin-top:2px">'+
+        '<div style="position:absolute;left:'+leftPtr+'%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:1px">'+
+          '<div style="width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:7px solid #fff"></div>'+
+          '<span style="font-size:11px;font-weight:500;color:#fff;white-space:nowrap">'+retOferta+'%</span>'+
+        '</div>'+
+      '</div>'+
+    '</div>'+
+    // Nota explicativa
+    '<div style="background:rgba(255,255,255,0.04);border:0.5px solid rgba(255,255,255,0.1);border-radius:12px;padding:14px">'+
+      '<div style="font-size:10px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px">¿Cómo se calcula el retorno total?</div>'+
+      '<div style="text-align:center;padding:8px 0;font-size:11px;color:rgba(255,255,255,0.35);border-bottom:0.5px solid rgba(255,255,255,0.06);margin-bottom:8px">'+
+        '<strong style="color:rgba(255,255,255,0.7);font-weight:500">Renta del año</strong> &nbsp;+&nbsp; <strong style="color:rgba(255,255,255,0.7);font-weight:500">Valorización</strong> &nbsp;=&nbsp; <strong style="color:rgba(255,255,255,0.7);font-weight:500">Total generado</strong><br>'+
+        '<span style="font-size:10px;margin-top:4px;display:block">Total generado ÷ Precio que pagaste = % de retorno</span>'+
+      '</div>'+
+      '<div style="display:flex;align-items:flex-start;gap:10px;padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06)">'+
+        '<div style="font-size:16px;flex-shrink:0;margin-top:1px">🏠</div>'+
+        '<div style="font-size:11px;color:rgba(255,255,255,0.55);line-height:1.55"><strong style="color:rgba(255,255,255,0.85);font-weight:500">Renta del año:</strong> es el dinero que te paga el inquilino durante 12 meses, ya descontando gastos como administración, predial y los meses en que el apartamento puede estar vacío.</div>'+
+      '</div>'+
+      '<div style="display:flex;align-items:flex-start;gap:10px;padding:6px 0;border-bottom:0.5px solid rgba(255,255,255,0.06)">'+
+        '<div style="font-size:16px;flex-shrink:0;margin-top:1px">📈</div>'+
+        '<div style="font-size:11px;color:rgba(255,255,255,0.55);line-height:1.55"><strong style="color:rgba(255,255,255,0.85);font-weight:500">Valorización:</strong> es cuánto sube el precio del inmueble en un año. Es como si el apartamento "ahorrara" dinero por ti — aunque no lo vendas, vale más.</div>'+
+      '</div>'+
+      '<div style="display:flex;align-items:flex-start;gap:10px;padding:6px 0">'+
+        '<div style="font-size:16px;flex-shrink:0;margin-top:1px">💡</div>'+
+        '<div style="font-size:11px;color:rgba(255,255,255,0.55);line-height:1.55"><strong style="color:rgba(255,255,255,0.85);font-weight:500">Por qué cambia el % según lo que pagues:</strong> si negocias un mejor precio, el mismo inmueble te genera el mismo dinero, pero sobre una inversión menor — y eso hace que el porcentaje de retorno sea más alto.</div>'+
+      '</div>'+
+    '</div>';
 
   let cel=d.celular.replace(/\D/g,'');if(!cel.startsWith('57'))cel='57'+cel;
   document.getElementById('waNum').textContent=d.celular;
