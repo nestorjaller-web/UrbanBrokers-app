@@ -1174,6 +1174,7 @@ function showStep4(){
   // Resumen — tres escenarios de retorno total (arriendo neto año 1 + valorización año 1)
   // La valorización se calcula siempre sobre el precio publicado (es lo que se valoriza el activo)
   // El retorno cambia según el precio que efectivamente se pague
+  const v1=Math.round(d.precio*1.06);
   const valorizacion1=v1-d.precio; // plusvalía año 1 fija
 
   function calcTotal(precioBase){ return netoA + valorizacion1; } // total generado = igual en los 3
